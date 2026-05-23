@@ -41,11 +41,33 @@ function AppointmentsPage() {
     }
   }
 
-  async function handleAddAppointment(newAppointment) {
-    await createAppointment(newAppointment)
-    await loadPageData()
-    setShowForm(false)
+async function handleAddAppointment(newAppointment) {
+  const overlappingAppointment = appointments.find((appointment) => {
+    if (appointment.date !== newAppointment.date) {
+      return false
+    }
+
+    const newStart = newAppointment.startTime
+    const newEnd = newAppointment.endTime
+
+    const existingStart = appointment.startTime
+    const existingEnd = appointment.endTime
+
+    return (
+      newStart < existingEnd &&
+      newEnd > existingStart
+    )
+  })
+
+  if (overlappingAppointment) {
+    alert('This appointment overlaps with another appointment.')
+    return
   }
+
+  await createAppointment(newAppointment)
+  await loadPageData()
+  setShowForm(false)
+}
 
   async function handleDeleteAppointment(appointmentId) {
     const confirmed = window.confirm(
@@ -65,12 +87,38 @@ function AppointmentsPage() {
     setShowForm(true)
   }
 
-  async function handleUpdateAppointment(updatedAppointment) {
-    await updateAppointment(updatedAppointment)
-    await loadPageData()
-    setSelectedAppointment(null)
-    setShowForm(false)
+async function handleUpdateAppointment(updatedAppointment) {
+  const overlappingAppointment = appointments.find((appointment) => {
+    if (appointment.appointmentId === updatedAppointment.appointmentId) {
+      return false
+    }
+
+    if (appointment.date !== updatedAppointment.date) {
+      return false
+    }
+
+    const updatedStart = updatedAppointment.startTime
+    const updatedEnd = updatedAppointment.endTime
+
+    const existingStart = appointment.startTime
+    const existingEnd = appointment.endTime
+
+    return (
+      updatedStart < existingEnd &&
+      updatedEnd > existingStart
+    )
+  })
+
+  if (overlappingAppointment) {
+    alert('This appointment overlaps with another appointment.')
+    return
   }
+
+  await updateAppointment(updatedAppointment)
+  await loadPageData()
+  setSelectedAppointment(null)
+  setShowForm(false)
+}
 
   function handleCancelForm() {
     setSelectedAppointment(null)

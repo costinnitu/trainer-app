@@ -1,8 +1,8 @@
 const amplifyConfig = {
   Auth: {
     Cognito: {
-      userPoolId: 'eu-south-1_e0Q7Pjx40',
-      userPoolClientId: '7vgntb3slkpuftq034esqk81uc',
+      userPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
+      userPoolClientId: import.meta.env.VITE_COGNITO_APP_CLIENT_ID,
     },
   },
 }

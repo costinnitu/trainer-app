@@ -55,17 +55,29 @@ function AppointmentForm({
     })
   }
 
-  function handleSubmit(event) {
-    event.preventDefault()
+function handleSubmit(event) {
+  event.preventDefault()
 
-    if (selectedAppointment) {
-      onUpdateAppointment(formData)
-    } else {
-      onAddAppointment(formData)
-    }
-
-    setFormData(emptyForm)
+  if (formData.endTime <= formData.startTime) {
+    alert('End time must be after start time.')
+    return
   }
+
+  const today = new Date().toLocaleDateString('en-CA')
+
+  if (formData.date < today) {
+    alert('Appointment date cannot be in the past.')
+    return
+  }
+
+  if (selectedAppointment) {
+    onUpdateAppointment(formData)
+  } else {
+    onAddAppointment(formData)
+  }
+
+  setFormData(emptyForm)
+}
 
   return (
     <form className="client-form" onSubmit={handleSubmit}>
