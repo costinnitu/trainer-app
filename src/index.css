@@ -1,3 +1,5 @@
+/* ---------- Base ---------- */
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -6,7 +8,7 @@ body {
 }
 
 button {
-  background: #2563eb;
+  background: #40c45d;
   color: white;
   border: none;
   padding: 10px 14px;
@@ -18,6 +20,13 @@ button {
 button:hover {
   background: #1d4ed8;
 }
+
+.error-message {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* ---------- Layout ---------- */
 
 .page {
   max-width: 1000px;
@@ -32,22 +41,82 @@ button:hover {
   margin-bottom: 24px;
 }
 
-.client-grid {
+/* ---------- Navbar ---------- */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 32px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar-left,
+.navbar-center,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-center,
+.navbar-right {
+  gap: 12px;
+}
+
+/* ---------- Cards and grids ---------- */
+
+.client-grid,
+.dashboard-grid,
+.weekly-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
-.client-card {
+.client-grid,
+.dashboard-grid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.weekly-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 24px;
+}
+
+.client-card,
+.dashboard-card,
+.dashboard-section,
+.weekly-day {
   background: white;
   border-radius: 12px;
-  padding: 18px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.client-card h3 {
+.client-card,
+.dashboard-card,
+.dashboard-section {
+  padding: 18px;
+}
+
+.weekly-day {
+  padding: 16px;
+  min-height: 220px;
+}
+
+.client-card h3,
+.dashboard-card h3,
+.dashboard-section h3,
+.weekly-day h3 {
   margin-top: 0;
 }
+
+.weekly-day h3 {
+  text-transform: capitalize;
+  font-size: 16px;
+}
+
+/* ---------- Forms ---------- */
 
 .client-form {
   background: white;
@@ -67,44 +136,6 @@ button:hover {
   font-size: 14px;
 }
 
-.danger-button {
-  background: #dc2626;
-  margin-top: 12px;
-}
-
-.danger-button:hover {
-  background: #b91c1c;
-}
-
-.card-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.status-badge.active {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status-badge.paused {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status-badge.inactive {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
 .search-input {
   width: 100%;
   padding: 12px;
@@ -115,17 +146,48 @@ button:hover {
   box-sizing: border-box;
 }
 
-.error-message {
-  color: #b91c1c;
-  font-weight: 600;
+/* ---------- Actions ---------- */
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.navbar {
-  display: flex;
-  gap: 12px;
-  padding: 16px 32px;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+.danger-button {
+  background: #dc2626;
+  margin-top: 12px;
+}
+
+.danger-button:hover {
+  background: #b91c1c;
+}
+
+/* ---------- Status badges ---------- */
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.active,
+.status-badge.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.paused {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.inactive,
+.status-badge.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .status-badge.scheduled {
@@ -133,32 +195,13 @@ button:hover {
   color: #1e40af;
 }
 
-.status-badge.completed {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status-badge.cancelled {
-  background: #fee2e2;
-  color: #991b1b;
-}
+/* ---------- Dashboard ---------- */
 
 .dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
   margin-top: 24px;
 }
 
-.dashboard-card {
-  background: white;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
 .dashboard-card h3 {
-  margin-top: 0;
   font-size: 16px;
 }
 
@@ -169,15 +212,7 @@ button:hover {
 }
 
 .dashboard-section {
-  background: white;
   margin-top: 24px;
-  padding: 18px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-section h3 {
-  margin-top: 0;
 }
 
 .dashboard-list-item {
@@ -193,14 +228,132 @@ button:hover {
   border-bottom: none;
 }
 
-.navbar {
+/* ---------- Weekly schedule ---------- */
+
+.week-navigation {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 8px;
 }
 
-.navbar-right {
+.week-label {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.empty-day {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.weekly-appointment {
+  display: grid;
+  gap: 6px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.weekly-appointment:last-child {
+  border-bottom: none;
+}
+
+.view-toggle {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr);
+  gap: 1px;
+  margin-top: 24px;
+  background: #e5e7eb;
+  border: 1px solid #e5e7eb;
+  overflow-x: auto;
+}
+
+.calendar-time-column,
+.calendar-day-column {
+  background: white;
+}
+
+.calendar-header-cell,
+.calendar-day-header {
+  height: 48px;
+  padding: 12px;
+  font-weight: 700;
+  border-bottom: 1px solid #e5e7eb;
+  box-sizing: border-box;
+  text-transform: capitalize;
+}
+
+.calendar-time-slot {
+  height: 64px;
+  padding: 8px;
+  font-size: 12px;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+.calendar-day-body {
+  position: relative;
+  height: 832px;
+  padding: 0 8px;
+}
+
+.calendar-appointment {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 8px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.calendar-appointment.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.calendar-appointment.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.today-highlight {
+  background: #eff6ff;
+  outline: 2px solid #2563eb;
+}
+
+.current-time-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #dc2626;
+  z-index: 5;
+}
+
+.current-time-line::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  background: #dc2626;
+  border-radius: 999px;
+}
+
+.clickable-appointment,
+.calendar-appointment {
+  cursor: pointer;
 }
