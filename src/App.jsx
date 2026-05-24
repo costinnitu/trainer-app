@@ -12,6 +12,7 @@ import DashboardPage from './pages/DashboardPage'
 import ClientsPage from './pages/ClientsPage'
 import AppointmentsPage from './pages/AppointmentsPage'
 import WeeklySchedulePage from './pages/WeeklySchedulePage'
+import SettingsPage from './pages/SettingsPage'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
@@ -46,6 +47,9 @@ function App() {
           </div>
 
           <div className="navbar-right">
+            <button onClick={() => setCurrentPage('settings')}>
+              Settings
+            </button>
             <Button onClick={signOut}>
               Logout
             </Button>
@@ -59,6 +63,8 @@ function App() {
           {currentPage === 'appointments' && <AppointmentsPage />}
 
           {currentPage === 'weeklySchedule' && <WeeklySchedulePage />}
+
+          {currentPage === 'settings' && <SettingsPage />}
         </div>
       )}
     </Authenticator>
