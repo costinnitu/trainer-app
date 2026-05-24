@@ -1,16 +1,157 @@
-# React + Vite
+# Trainer Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack serverless trainer management application built with React and AWS.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+https://main.d1ta3qxnastzr0.amplifyapp.com
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# Features
 
-## Expanding the ESLint configuration
+## Client Management
+- Create clients
+- Edit clients
+- Delete clients
+- Search clients
+- Client status tracking
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Appointment Management
+- Create appointments
+- Edit appointments
+- Delete appointments
+- Appointment validation
+- Overlap prevention
+- Date and time validation
+- Status tracking
+
+## Dashboard
+- Total clients
+- Active clients
+- Today’s appointments
+- Upcoming appointments
+
+## Authentication & Security
+- Amazon Cognito authentication
+- Protected API Gateway routes
+- JWT authorization
+- Secure serverless backend
+
+---
+
+# Tech Stack
+
+## Frontend
+- React
+- Vite
+- AWS Amplify Hosting
+
+## Backend
+- AWS Lambda
+- Amazon API Gateway
+
+## Database
+- Amazon DynamoDB
+
+## Authentication
+- Amazon Cognito
+
+## DevOps
+- GitHub
+- CI/CD with Amplify
+
+---
+
+# Architecture
+
+```text
+React Frontend
+↓
+AWS Amplify Hosting
+↓
+API Gateway (JWT Protected)
+↓
+AWS Lambda
+↓
+DynamoDB
+```
+
+---
+
+# AWS Services Used
+
+- AWS Amplify Hosting
+- Amazon Cognito
+- Amazon API Gateway
+- AWS Lambda
+- Amazon DynamoDB
+- Amazon CloudWatch
+
+---
+
+# Security
+
+- Cognito authentication
+- Protected API endpoints
+- JWT token validation
+- CORS configuration
+- Environment variables for configuration
+
+---
+
+# Local Development
+
+## Install dependencies
+
+```bash
+npm install
+```
+
+## Start development server
+
+```bash
+npm run dev
+```
+
+## Build production version
+
+```bash
+npm run build
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file:
+
+```env
+VITE_API_URL=your_api_url
+VITE_COGNITO_USER_POOL_ID=your_user_pool_id
+VITE_COGNITO_APP_CLIENT_ID=your_app_client_id
+```
+
+---
+
+# Future Improvements
+
+- Google Calendar integration
+- Mobile responsive improvements
+- Push notifications
+- Trainer notes
+- Workout plans
+- Analytics dashboard
+- Multi-trainer support
+
+---
+
+# Deployment
+
+The frontend is deployed using AWS Amplify Hosting with automatic CI/CD deployments from GitHub.
+
+---
+
+# Author
+
+Costin Nitu
