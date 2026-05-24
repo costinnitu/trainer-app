@@ -1,15 +1,53 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import {
+  getTrainerProfile,
+  saveTrainerProfile,
+} from '../services/settingsService'
 
 function TrainerProfileForm() {
-  const [profile, setProfile] = useState({
+  const emptyProfile = {
     trainerName: '',
     businessName: '',
     email: '',
     phone: '',
-  })
+  }
 
+  const [profile, setProfile] = useState(emptyProfile)
   const [savedProfile, setSavedProfile] = useState(null)
   const [showForm, setShowForm] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    loadProfile()
+  }, [])
+
+  async function loadProfile() {
+    try {
+      setIsLoading(true)
+      setError('')
+
+      const data = await getTrainerProfile()
+
+      if (data) {
+        setProfile({
+          trainerName: data.trainerName || '',
+          businessName: data.businessName || '',
+          email: data.email || '',
+          phone: data.phone || '',
+        })
+
+        setSavedProfile(data)
+        setShowForm(false)
+      }
+    } catch (error) {
+      console.error(error)
+      setError('Could not load trainer profile')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -20,11 +58,23 @@ function TrainerProfileForm() {
     })
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
 
-    setSavedProfile(profile)
-    setShowForm(false)
+    try {
+      setIsLoading(true)
+      setError('')
+
+      const saved = await saveTrainerProfile(profile)
+
+      setSavedProfile(saved)
+      setShowForm(false)
+    } catch (error) {
+      console.error(error)
+      setError('Could not save trainer profile')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   function handleEditProfile() {
@@ -33,6 +83,10 @@ function TrainerProfileForm() {
 
   return (
     <div>
+      {isLoading && <p>Loading profile...</p>}
+
+      {error && <p className="error-message">{error}</p>}
+
       {showForm && (
         <form className="client-form" onSubmit={handleSubmit}>
           <input
@@ -63,11 +117,13 @@ function TrainerProfileForm() {
             onChange={handleChange}
           />
 
-          <button type="submit">Save Profile</button>
+          <button type="submit">
+            {savedProfile ? 'Update Profile' : 'Save Profile'}
+          </button>
         </form>
       )}
 
-      {savedProfile && (
+      {savedProfile && !showForm && (
         <div className="profile-summary">
           <h4>{savedProfile.businessName}</h4>
 
