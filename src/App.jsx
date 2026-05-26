@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Authenticator,
@@ -13,9 +13,41 @@ import ClientsPage from './pages/ClientsPage'
 import AppointmentsPage from './pages/AppointmentsPage'
 import WeeklySchedulePage from './pages/WeeklySchedulePage'
 import SettingsPage from './pages/SettingsPage'
+import { getAppPreferences } from './services/settingsService'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
+  const [darkMode, setDarkMode] = useState(false)
+
+useEffect(() => {
+  loadAppPreferences()
+}, [])
+
+const savedTheme = localStorage.getItem('darkMode')
+
+    if (savedTheme === 'true') {
+     document.body.classList.add('dark-mode')
+}
+
+async function loadAppPreferences() {
+  try {
+    const preferences = await getAppPreferences()
+
+    const isDarkMode = preferences?.darkMode || false
+
+    setDarkMode(isDarkMode)
+    localStorage.setItem('darkMode', String(isDarkMode))
+
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode')
+    } else {
+      document.body.classList.remove('dark-mode')
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 
   return (
     <Authenticator>

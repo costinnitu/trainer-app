@@ -37,3 +37,55 @@ export async function saveTrainerProfile(profile) {
 
   return response.json()
 }
+
+export async function getSchedulePreferences() {
+  const response = await fetch(`${API_URL}/settings/schedule`, {
+    headers: await getAuthHeaders(),
+  })
+
+  if (!response.ok) {
+    throw new Error('Could not fetch schedule preferences')
+  }
+
+  return response.json()
+}
+
+export async function saveSchedulePreferences(preferences) {
+  const response = await fetch(`${API_URL}/settings/schedule`, {
+    method: 'PUT',
+    headers: await getAuthHeaders(),
+    body: JSON.stringify(preferences),
+  })
+
+  if (!response.ok) {
+    throw new Error('Could not save schedule preferences')
+  }
+
+  return response.json()
+}
+
+export async function getAppPreferences() {
+  const response = await fetch(`${API_URL}/settings/app`, {
+    headers: await getAuthHeaders(),
+  })
+
+  if (!response.ok) {
+    throw new Error('Could not fetch app preferences')
+  }
+
+  return response.json()
+}
+
+export async function saveAppPreferences(preferences) {
+  const response = await fetch(`${API_URL}/settings/app`, {
+    method: 'PUT',
+    headers: await getAuthHeaders(),
+    body: JSON.stringify(preferences),
+  })
+
+  if (!response.ok) {
+    throw new Error('Could not save app preferences')
+  }
+
+  return response.json()
+}

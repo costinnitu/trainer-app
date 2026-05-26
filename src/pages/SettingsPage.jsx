@@ -1,4 +1,6 @@
 import TrainerProfileForm from '../components/TrainerProfileForm'
+import SchedulePreferencesForm from '../components/SchedulePreferencesForm'
+import AppPreferencesForm from '../components/AppPreferencesForm'
 
 function SettingsPage() {
   return (
@@ -11,16 +13,15 @@ function SettingsPage() {
       </div>
 
       <div className="settings-card">
-        <h3>Calendar Settings</h3>
-
-        <p>Future Google Calendar integration settings will go here.</p>
+        <h3>Schedule Preferences</h3>
+        <SchedulePreferencesForm />
       </div>
 
       <div className="settings-card">
         <h3>App Preferences</h3>
-
-        <p>Default working hours and scheduling preferences will go here.</p>
+        <AppPreferencesForm />
       </div>
+      
     </div>
   )
 }

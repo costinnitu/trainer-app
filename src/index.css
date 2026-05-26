@@ -381,3 +381,109 @@ button:hover {
 .profile-summary h4 {
   margin-top: 0;
 }
+
+.checkbox-group {
+  display: grid;
+  gap: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.success-message {
+  color: #166534;
+  font-weight: 600;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-switch {
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  padding: 3px;
+  background: #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.toggle-switch.on {
+  background: #2563eb;
+  justify-content: flex-end;
+}
+
+.toggle-thumb {
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 999px;
+}
+
+.dark-mode {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.dark-mode .navbar,
+.dark-mode .client-card,
+.dark-mode .dashboard-card,
+.dark-mode .dashboard-section,
+.dark-mode .weekly-day,
+.dark-mode .calendar-time-column,
+.dark-mode .calendar-day-column,
+.dark-mode .settings-card,
+.dark-mode .client-form,
+.dark-mode .profile-summary {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.dark-mode input,
+.dark-mode select {
+  background: #111827;
+  color: #f9fafb;
+  border: 1px solid #374151;
+}
+
+.dark-mode .search-input {
+  background: #111827;
+  color: #f9fafb;
+  border: 1px solid #374151;
+}
+
+.dark-mode .calendar-grid {
+  background: #374151;
+}
+
+.dark-mode .weekly-appointment,
+.dark-mode .dashboard-list-item,
+.dark-mode .calendar-time-slot,
+.dark-mode .calendar-day-header {
+  border-color: #374151;
+}
+
+.dark-mode .empty-day,
+.dark-mode .week-label {
+  color: #9ca3af;
+}
+
+.dark-mode button {
+  color: white;
+}
+
+.dark-mode .amplify-button {
+  background: #2563eb;
+  color: white;
+}
+
+.dark-mode .amplify-button:hover {
+  background: #1d4ed8;
+}
