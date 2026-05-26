@@ -10,7 +10,6 @@ import '@aws-amplify/ui-react/styles.css'
 
 import DashboardPage from './pages/DashboardPage'
 import ClientsPage from './pages/ClientsPage'
-import AppointmentsPage from './pages/AppointmentsPage'
 import WeeklySchedulePage from './pages/WeeklySchedulePage'
 import SettingsPage from './pages/SettingsPage'
 import { getAppPreferences } from './services/settingsService'
@@ -69,10 +68,6 @@ async function loadAppPreferences() {
               Clients
             </button>
 
-            <button onClick={() => setCurrentPage('appointments')}>
-              Appointments
-            </button>
-
             <button onClick={() => setCurrentPage('weeklySchedule')}>
               Weekly Schedule
             </button>
@@ -91,8 +86,6 @@ async function loadAppPreferences() {
           {currentPage === 'dashboard' && <DashboardPage />}
 
           {currentPage === 'clients' && <ClientsPage />}
-
-          {currentPage === 'appointments' && <AppointmentsPage />}
 
           {currentPage === 'weeklySchedule' && <WeeklySchedulePage />}
 

@@ -6,6 +6,7 @@ function AppointmentForm({
   onAddAppointment,
   onUpdateAppointment,
   selectedAppointment,
+  initialAppointment,
 }) {
   const emptyForm = {
     clientId: '',
@@ -41,12 +42,17 @@ async function loadSchedulePreferences() {
 }
 
   useEffect(() => {
-    if (selectedAppointment) {
-      setFormData(selectedAppointment)
-    } else {
-      setFormData(emptyForm)
-    }
-  }, [selectedAppointment])
+  if (selectedAppointment) {
+    setFormData(selectedAppointment)
+  } else if (initialAppointment) {
+    setFormData({
+      ...emptyForm,
+      ...initialAppointment,
+    })
+  } else {
+    setFormData(emptyForm)
+  }
+}, [selectedAppointment, initialAppointment])
 
   function calculateEndTime(startTime) {
   const [hours, minutes] = startTime.split(':').map(Number)
