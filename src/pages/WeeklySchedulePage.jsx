@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 
+import { getSchedulePreferences } from '../services/settingsService'
+
 import AppointmentForm from '../components/AppointmentForm'
 
 import { getClients } from '../services/clientService'
+
 import {
   getAppointments,
   updateAppointment,
@@ -15,9 +18,14 @@ function WeeklySchedulePage() {
   const [selectedWeekDate, setSelectedWeekDate] = useState(new Date())
   const [viewMode, setViewMode] = useState('list')
   const [error, setError] = useState('')
+  const [schedulePreferences, setSchedulePreferences] = useState({
+  workingDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+  workStartTime: '07:00',
+  workEndTime: '20:00',
+})
 
-  const calendarStartHour = 7
-  const calendarEndHour = 20
+  const calendarStartHour = Number(schedulePreferences.workStartTime.split(':')[0])
+  const calendarEndHour = Number(schedulePreferences.workEndTime.split(':')[0])
   const hourHeight = 64
 
   useEffect(() => {
@@ -25,13 +33,28 @@ function WeeklySchedulePage() {
   }, [])
 
   async function loadPageData() {
-    try {
-      const clientsData = await getClients()
-      const appointmentsData = await getAppointments()
+  try {
+    const clientsData = await getClients()
+    const appointmentsData = await getAppointments()
+    const scheduleData = await getSchedulePreferences()
 
-      setClients(Array.isArray(clientsData) ? clientsData : [])
-      setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
-    } catch (error) {
+    setClients(Array.isArray(clientsData) ? clientsData : [])
+    setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
+
+    if (scheduleData) {
+      setSchedulePreferences({
+        workingDays: scheduleData.workingDays || [
+          'monday',
+          'tuesday',
+          'wednesday',
+          'thursday',
+          'friday',
+        ],
+        workStartTime: scheduleData.workStartTime || '07:00',
+        workEndTime: scheduleData.workEndTime || '20:00',
+      })
+    }
+  } catch (error) {
       console.error(error)
       setError('Could not load weekly schedule')
     }
@@ -161,19 +184,34 @@ function WeeklySchedulePage() {
   const today = new Date().toLocaleDateString('en-CA')
   const currentTimePosition = getCurrentTimePosition()
 
-  const weekDays = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(startOfWeek)
-    date.setDate(startOfWeek.getDate() + index)
+  const dayNameMap = {
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+  saturday: 6,
+  sunday: 0,
+}
 
-    return {
-      label: date.toLocaleDateString('it-IT', {
-        weekday: 'long',
-        day: '2-digit',
-        month: '2-digit',
-      }),
-      dateValue: formatDateForInput(date),
-    }
-  })
+  const weekDays = Array.from({ length: 7 }, (_, index) => {
+  const date = new Date(startOfWeek)
+  date.setDate(startOfWeek.getDate() + index)
+
+  return {
+    dayIndex: date.getDay(),
+    label: date.toLocaleDateString('it-IT', {
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
+    }),
+    dateValue: formatDateForInput(date),
+  }
+}).filter((day) =>
+  schedulePreferences.workingDays.some(
+    (workingDay) => dayNameMap[workingDay] === day.dayIndex
+  )
+)
 
   return (
     <div className="page">
@@ -259,7 +297,9 @@ function WeeklySchedulePage() {
           <div className="calendar-time-column">
             <div className="calendar-header-cell"></div>
 
-            {Array.from({ length: 13 }, (_, index) => {
+            {Array.from(
+              { length: calendarEndHour - calendarStartHour + 1 },
+                (_, index) => {
               const hour = index + calendarStartHour
 
               return (

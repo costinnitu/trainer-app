@@ -15,7 +15,7 @@ function SchedulePreferencesForm() {
 
   const [preferences, setPreferences] = useState(defaultPreferences)
   const [savedPreferences, setSavedPreferences] = useState(null)
-  const [showForm, setShowForm] = useState(true)
+  const [showForm, setShowForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -54,6 +54,10 @@ function SchedulePreferencesForm() {
         setSavedPreferences(loadedPreferences)
         setShowForm(false)
       }
+        else {
+          setShowForm(true)
+      }
+
     } catch (error) {
       console.error(error)
       setError('Could not load schedule preferences')

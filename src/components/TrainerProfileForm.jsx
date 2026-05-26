@@ -15,7 +15,7 @@ function TrainerProfileForm() {
 
   const [profile, setProfile] = useState(emptyProfile)
   const [savedProfile, setSavedProfile] = useState(null)
-  const [showForm, setShowForm] = useState(true)
+  const [showForm, setShowForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -39,8 +39,12 @@ function TrainerProfileForm() {
         })
 
         setSavedProfile(data)
-        setShowForm(false)
+        setShowForm(false)  
       }
+      else {
+          setShowForm(true)
+      }
+
     } catch (error) {
       console.error(error)
       setError('Could not load trainer profile')

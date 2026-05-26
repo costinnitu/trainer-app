@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getSchedulePreferences } from '../services/settingsService'
 
 function AppointmentForm({
   clients,
@@ -20,7 +21,24 @@ function AppointmentForm({
     syncedToCalendar: false,
   }
 
+  const [defaultSessionDuration, setDefaultSessionDuration] = useState(60)
   const [formData, setFormData] = useState(emptyForm)
+
+  useEffect(() => {
+  loadSchedulePreferences()
+}, [])
+
+async function loadSchedulePreferences() {
+  try {
+    const data = await getSchedulePreferences()
+
+    if (data?.defaultSessionDuration) {
+      setDefaultSessionDuration(data.defaultSessionDuration)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 
   useEffect(() => {
     if (selectedAppointment) {
@@ -29,6 +47,19 @@ function AppointmentForm({
       setFormData(emptyForm)
     }
   }, [selectedAppointment])
+
+  function calculateEndTime(startTime) {
+  const [hours, minutes] = startTime.split(':').map(Number)
+
+  const startDate = new Date()
+  startDate.setHours(hours)
+  startDate.setMinutes(minutes + defaultSessionDuration)
+
+  const endHours = String(startDate.getHours()).padStart(2, '0')
+  const endMinutes = String(startDate.getMinutes()).padStart(2, '0')
+
+  return `${endHours}:${endMinutes}`
+}
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -48,6 +79,16 @@ function AppointmentForm({
 
       return
     }
+
+    if (name === 'startTime' && !selectedAppointment) {
+  setFormData({
+    ...formData,
+    startTime: value,
+    endTime: calculateEndTime(value),
+  })
+
+  return
+}
 
     setFormData({
       ...formData,
