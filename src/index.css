@@ -333,20 +333,27 @@ button:hover {
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
-  background: #dc2626;
+  height: 0;
   z-index: 5;
 }
 
-.current-time-line::before {
+.current-time-line::before,
+.current-time-line::after {
   content: '';
   position: absolute;
-  left: -4px;
   top: -4px;
   width: 10px;
   height: 10px;
   background: #dc2626;
   border-radius: 999px;
+}
+
+.current-time-line::before {
+  left: -4px;
+}
+
+.current-time-line::after {
+  right: -4px;
 }
 
 /* ---------- Settings ---------- */
@@ -473,5 +480,115 @@ button:hover {
 }
 
 .dark-mode .calendar-day-date {
+  color: #9ca3af;
+}
+
+.exercise-list {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+
+.exercise-list li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.exercise-form-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.exercise-form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.exercise-form-notes {
+  grid-column: 1 / -1;
+}
+
+.exercise-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exercise-input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.exercise-form-grid input,
+.exercise-form-grid select {
+  height: 38px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.dark-mode .exercise-input-group label {
+  color: #d1d5db;
+}
+
+.exercise-library-list {
+  display: grid;
+  gap: 24px;
+}
+
+.exercise-group {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-group h3 {
+  margin-top: 0;
+}
+
+.exercise-table {
+  display: grid;
+  gap: 8px;
+}
+
+.exercise-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.exercise-row:last-child {
+  border-bottom: none;
+}
+
+.exercise-row p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.exercise-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dark-mode .exercise-group {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.dark-mode .exercise-row {
+  border-color: #374151;
+}
+
+.dark-mode .exercise-row p {
   color: #9ca3af;
 }

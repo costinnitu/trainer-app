@@ -11,6 +11,8 @@ import '@aws-amplify/ui-react/styles.css'
 import DashboardPage from './pages/DashboardPage'
 import ClientsPage from './pages/ClientsPage'
 import WeeklySchedulePage from './pages/WeeklySchedulePage'
+import ProgramsPage from './pages/ProgramsPage'
+import ExerciseLibraryPage from './pages/ExerciseLibraryPage'
 import SettingsPage from './pages/SettingsPage'
 import { getAppPreferences } from './services/settingsService'
 
@@ -71,8 +73,14 @@ async function loadAppPreferences() {
             <button onClick={() => setCurrentPage('weeklySchedule')}>
               Weekly Schedule
             </button>
+            
+            <button onClick={() => setCurrentPage('programs')}>
+                Programs
+            </button>
+            <button onClick={() => setCurrentPage('exerciseLibrary')}>
+              Exercises
+            </button>
           </div>
-
           <div className="navbar-right">
             <button onClick={() => setCurrentPage('settings')}>
               Settings
@@ -87,7 +95,11 @@ async function loadAppPreferences() {
 
           {currentPage === 'clients' && <ClientsPage />}
 
+          {currentPage === 'programs' && <ProgramsPage />}
+
           {currentPage === 'weeklySchedule' && <WeeklySchedulePage />}
+
+          {currentPage === 'exerciseLibrary' && <ExerciseLibraryPage />}
 
           {currentPage === 'settings' && <SettingsPage />}
         </div>
