@@ -15,6 +15,7 @@ function ExerciseLibraryPage() {
   const [showForm, setShowForm] = useState(false)
   const [selectedExercise, setSelectedExercise] = useState(null)
   const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     loadExercises()
@@ -113,17 +114,43 @@ function ExerciseLibraryPage() {
     }
   }
 
+  async function handleToggleFavorite(exercise) {
+    try {
+      setError('')
+
+      await updateExercise({
+        ...exercise,
+        isFavorite: !exercise.isFavorite,
+      })
+
+      await loadExercises()
+    } catch (error) {
+      console.error(error)
+      setError('Could not update favorite')
+    }
+  }
+
   function handleCancelForm() {
     setSelectedExercise(null)
     setShowForm(false)
   }
 
   function getExerciseGroups() {
-    const favorites = exercises
+    const filteredExercises = exercises.filter((exercise) => {
+      const searchValue = searchTerm.toLowerCase()
+
+      return (
+        exercise.exerciseName.toLowerCase().includes(searchValue) ||
+        exercise.bodyPart.toLowerCase().includes(searchValue) ||
+        exercise.equipment?.toLowerCase().includes(searchValue)
+      )
+    })
+
+    const favorites = filteredExercises
       .filter((exercise) => exercise.isFavorite)
       .sort((a, b) => a.exerciseName.localeCompare(b.exerciseName))
 
-    const nonFavorites = exercises.filter((exercise) => !exercise.isFavorite)
+    const nonFavorites = filteredExercises
 
     const bodyParts = [
       ...new Set(nonFavorites.map((exercise) => exercise.bodyPart)),
@@ -170,6 +197,14 @@ function ExerciseLibraryPage() {
         </div>
       </div>
 
+      <input
+        className="search-input"
+        type="text"
+        placeholder="Search exercises..."
+        value={searchTerm}
+        onChange={(event) => setSearchTerm(event.target.value)}
+      />
+
       {error && <p className="error-message">{error}</p>}
 
       {showForm && (
@@ -181,7 +216,7 @@ function ExerciseLibraryPage() {
       )}
 
       {exerciseGroups.length === 0 ? (
-        <p>No exercises yet.</p>
+        <p>No exercises found.</p>
       ) : (
         <div className="exercise-library-list">
           {exerciseGroups.map((group) => (
@@ -190,12 +225,27 @@ function ExerciseLibraryPage() {
 
               <div className="exercise-table">
                 {group.exercises.map((exercise) => (
-                  <div className="exercise-row" key={exercise.exerciseId}>
-                    <div>
-                      <strong>
-                        {exercise.isFavorite ? '★ ' : ''}
-                        {exercise.exerciseName}
-                      </strong>
+                        <div
+                          className="exercise-row clickable"
+                          key={exercise.exerciseId}
+                          onClick={() => handleEditExercise(exercise)}
+                        >                    
+                        <div>
+                      <div className="exercise-name-cell">
+                        <button
+                          type="button"
+                          className={`favorite-button ${
+                            exercise.isFavorite ? 'active' : ''
+                          }`}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            handleToggleFavorite(exercise)
+                          }}                        >
+                          ★
+                        </button>
+
+                        <strong>{exercise.exerciseName}</strong>
+                      </div>
 
                       {exercise.defaultNotes && (
                         <p>{exercise.defaultNotes}</p>
@@ -207,18 +257,16 @@ function ExerciseLibraryPage() {
                     <span>{exercise.equipment || '-'}</span>
 
                     <div className="exercise-row-actions">
-                      <button onClick={() => handleEditExercise(exercise)}>
-                        Edit
-                      </button>
-
+                      
                       <button
-                        className="danger-button"
-                        onClick={() =>
-                          handleDeleteExercise(exercise.exerciseId)
-                        }
-                      >
-                        Delete
-                      </button>
+                      className="delete-icon-button"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        handleDeleteExercise(exercise.exerciseId)
+                      }}
+                    >
+                      ×
+                    </button>
                     </div>
                   </div>
                 ))}

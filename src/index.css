@@ -86,15 +86,8 @@ button:hover {
 .client-form {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.client-card,
-.dashboard-card,
-.dashboard-section,
-.settings-card,
-.client-form {
   padding: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .client-card h3,
@@ -270,6 +263,24 @@ button:hover {
   line-height: 1.35;
 }
 
+.calendar-day-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.calendar-day-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.calendar-day-date {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 .calendar-time-slot {
   height: 64px;
   padding: 8px;
@@ -403,85 +414,7 @@ button:hover {
   border-radius: 999px;
 }
 
-/* ---------- Dark mode ---------- */
-
-.dark-mode {
-  background: #111827;
-  color: #f9fafb;
-}
-
-.dark-mode .navbar,
-.dark-mode .client-card,
-.dark-mode .dashboard-card,
-.dark-mode .dashboard-section,
-.dark-mode .calendar-time-column,
-.dark-mode .calendar-day-column,
-.dark-mode .settings-card,
-.dark-mode .client-form,
-.dark-mode .profile-summary {
-  background: #1f2937;
-  color: #f9fafb;
-}
-
-.dark-mode input,
-.dark-mode select,
-.dark-mode .search-input {
-  background: #111827;
-  color: #f9fafb;
-  border: 1px solid #374151;
-}
-
-.dark-mode .calendar-grid {
-  background: #374151;
-  border-color: #374151;
-}
-
-.dark-mode .dashboard-list-item,
-.dark-mode .calendar-time-slot,
-.dark-mode .calendar-day-header,
-.dark-mode .calendar-header-cell {
-  border-color: #374151;
-}
-
-.dark-mode .week-label,
-.dark-mode .calendar-time-slot {
-  color: #9ca3af;
-}
-
-.dark-mode button {
-  color: white;
-}
-
-.dark-mode .amplify-button {
-  background: #2563eb;
-  color: white;
-}
-
-.dark-mode .amplify-button:hover {
-  background: #1d4ed8;
-}
-
-.calendar-day-header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-}
-
-.calendar-day-name {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.calendar-day-date {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 500;
-}
-
-.dark-mode .calendar-day-date {
-  color: #9ca3af;
-}
+/* ---------- Programs ---------- */
 
 .exercise-list {
   padding-left: 18px;
@@ -531,9 +464,7 @@ button:hover {
   font-size: 14px;
 }
 
-.dark-mode .exercise-input-group label {
-  color: #d1d5db;
-}
+/* ---------- Exercise library ---------- */
 
 .exercise-library-list {
   display: grid;
@@ -541,14 +472,13 @@ button:hover {
 }
 
 .exercise-group {
-  background: white;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: grid;
+  gap: 10px;
 }
 
 .exercise-group h3 {
-  margin-top: 0;
+  margin: 0;
+  padding-left: 4px;
 }
 
 .exercise-table {
@@ -558,37 +488,195 @@ button:hover {
 
 .exercise-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 12px;
+  grid-template-columns: 2fr 1fr 1fr 40px;
+  gap: 16px;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #e5e7eb;
+
+  background: white;
+  border-radius: 10px;
+
+  padding: 2px 4px 2px 30px;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-.exercise-row:last-child {
-  border-bottom: none;
+.exercise-row div {
+  line-height: 1.2;
 }
 
 .exercise-row p {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   color: #6b7280;
-  font-size: 13px;
+  font-size: 12px;
+}
+
+.exercise-row strong {
+  font-size: 16px;
 }
 
 .exercise-row-actions {
   display: flex;
   gap: 8px;
+  margin-left: auto;
 }
 
+.exercise-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.favorite-button {
+  background: transparent;
+  color: #9ca3af;
+  padding: 0;
+  font-size: 18px;
+}
+
+.favorite-button:hover {
+  background: transparent;
+  color: #f59e0b;
+}
+
+.favorite-button.active {
+  color: #f59e0b;
+}
+
+.dark-mode .exercise-row {
+  background: #1f2937;
+}
+
+.dark-mode .exercise-row p {
+  color: #9ca3af;
+}
+
+.dark-mode .favorite-button {
+  color: #6b7280;
+}
+
+.dark-mode .favorite-button:hover,
+.dark-mode .favorite-button.active {
+  color: #fbbf24;
+}
+
+/* ---------- Dark mode ---------- */
+
+.dark-mode {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.dark-mode .navbar,
+.dark-mode .client-card,
+.dark-mode .dashboard-card,
+.dark-mode .dashboard-section,
+.dark-mode .calendar-time-column,
+.dark-mode .calendar-day-column,
+.dark-mode .settings-card,
+.dark-mode .client-form,
+.dark-mode .profile-summary,
 .dark-mode .exercise-group {
   background: #1f2937;
   color: #f9fafb;
 }
 
+.dark-mode input,
+.dark-mode select,
+.dark-mode .search-input {
+  background: #111827;
+  color: #f9fafb;
+  border: 1px solid #374151;
+}
+
+.dark-mode .calendar-grid {
+  background: #374151;
+  border-color: #374151;
+}
+
+.dark-mode .dashboard-list-item,
+.dark-mode .calendar-time-slot,
+.dark-mode .calendar-day-header,
+.dark-mode .calendar-header-cell,
 .dark-mode .exercise-row {
   border-color: #374151;
 }
 
+.dark-mode .week-label,
+.dark-mode .calendar-time-slot,
+.dark-mode .calendar-day-date,
 .dark-mode .exercise-row p {
   color: #9ca3af;
+}
+
+.dark-mode .exercise-input-group label {
+  color: #d1d5db;
+}
+
+.dark-mode .favorite-button {
+  color: #6b7280;
+}
+
+.dark-mode .favorite-button:hover,
+.dark-mode .favorite-button.active {
+  color: #fbbf24;
+}
+
+.dark-mode button {
+  color: white;
+}
+
+.dark-mode .amplify-button {
+  background: #2563eb;
+  color: white;
+}
+
+.dark-mode .amplify-button:hover {
+  background: #1d4ed8;
+}
+
+.exercise-row.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.exercise-row.clickable:hover {
+  transform: translateY(-1px);
+}
+
+.delete-icon-button {
+  background: transparent;
+  color: #9ca3af;
+
+  padding: 0;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 999px;
+
+  font-size: 20px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-icon-button:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}
+
+.dark-mode .delete-icon-button {
+  color: #6b7280;
+}
+
+.dark-mode .delete-icon-button:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.exercise-row-actions {
+  display: flex;
+  justify-content: flex-end;
 }
