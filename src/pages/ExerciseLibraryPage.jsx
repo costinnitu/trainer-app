@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import ExerciseForm from '../components/ExerciseForm'
-import starterExercises from '../data/starterExercises'
 
 import {
   getExercises,
@@ -33,34 +32,6 @@ function ExerciseLibraryPage() {
     }
   }
 
-  async function handleSeedExercises() {
-    try {
-      setError('')
-
-      const existingExerciseNames = exercises.map((exercise) =>
-        exercise.exerciseName.toLowerCase()
-      )
-
-      const exercisesToCreate = starterExercises.filter(
-        (exercise) =>
-          !existingExerciseNames.includes(exercise.exerciseName.toLowerCase())
-      )
-
-      if (exercisesToCreate.length === 0) {
-        alert('Starter exercises already exist.')
-        return
-      }
-
-      for (const exercise of exercisesToCreate) {
-        await createExercise(exercise)
-      }
-
-      await loadExercises()
-    } catch (error) {
-      console.error(error)
-      setError('Could not seed exercises')
-    }
-  }
 
   async function handleAddExercise(newExercise) {
     try {
@@ -114,21 +85,31 @@ function ExerciseLibraryPage() {
     }
   }
 
-  async function handleToggleFavorite(exercise) {
-    try {
-      setError('')
+ async function handleToggleFavorite(exercise) {
+  const updatedExercises = exercises.map((currentExercise) =>
+    currentExercise.exerciseId === exercise.exerciseId
+      ? {
+          ...currentExercise,
+          isFavorite: !currentExercise.isFavorite,
+        }
+      : currentExercise
+  )
 
-      await updateExercise({
-        ...exercise,
-        isFavorite: !exercise.isFavorite,
-      })
+  setExercises(updatedExercises)
 
-      await loadExercises()
-    } catch (error) {
-      console.error(error)
-      setError('Could not update favorite')
-    }
+  try {
+    await updateExercise({
+      ...exercise,
+      isFavorite: !exercise.isFavorite,
+    })
+  } catch (error) {
+    console.error(error)
+
+    setExercises(exercises)
+
+    setError('Could not update favorite')
   }
+}
 
   function handleCancelForm() {
     setSelectedExercise(null)
@@ -187,9 +168,6 @@ function ExerciseLibraryPage() {
         <h2>Exercise Library</h2>
 
         <div className="card-actions">
-          <button onClick={handleSeedExercises}>
-            Seed Starter Exercises
-          </button>
 
           <button onClick={showForm ? handleCancelForm : () => setShowForm(true)}>
             {showForm ? 'Cancel' : 'Add Exercise'}
@@ -256,18 +234,21 @@ function ExerciseLibraryPage() {
 
                     <span>{exercise.equipment || '-'}</span>
 
-                    <div className="exercise-row-actions">
-                      
-                      <button
-                      className="delete-icon-button"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        handleDeleteExercise(exercise.exerciseId)
-                      }}
-                    >
-                      ×
-                    </button>
-                    </div>
+                    {group.label !== '★ Favorites' ? (
+  <div className="exercise-row-actions">
+    <button
+      className="delete-icon-button"
+      onClick={(event) => {
+        event.stopPropagation()
+        handleDeleteExercise(exercise.exerciseId)
+      }}
+    >
+      ×
+    </button>
+  </div>
+) : (
+  <div />
+)}
                   </div>
                 ))}
               </div>
