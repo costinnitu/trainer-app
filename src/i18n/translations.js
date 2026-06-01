@@ -186,8 +186,8 @@ const translations = {
 
     dashboard: 'Dashboard',
     clients: 'Clienti',
-    weeklySchedule: 'Programma Settimanale',
-    programs: 'Programmi',
+    weeklySchedule: 'Calendario',
+    programs: 'Schede',
     exercises: 'Esercizi',
     settings: 'Impostazioni',
     welcome: 'Benvenuto',

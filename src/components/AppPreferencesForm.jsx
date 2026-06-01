@@ -104,32 +104,66 @@ function AppPreferencesForm() {
         <p className="error-message">{error}</p>
       )}
 
-      <div className="toggle-row">
-        <span>{t('darkMode')}</span>
+      <div className="settings-row">
+  <span>{t('darkMode')}</span>
 
-        <button
-          type="button"
-          className={`toggle-switch ${
-            preferences.darkMode ? 'on' : ''
-          }`}
-          onClick={handleDarkModeToggle}
-        >
-          <span className="toggle-thumb"></span>
-        </button>
-      </div>
+  <div className="settings-control">
+    <button
+      type="button"
+      className={`toggle-switch ${preferences.darkMode ? 'on' : ''}`}
+      onClick={handleDarkModeToggle}
+    >
+      <span className="toggle-thumb"></span>
+    </button>
+  </div>
+</div>
 
-      <div className="exercise-input-group">
-        <label>{t('language')}</label>
+<div className="settings-row">
+  <span>{t('language')}</span>
 
-        <select
-          value={preferences.language}
-          onChange={handleLanguageChange}
-        >
-          <option value="en">English</option>
-          <option value="it">Italiano</option>
-        </select>
-      </div>
-    </div>
+  <div className="language-selector">
+  <button
+    type="button"
+    className={`language-option ${
+      preferences.language === 'en' ? 'active' : ''
+    }`}
+    onClick={() =>
+      handleLanguageChange({
+        target: { value: 'en' },
+      })
+    }
+  >
+    <img
+      src="https://flagcdn.com/w40/gb.png"
+      alt="English"
+      className="language-flag"
+    />
+
+    English
+  </button>
+
+  <button
+    type="button"
+    className={`language-option ${
+      preferences.language === 'it' ? 'active' : ''
+    }`}
+    onClick={() =>
+      handleLanguageChange({
+        target: { value: 'it' },
+      })
+    }
+  >
+    <img
+      src="https://flagcdn.com/w40/it.png"
+      alt="Italiano"
+      className="language-flag"
+    />
+
+    Italiano
+  </button>
+</div>
+</div>
+</div>
   )
 }
 

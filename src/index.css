@@ -414,11 +414,6 @@ button:hover {
   margin-top: 0;
 }
 
-.toggle-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
 .toggle-switch {
   width: 52px;
@@ -687,4 +682,94 @@ button:hover {
 
 .clickable-program-card:hover {
   transform: translateY(-2px);
+}
+
+/* ---------- App preferences language selector ---------- */
+
+.settings-row {
+  display: grid;
+  grid-template-columns: 180px 260px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.settings-row span {
+  display: flex;
+  align-items: center;
+}
+
+.settings-row span {
+  font-weight: 700;
+}
+
+.settings-control {
+  width: 260px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.language-selector {
+  width: 260px;
+  display: flex;
+  gap: 10px;
+}
+
+.language-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: #f9fafb;
+  color: #374151;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.language-option:hover {
+  background: #eef2ff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.language-option.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.language-flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.dark-mode .language-option {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.dark-mode .language-option:hover {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+.dark-mode .language-option.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
 }
