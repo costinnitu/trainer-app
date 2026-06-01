@@ -221,10 +221,8 @@ function ProgramForm({ onAddProgram, onUpdateProgram, selectedProgram }) {
 
       <h3>Exercises</h3>
 
-      {program.exercises.map((exercise, index) => (
+     {program.exercises.map((exercise, index) => (
   <div className="exercise-form-card" key={index}>
-    <h4>Exercise {index + 1}</h4>
-
     <div className="exercise-form-grid">
       <div className="exercise-input-group">
         <label>Exercise</label>
@@ -239,18 +237,18 @@ function ProgramForm({ onAddProgram, onUpdateProgram, selectedProgram }) {
           <option value="">Select exercise</option>
 
           {getGroupedExerciseOptions().map((group) => (
-  <optgroup key={group.label} label={group.label}>
-    {group.exercises.map((libraryExercise) => (
-      <option
-        key={libraryExercise.exerciseId}
-        value={libraryExercise.exerciseId}
-      >
-        {libraryExercise.isFavorite ? '★ ' : ''}
-        {libraryExercise.exerciseName}
-      </option>
-    ))}
-  </optgroup>
-))}
+            <optgroup key={group.label} label={group.label}>
+              {group.exercises.map((libraryExercise) => (
+                <option
+                  key={libraryExercise.exerciseId}
+                  value={libraryExercise.exerciseId}
+                >
+                  {libraryExercise.isFavorite ? '★ ' : ''}
+                  {libraryExercise.exerciseName}
+                </option>
+              ))}
+            </optgroup>
+          ))}
         </select>
       </div>
 
@@ -276,20 +274,32 @@ function ProgramForm({ onAddProgram, onUpdateProgram, selectedProgram }) {
         />
       </div>
 
-      <div className="exercise-input-group">
-        <label>Rest</label>
+     <div className="exercise-input-group">
+  <label>Rest</label>
 
-        <input
-          value={exercise.restSeconds}
-          onChange={(event) =>
-            handleExerciseChange(
-              index,
-              'restSeconds',
-              event.target.value
-            )
-          }
-        />
-      </div>
+  <input
+    value={exercise.restSeconds}
+    onChange={(event) =>
+      handleExerciseChange(
+        index,
+        'restSeconds',
+        event.target.value
+      )
+    }
+  />
+</div>
+
+<div className="exercise-delete-cell">
+  {program.exercises.length > 1 && (
+    <button
+      type="button"
+      className="delete-icon-button"
+      onClick={() => removeExercise(index)}
+    >
+      ×
+    </button>
+  )}
+</div>
 
       <div className="exercise-input-group exercise-form-notes">
         <label>Notes</label>
@@ -302,16 +312,6 @@ function ProgramForm({ onAddProgram, onUpdateProgram, selectedProgram }) {
         />
       </div>
     </div>
-
-    {program.exercises.length > 1 && (
-      <button
-        type="button"
-        className="danger-button"
-        onClick={() => removeExercise(index)}
-      >
-        Remove Exercise
-      </button>
-    )}
   </div>
 ))}
 

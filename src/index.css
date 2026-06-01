@@ -75,7 +75,7 @@ button:hover {
 .client-grid,
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
 }
 
@@ -95,6 +95,16 @@ button:hover {
 .dashboard-section h3,
 .settings-card h3 {
   margin-top: 0;
+}
+
+.program-card {
+  position: relative;
+}
+
+.program-delete-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 /* ---------- Forms ---------- */
@@ -157,6 +167,25 @@ button:hover {
 
 .danger-button:hover {
   background: #b91c1c;
+}
+
+.delete-icon-button {
+  background: transparent;
+  color: #9ca3af;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-icon-button:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
 }
 
 /* ---------- Status badges ---------- */
@@ -437,12 +466,20 @@ button:hover {
 
 .exercise-form-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2.2fr 0.9fr 0.9fr 0.9fr 40px;
   gap: 12px;
+  align-items: end;
 }
 
 .exercise-form-notes {
-  grid-column: 1 / -1;
+  grid-column: 1 / 5;
+}
+
+.exercise-delete-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2px;
 }
 
 .exercise-input-group {
@@ -491,13 +528,23 @@ button:hover {
   grid-template-columns: 2fr 1fr 1fr 40px;
   gap: 16px;
   align-items: center;
-
   background: white;
   border-radius: 10px;
-
   padding: 2px 4px 2px 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+.exercise-row.favorite-row {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.exercise-row.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.exercise-row.clickable:hover {
+  transform: translateY(-1px);
 }
 
 .exercise-row div {
@@ -516,8 +563,8 @@ button:hover {
 
 .exercise-row-actions {
   display: flex;
+  justify-content: flex-end;
   gap: 8px;
-  margin-left: auto;
 }
 
 .exercise-name-cell {
@@ -529,21 +576,15 @@ button:hover {
 .favorite-button {
   background: transparent;
   color: #9ca3af;
-
   width: 34px;
   height: 34px;
-
   border-radius: 999px;
-
   padding: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 22px;
   line-height: 1;
-
   flex-shrink: 0;
 }
 
@@ -554,15 +595,6 @@ button:hover {
 
 .favorite-button.active {
   color: #f59e0b;
-}
-
-.dark-mode .favorite-button {
-  color: #6b7280;
-}
-
-.dark-mode .favorite-button:hover,
-.dark-mode .favorite-button.active {
-  color: #fbbf24;
 }
 
 /* ---------- Dark mode ---------- */
@@ -581,7 +613,7 @@ button:hover {
 .dark-mode .settings-card,
 .dark-mode .client-form,
 .dark-mode .profile-summary,
-.dark-mode .exercise-group {
+.dark-mode .exercise-row {
   background: #1f2937;
   color: #f9fafb;
 }
@@ -602,8 +634,7 @@ button:hover {
 .dark-mode .dashboard-list-item,
 .dark-mode .calendar-time-slot,
 .dark-mode .calendar-day-header,
-.dark-mode .calendar-header-cell,
-.dark-mode .exercise-row {
+.dark-mode .calendar-header-cell {
   border-color: #374151;
 }
 
@@ -627,6 +658,15 @@ button:hover {
   color: #fbbf24;
 }
 
+.dark-mode .delete-icon-button {
+  color: #6b7280;
+}
+
+.dark-mode .delete-icon-button:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
 .dark-mode button {
   color: white;
 }
@@ -640,50 +680,11 @@ button:hover {
   background: #1d4ed8;
 }
 
-.exercise-row.clickable {
+.clickable-program-card {
   cursor: pointer;
   transition: transform 0.15s ease;
 }
 
-.exercise-row.clickable:hover {
-  transform: translateY(-1px);
+.clickable-program-card:hover {
+  transform: translateY(-2px);
 }
-
-.delete-icon-button {
-  background: transparent;
-  color: #9ca3af;
-
-  padding: 0;
-
-  width: 28px;
-  height: 28px;
-
-  border-radius: 999px;
-
-  font-size: 20px;
-  line-height: 1;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-icon-button:hover {
-  background: rgba(220, 38, 38, 0.08);
-  color: #dc2626;
-}
-
-.dark-mode .delete-icon-button {
-  color: #6b7280;
-}
-
-.dark-mode .delete-icon-button:hover {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.12);
-}
-
-.exercise-row-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-

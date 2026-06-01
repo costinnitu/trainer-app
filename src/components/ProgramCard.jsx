@@ -1,11 +1,23 @@
 function ProgramCard({ program, onEditProgram, onDeleteProgram }) {
   return (
-    <div className="client-card">
+<div
+  className="client-card program-card clickable-program-card"
+  onClick={() => onEditProgram(program)}
+>      <button
+  className="delete-icon-button program-delete-button"
+onClick={(event) => {
+  event.stopPropagation()
+  onDeleteProgram(program.programId)
+}}>
+  ×
+</button>
       <h3>{program.programName}</h3>
 
-      <p>
-        <strong>Goal:</strong> {program.goal}
-      </p>
+      {program.goal && (
+  <p>
+    <strong>Goal:</strong> {program.goal}
+  </p>
+)}
 
       <p>
         <strong>Duration:</strong> {program.durationWeeks} weeks
@@ -18,8 +30,11 @@ function ProgramCard({ program, onEditProgram, onDeleteProgram }) {
     <ul className="exercise-list">
       {program.exercises.map((exercise, index) => (
         <li key={index}>
-          {exercise.exerciseName} — {exercise.sets} sets × {exercise.reps} reps
-        </li>
+  {exercise.exerciseName}
+
+  {exercise.sets && ` — ${exercise.sets} sets`}
+  {exercise.reps && ` × ${exercise.reps} reps`}
+</li>
       ))}
     </ul>
   ) : (
@@ -27,21 +42,14 @@ function ProgramCard({ program, onEditProgram, onDeleteProgram }) {
   )}
 </div>
 
-      <p>
-        <strong>Notes:</strong> {program.notes}
-      </p>
+     {program.notes && (
+  <p>
+    <strong>Notes:</strong> {program.notes}
+  </p>
+)}
 
       <div className="card-actions">
-        <button onClick={() => onEditProgram(program)}>
-          Edit
-        </button>
 
-        <button
-          className="danger-button"
-          onClick={() => onDeleteProgram(program.programId)}
-        >
-          Delete
-        </button>
       </div>
     </div>
   )
