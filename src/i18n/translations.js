@@ -58,6 +58,8 @@ const translations = {
     couldNotDeleteClient: 'Could not delete client',
     couldNotUpdateClient: 'Could not update client',
     confirmDeleteClient: 'Are you sure you want to delete this client?',
+    client: 'Client',
+    assignedPrograms: 'Assigned Programs',
 
     /* ---------- Weekly Schedule ---------- */
 
@@ -240,6 +242,8 @@ const translations = {
     couldNotDeleteClient: 'Impossibile eliminare il cliente',
     couldNotUpdateClient: 'Impossibile aggiornare il cliente',
     confirmDeleteClient: 'Vuoi davvero eliminare questo cliente?',
+    client: 'Cliente',
+    assignedPrograms: 'Programmi Assegnati',
 
     /* ---------- Programma Settimanale ---------- */
 

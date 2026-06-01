@@ -12,40 +12,27 @@ async function getAuthHeaders() {
   }
 }
 
-export async function getClients() {
-  const response = await fetch(`${API_URL}/clients`, {
+export async function getClientPrograms() {
+  const response = await fetch(`${API_URL}/client-programs`, {
     headers: await getAuthHeaders(),
   })
 
   return response.json()
 }
 
-export async function createClient(client) {
-  const response = await fetch(`${API_URL}/clients`, {
+export async function assignProgramToClient(assignment) {
+  const response = await fetch(`${API_URL}/client-programs`, {
     method: 'POST',
     headers: await getAuthHeaders(),
-    body: JSON.stringify(client),
+    body: JSON.stringify(assignment),
   })
 
   return response.json()
 }
 
-export async function updateClient(client) {
+export async function removeProgramAssignment(assignmentId) {
   const response = await fetch(
-    `${API_URL}/clients/${client.clientId}`,
-    {
-      method: 'PUT',
-      headers: await getAuthHeaders(),
-      body: JSON.stringify(client),
-    }
-  )
-
-  return response.json()
-}
-
-export async function deleteClient(clientId) {
-  const response = await fetch(
-    `${API_URL}/clients/${clientId}`,
+    `${API_URL}/client-programs/${assignmentId}`,
     {
       method: 'DELETE',
       headers: await getAuthHeaders(),

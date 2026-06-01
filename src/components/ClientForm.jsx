@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import useTranslations from '../hooks/useTranslations'
 
 function ClientForm({
+  programs,
+  selectedProgramIds,
   onAddClient,
   onUpdateClient,
   selectedClient,
@@ -15,18 +17,21 @@ function ClientForm({
     phone: '',
     goal: '',
     status: 'active',
+    assignedProgramIds: [],
   }
 
-  const [formData, setFormData] =
-    useState(emptyForm)
+  const [formData, setFormData] = useState(emptyForm)
 
   useEffect(() => {
     if (selectedClient) {
-      setFormData(selectedClient)
+      setFormData({
+        ...selectedClient,
+        assignedProgramIds: selectedProgramIds || [],
+      })
     } else {
       setFormData(emptyForm)
     }
-  }, [selectedClient])
+  }, [selectedClient, selectedProgramIds])
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -34,6 +39,19 @@ function ClientForm({
     setFormData({
       ...formData,
       [name]: value,
+    })
+  }
+
+  function handleProgramToggle(programId) {
+    const isSelected = formData.assignedProgramIds.includes(programId)
+
+    const updatedProgramIds = isSelected
+      ? formData.assignedProgramIds.filter((id) => id !== programId)
+      : [...formData.assignedProgramIds, programId]
+
+    setFormData({
+      ...formData,
+      assignedProgramIds: updatedProgramIds,
     })
   }
 
@@ -55,10 +73,7 @@ function ClientForm({
   }
 
   return (
-    <form
-      className="client-form"
-      onSubmit={handleSubmit}
-    >
+    <form className="client-form" onSubmit={handleSubmit}>
       <input
         name="firstName"
         placeholder={t('firstName')}
@@ -94,23 +109,40 @@ function ClientForm({
         value={formData.status}
         onChange={handleChange}
       >
-        <option value="active">
-          {t('active')}
-        </option>
-
-        <option value="paused">
-          {t('paused')}
-        </option>
-
-        <option value="inactive">
-          {t('inactive')}
-        </option>
+        <option value="active">{t('active')}</option>
+        <option value="paused">{t('paused')}</option>
+        <option value="inactive">{t('inactive')}</option>
       </select>
 
+      <div className="exercise-input-group">
+  <label>{t('assignedPrograms')}</label>
+
+  {programs.length === 0 ? (
+    <p>{t('noProgramsYet')}</p>
+  ) : (
+    <div className="program-chip-selector">
+      {programs.map((program) => {
+        const isSelected = formData.assignedProgramIds.includes(
+          program.programId
+        )
+
+        return (
+          <button
+            type="button"
+            key={program.programId}
+            className={`program-chip ${isSelected ? 'active' : ''}`}
+            onClick={() => handleProgramToggle(program.programId)}
+          >
+            {program.programName}
+          </button>
+        )
+      })}
+    </div>
+  )}
+</div>
+
       <button type="submit">
-        {selectedClient
-          ? t('updateClient')
-          : t('saveClient')}
+        {selectedClient ? t('updateClient') : t('saveClient')}
       </button>
     </form>
   )

@@ -191,7 +191,7 @@ button:hover {
 /* ---------- Status badges ---------- */
 
 .status-badge {
-  padding: 4px 8px;
+  padding: 2px 0px 2px 8px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
@@ -769,6 +769,146 @@ button:hover {
 }
 
 .dark-mode .language-option.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+/* ---------- Client rows ---------- */
+
+.client-list {
+  display: grid;
+  gap: 8px;
+}
+
+.client-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1.2fr 1.6fr 2fr 40px;
+  gap: 16px;
+  align-items: center;
+
+  background: white;
+  border-radius: 10px;
+
+  padding: 8px 4px 8px 30px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.client-row.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.client-row.clickable:hover {
+  transform: translateY(-1px);
+}
+
+.client-row strong {
+  font-size: 16px;
+}
+
+.client-row span {
+  font-size: 14px;
+}
+
+.client-row-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dark-mode .client-row {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.client-row-header {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.client-row-header strong {
+  font-size: 13px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dark-mode .client-row-header strong {
+  color: #9ca3af;
+}
+
+.assigned-programs-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.assigned-program-badge {
+  display: inline-flex;
+  align-items: center;
+
+  background: #eef2ff;
+  color: #3730a3;
+
+  border-radius: 999px;
+
+  padding: 4px 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dark-mode .assigned-program-badge {
+  background: #312e81;
+  color: #c7d2fe;
+}
+
+.program-chip-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.program-chip {
+  background: #f9fafb;
+  color: #374151;
+
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+
+  padding: 8px 12px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.program-chip:hover {
+  background: #eef2ff;
+  border-color: #93c5fd;
+  color: #1f2937;
+}
+
+.program-chip.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.dark-mode .program-chip {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.dark-mode .program-chip:hover {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+.dark-mode .program-chip.active {
   background: #2563eb;
   color: white;
   border-color: #2563eb;

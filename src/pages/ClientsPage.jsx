@@ -10,6 +10,14 @@ import {
   updateClient,
 } from '../services/clientService'
 
+import { getPrograms } from '../services/programService'
+
+import {
+  getClientPrograms,
+  assignProgramToClient,
+  removeProgramAssignment,
+} from '../services/clientProgramService'
+
 import useTranslations from '../hooks/useTranslations'
 
 function ClientsPage() {
@@ -18,6 +26,8 @@ function ClientsPage() {
   const [showForm, setShowForm] = useState(false)
   const [selectedClient, setSelectedClient] = useState(null)
   const [clients, setClients] = useState([])
+  const [programs, setPrograms] = useState([])
+  const [clientPrograms, setClientPrograms] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -31,8 +41,18 @@ function ClientsPage() {
       setIsLoading(true)
       setError('')
 
-      const data = await getClients()
-      setClients(Array.isArray(data) ? data : [])
+      const [clientsData, programsData, assignmentsData] =
+        await Promise.all([
+          getClients(),
+          getPrograms(),
+          getClientPrograms(),
+        ])
+
+      setClients(Array.isArray(clientsData) ? clientsData : [])
+      setPrograms(Array.isArray(programsData) ? programsData : [])
+      setClientPrograms(
+        Array.isArray(assignmentsData) ? assignmentsData : []
+      )
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadClients'))
@@ -41,11 +61,62 @@ function ClientsPage() {
     }
   }
 
+  function getAssignedProgramIds(clientId) {
+    return clientPrograms
+      .filter((assignment) => assignment.clientId === clientId)
+      .map((assignment) => assignment.programId)
+  }
+
+  function getAssignedPrograms(clientId) {
+    const assignedProgramIds = getAssignedProgramIds(clientId)
+
+    return programs.filter((program) =>
+      assignedProgramIds.includes(program.programId)
+    )
+  }
+
+  async function syncProgramAssignments(clientId, selectedProgramIds) {
+    const existingAssignments = clientPrograms.filter(
+      (assignment) => assignment.clientId === clientId
+    )
+
+    const existingProgramIds = existingAssignments.map(
+      (assignment) => assignment.programId
+    )
+
+    const programsToAdd = selectedProgramIds.filter(
+      (programId) => !existingProgramIds.includes(programId)
+    )
+
+    const assignmentsToRemove = existingAssignments.filter(
+      (assignment) => !selectedProgramIds.includes(assignment.programId)
+    )
+
+    for (const programId of programsToAdd) {
+      await assignProgramToClient({
+        clientId,
+        programId,
+      })
+    }
+
+    for (const assignment of assignmentsToRemove) {
+      await removeProgramAssignment(assignment.assignmentId)
+    }
+  }
+
   async function handleAddClient(newClient) {
     try {
       setError('')
 
-      await createClient(newClient)
+      const { assignedProgramIds, ...clientData } = newClient
+
+      const savedClient = await createClient(clientData)
+
+      await syncProgramAssignments(
+        savedClient.clientId,
+        assignedProgramIds || []
+      )
+
       await refreshClients()
       setShowForm(false)
     } catch (error) {
@@ -64,6 +135,14 @@ function ClientsPage() {
     try {
       setError('')
 
+      const assignmentsToRemove = clientPrograms.filter(
+        (assignment) => assignment.clientId === clientId
+      )
+
+      for (const assignment of assignmentsToRemove) {
+        await removeProgramAssignment(assignment.assignmentId)
+      }
+
       await deleteClient(clientId)
       await refreshClients()
     } catch (error) {
@@ -81,7 +160,15 @@ function ClientsPage() {
     try {
       setError('')
 
-      await updateClient(updatedClient)
+      const { assignedProgramIds, ...clientData } = updatedClient
+
+      await updateClient(clientData)
+
+      await syncProgramAssignments(
+        updatedClient.clientId,
+        assignedProgramIds || []
+      )
+
       await refreshClients()
       setSelectedClient(null)
       setShowForm(false)
@@ -122,6 +209,12 @@ function ClientsPage() {
 
       {showForm && (
         <ClientForm
+          programs={programs}
+          selectedProgramIds={
+            selectedClient
+              ? getAssignedProgramIds(selectedClient.clientId)
+              : []
+          }
           onAddClient={handleAddClient}
           onUpdateClient={handleUpdateClient}
           selectedClient={selectedClient}
@@ -132,11 +225,21 @@ function ClientsPage() {
 
       {error && <p className="error-message">{error}</p>}
 
-      <div className="client-grid">
+      <div className="client-list">
+        <div className="client-row client-row-header">
+          <strong>{t('client')}</strong>
+          <strong>{t('status')}</strong>
+          <strong>{t('phone')}</strong>
+          <strong>{t('goal')}</strong>
+          <strong>{t('assignedPrograms')}</strong>
+          <div></div>
+        </div>
+
         {filteredClients.map((client) => (
           <ClientCard
             key={client.clientId}
             client={client}
+            assignedPrograms={getAssignedPrograms(client.clientId)}
             onDeleteClient={handleDeleteClient}
             onEditClient={handleEditClient}
           />

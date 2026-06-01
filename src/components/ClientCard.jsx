@@ -2,6 +2,7 @@ import useTranslations from '../hooks/useTranslations'
 
 function ClientCard({
   client,
+  assignedPrograms,
   onDeleteClient,
   onEditClient,
 }) {
@@ -24,55 +25,48 @@ function ClientCard({
   }
 
   return (
-    <div className="client-card">
-      <h3>
-        {client.firstName}{' '}
-        {client.lastName}
-      </h3>
+    <div
+      className="client-row clickable"
+      onClick={() => onEditClient(client)}
+    >
+      <div>
+        <strong>
+          {client.firstName} {client.lastName}
+        </strong>
+      </div>
 
-      {client.goal && (
-        <p>
-          <strong>{t('goal')}:</strong>{' '}
-          {client.goal}
-        </p>
-      )}
+      <span className={`status-badge ${client.status}`}>
+        {getTranslatedStatus(client.status)}
+      </span>
 
-      <p>
-        <strong>{t('status')}:</strong>{' '}
-        <span
-          className={`status-badge ${client.status}`}
-        >
-          {getTranslatedStatus(
-            client.status
-          )}
-        </span>
-      </p>
+      <span>{client.phone || '-'}</span>
 
-      {client.phone && (
-        <p>
-          <strong>{t('phone')}:</strong>{' '}
-          {client.phone}
-        </p>
-      )}
+      <span>{client.goal || '-'}</span>
 
-      <div className="card-actions">
+      <div className="assigned-programs-cell">
+  {assignedPrograms.length > 0 ? (
+    assignedPrograms.map((program) => (
+      <span
+        className="assigned-program-badge"
+        key={program.programId}
+      >
+        {program.programName}
+      </span>
+    ))
+  ) : (
+    <span>-</span>
+  )}
+</div>
+
+      <div className="client-row-actions">
         <button
-          onClick={() =>
-            onEditClient(client)
-          }
+          className="delete-icon-button"
+          onClick={(event) => {
+            event.stopPropagation()
+            onDeleteClient(client.clientId)
+          }}
         >
-          {t('edit')}
-        </button>
-
-        <button
-          className="danger-button"
-          onClick={() =>
-            onDeleteClient(
-              client.clientId
-            )
-          }
-        >
-          {t('delete')}
+          ×
         </button>
       </div>
     </div>
