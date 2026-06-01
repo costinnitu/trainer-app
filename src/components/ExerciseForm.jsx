@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 
+import useTranslations from '../hooks/useTranslations'
+
 function ExerciseForm({
   onAddExercise,
   onUpdateExercise,
   selectedExercise,
 }) {
+  const { t } = useTranslations()
+
   const emptyExercise = {
     exerciseName: '',
     bodyPart: 'Chest',
@@ -28,7 +32,9 @@ function ExerciseForm({
 
     setExercise({
       ...exercise,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox'
+        ? checked
+        : value,
     })
   }
 
@@ -48,7 +54,7 @@ function ExerciseForm({
     <form className="client-form" onSubmit={handleSubmit}>
       <input
         name="exerciseName"
-        placeholder="Exercise name"
+        placeholder={t('exerciseName')}
         value={exercise.exerciseName}
         onChange={handleChange}
         required
@@ -59,26 +65,49 @@ function ExerciseForm({
         value={exercise.bodyPart}
         onChange={handleChange}
       >
-        <option value="Chest">Chest</option>
-        <option value="Back">Back</option>
-        <option value="Shoulders">Shoulders</option>
-        <option value="Arms">Arms</option>
-        <option value="Legs">Legs</option>
-        <option value="Core">Core</option>
-        <option value="Full Body">Full Body</option>
-        <option value="Cardio">Cardio</option>
+        <option value="Chest">
+          {t('chest')}
+        </option>
+
+        <option value="Back">
+          {t('back')}
+        </option>
+
+        <option value="Shoulders">
+          {t('shoulders')}
+        </option>
+
+        <option value="Arms">
+          {t('arms')}
+        </option>
+
+        <option value="Legs">
+          {t('legs')}
+        </option>
+
+        <option value="Core">
+          {t('core')}
+        </option>
+
+        <option value="Full Body">
+          {t('fullBody')}
+        </option>
+
+        <option value="Cardio">
+          {t('cardio')}
+        </option>
       </select>
 
       <input
         name="equipment"
-        placeholder="Equipment"
+        placeholder={t('equipment')}
         value={exercise.equipment}
         onChange={handleChange}
       />
 
       <input
         name="defaultNotes"
-        placeholder="Default notes"
+        placeholder={t('defaultNotes')}
         value={exercise.defaultNotes}
         onChange={handleChange}
       />
@@ -90,11 +119,14 @@ function ExerciseForm({
           checked={exercise.isFavorite}
           onChange={handleChange}
         />
-        Favorite exercise
+
+        {t('favoriteExercise')}
       </label>
 
       <button type="submit">
-        {selectedExercise ? 'Update Exercise' : 'Save Exercise'}
+        {selectedExercise
+          ? t('updateExercise')
+          : t('saveExercise')}
       </button>
     </form>
   )

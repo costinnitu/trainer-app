@@ -3,10 +3,16 @@ import { useEffect, useState } from 'react'
 import { getClients } from '../services/clientService'
 import { getAppointments } from '../services/appointmentService'
 
+import useTranslations from '../hooks/useTranslations'
+
 function DashboardPage() {
+  const { t, language } = useTranslations()
+
   const [clients, setClients] = useState([])
   const [appointments, setAppointments] = useState([])
   const [error, setError] = useState('')
+
+  const locale = language === 'it' ? 'it-IT' : 'en-US'
 
   useEffect(() => {
     loadDashboardData()
@@ -23,7 +29,23 @@ function DashboardPage() {
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
     } catch (error) {
       console.error(error)
-      setError('Could not load dashboard data')
+      setError(t('couldNotLoadDashboardData'))
+    }
+  }
+
+  function getTranslatedStatus(status) {
+    switch (status) {
+      case 'scheduled':
+        return t('scheduled')
+
+      case 'completed':
+        return t('completed')
+
+      case 'cancelled':
+        return t('cancelled')
+
+      default:
+        return status
     }
   }
 
@@ -54,37 +76,37 @@ function DashboardPage() {
 
   return (
     <div className="page">
-      <h2>Dashboard</h2>
+      <h2>{t('dashboard')}</h2>
 
       {error && <p className="error-message">{error}</p>}
 
       <div className="dashboard-grid">
         <div className="dashboard-card">
-          <h3>Total Clients</h3>
+          <h3>{t('totalClients')}</h3>
           <p>{clients.length}</p>
         </div>
 
         <div className="dashboard-card">
-          <h3>Active Clients</h3>
+          <h3>{t('activeClients')}</h3>
           <p>{activeClients.length}</p>
         </div>
 
         <div className="dashboard-card">
-          <h3>Today’s Appointments</h3>
+          <h3>{t('todaysAppointments')}</h3>
           <p>{todayAppointments.length}</p>
         </div>
 
         <div className="dashboard-card">
-          <h3>Upcoming Appointments</h3>
+          <h3>{t('upcomingAppointments')}</h3>
           <p>{upcomingAppointments.length}</p>
         </div>
       </div>
 
       <div className="dashboard-section">
-        <h3>Today’s Appointments</h3>
+        <h3>{t('todaysAppointments')}</h3>
 
         {sortedTodayAppointments.length === 0 ? (
-          <p>No appointments today.</p>
+          <p>{t('noAppointmentsToday')}</p>
         ) : (
           sortedTodayAppointments.map((appointment) => (
             <div
@@ -92,9 +114,11 @@ function DashboardPage() {
               key={appointment.appointmentId}
             >
               <strong>{appointment.startTime}</strong>
+
               <span>{appointment.clientName}</span>
+
               <span className={`status-badge ${appointment.status}`}>
-                {appointment.status}
+                {getTranslatedStatus(appointment.status)}
               </span>
             </div>
           ))
@@ -102,10 +126,10 @@ function DashboardPage() {
       </div>
 
       <div className="dashboard-section">
-        <h3>Upcoming Appointments</h3>
+        <h3>{t('upcomingAppointments')}</h3>
 
         {sortedUpcomingAppointments.length === 0 ? (
-          <p>No upcoming appointments.</p>
+          <p>{t('noUpcomingAppointments')}</p>
         ) : (
           sortedUpcomingAppointments.slice(0, 5).map((appointment) => (
             <div
@@ -113,7 +137,7 @@ function DashboardPage() {
               key={appointment.appointmentId}
             >
               <strong>
-                {new Date(appointment.date).toLocaleDateString('it-IT')}
+                {new Date(appointment.date).toLocaleDateString(locale)}
               </strong>
 
               <span>
@@ -121,7 +145,7 @@ function DashboardPage() {
               </span>
 
               <span className={`status-badge ${appointment.status}`}>
-                {appointment.status}
+                {getTranslatedStatus(appointment.status)}
               </span>
             </div>
           ))

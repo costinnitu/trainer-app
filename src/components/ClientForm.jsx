@@ -1,17 +1,30 @@
 import { useEffect, useState } from 'react'
 
-function ClientForm({ onAddClient, onUpdateClient, selectedClient }) {
-  const [formData, setFormData] = useState({
+import useTranslations from '../hooks/useTranslations'
+
+function ClientForm({
+  onAddClient,
+  onUpdateClient,
+  selectedClient,
+}) {
+  const { t } = useTranslations()
+
+  const emptyForm = {
     firstName: '',
     lastName: '',
     phone: '',
     goal: '',
     status: 'active',
-  })
+  }
+
+  const [formData, setFormData] =
+    useState(emptyForm)
 
   useEffect(() => {
     if (selectedClient) {
       setFormData(selectedClient)
+    } else {
+      setFormData(emptyForm)
     }
   }, [selectedClient])
 
@@ -38,20 +51,17 @@ function ClientForm({ onAddClient, onUpdateClient, selectedClient }) {
       onAddClient(newClient)
     }
 
-    setFormData({
-      firstName: '',
-      lastName: '',
-      phone: '',
-      goal: '',
-      status: 'active',
-    })
+    setFormData(emptyForm)
   }
 
   return (
-    <form className="client-form" onSubmit={handleSubmit}>
+    <form
+      className="client-form"
+      onSubmit={handleSubmit}
+    >
       <input
         name="firstName"
-        placeholder="First name"
+        placeholder={t('firstName')}
         value={formData.firstName}
         onChange={handleChange}
         required
@@ -59,7 +69,7 @@ function ClientForm({ onAddClient, onUpdateClient, selectedClient }) {
 
       <input
         name="lastName"
-        placeholder="Last name"
+        placeholder={t('lastName')}
         value={formData.lastName}
         onChange={handleChange}
         required
@@ -67,14 +77,14 @@ function ClientForm({ onAddClient, onUpdateClient, selectedClient }) {
 
       <input
         name="phone"
-        placeholder="Phone"
+        placeholder={t('phone')}
         value={formData.phone}
         onChange={handleChange}
       />
 
       <input
         name="goal"
-        placeholder="Goal"
+        placeholder={t('goal')}
         value={formData.goal}
         onChange={handleChange}
       />
@@ -84,13 +94,23 @@ function ClientForm({ onAddClient, onUpdateClient, selectedClient }) {
         value={formData.status}
         onChange={handleChange}
       >
-        <option value="active">Active</option>
-        <option value="paused">Paused</option>
-        <option value="inactive">Inactive</option>
+        <option value="active">
+          {t('active')}
+        </option>
+
+        <option value="paused">
+          {t('paused')}
+        </option>
+
+        <option value="inactive">
+          {t('inactive')}
+        </option>
       </select>
 
       <button type="submit">
-        {selectedClient ? 'Update Client' : 'Save Client'}
+        {selectedClient
+          ? t('updateClient')
+          : t('saveClient')}
       </button>
     </form>
   )

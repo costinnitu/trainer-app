@@ -4,12 +4,15 @@ import AppointmentForm from '../components/AppointmentForm'
 
 import { getClients } from '../services/clientService'
 import { getSchedulePreferences } from '../services/settingsService'
+
 import {
   getAppointments,
   createAppointment,
   updateAppointment,
   deleteAppointment,
 } from '../services/appointmentService'
+
+import useTranslations from '../hooks/useTranslations'
 
 const DEFAULT_SCHEDULE = {
   workingDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
@@ -31,6 +34,8 @@ const DAY_NAME_MAP = {
 const HOUR_HEIGHT = 64
 
 function WeeklySchedulePage() {
+  const { t, language } = useTranslations()
+
   const [clients, setClients] = useState([])
   const [appointments, setAppointments] = useState([])
   const [schedulePreferences, setSchedulePreferences] =
@@ -39,6 +44,8 @@ function WeeklySchedulePage() {
   const [initialAppointment, setInitialAppointment] = useState(null)
   const [selectedWeekDate, setSelectedWeekDate] = useState(new Date())
   const [error, setError] = useState('')
+
+  const locale = language === 'it' ? 'it-IT' : 'en-US'
 
   const calendarStartHour = Number(
     schedulePreferences.workStartTime.split(':')[0]
@@ -79,10 +86,9 @@ function WeeklySchedulePage() {
       }
     } catch (error) {
       console.error(error)
-      setError('Could not load weekly schedule')
+      setError(t('couldNotLoadWeeklySchedule'))
     }
   }
-  
 
   function getStartOfWeek(date) {
     const currentDate = new Date(date)
@@ -108,15 +114,15 @@ function WeeklySchedulePage() {
 
       return {
         dayIndex: date.getDay(),
-       label: {
-          dayName: date.toLocaleDateString('it-IT', {
+        label: {
+          dayName: date.toLocaleDateString(locale, {
             weekday: 'long',
           }),
-          date: date.toLocaleDateString('it-IT', {
+          date: date.toLocaleDateString(locale, {
             day: '2-digit',
             month: '2-digit',
           }),
-    },
+        },
         dateValue: formatDateForInput(date),
       }
     }).filter((day) =>
@@ -248,7 +254,7 @@ function WeeklySchedulePage() {
 
   async function handleAddAppointment(newAppointment) {
     if (hasOverlap(newAppointment)) {
-      alert('This appointment overlaps with another appointment.')
+      alert(t('appointmentOverlap'))
       return
     }
 
@@ -259,7 +265,7 @@ function WeeklySchedulePage() {
 
   async function handleUpdateAppointment(updatedAppointment) {
     if (hasOverlap(updatedAppointment)) {
-      alert('This appointment overlaps with another appointment.')
+      alert(t('appointmentOverlap'))
       return
     }
 
@@ -269,23 +275,21 @@ function WeeklySchedulePage() {
   }
 
   async function handleDeleteAppointment() {
-        if (!selectedAppointment) {
-          return
-        }
+    if (!selectedAppointment) {
+      return
+    }
 
-        const confirmed = window.confirm(
-          'Are you sure you want to delete this appointment?'
-        )
+    const confirmed = window.confirm(t('confirmDeleteAppointment'))
 
-        if (!confirmed) {
-          return
-        }
+    if (!confirmed) {
+      return
+    }
 
-        await deleteAppointment(selectedAppointment.appointmentId)
-        await loadPageData()
-        setSelectedAppointment(null)
-        setInitialAppointment(null)
-}
+    await deleteAppointment(selectedAppointment.appointmentId)
+    await loadPageData()
+    setSelectedAppointment(null)
+    setInitialAppointment(null)
+  }
 
   function handleCancelEdit() {
     setSelectedAppointment(null)
@@ -314,8 +318,8 @@ function WeeklySchedulePage() {
   endOfWeek.setDate(startOfWeek.getDate() + 6)
 
   const weekLabel = `${startOfWeek.toLocaleDateString(
-    'it-IT'
-  )} - ${endOfWeek.toLocaleDateString('it-IT')}`
+    locale
+  )} - ${endOfWeek.toLocaleDateString(locale)}`
 
   const today = new Date().toLocaleDateString('en-CA')
   const currentTimePosition = getCurrentTimePosition()
@@ -326,14 +330,22 @@ function WeeklySchedulePage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h2>Weekly Schedule</h2>
+          <h2>{t('weeklySchedule')}</h2>
           <p className="week-label">{weekLabel}</p>
         </div>
 
         <div className="week-navigation">
-          <button onClick={goToPreviousWeek}>Previous</button>
-          <button onClick={goToCurrentWeek}>Today</button>
-          <button onClick={goToNextWeek}>Next</button>
+          <button onClick={goToPreviousWeek}>
+            {t('previous')}
+          </button>
+
+          <button onClick={goToCurrentWeek}>
+            {t('today')}
+          </button>
+
+          <button onClick={goToNextWeek}>
+            {t('next')}
+          </button>
         </div>
       </div>
 
@@ -343,17 +355,20 @@ function WeeklySchedulePage() {
         <div>
           <div className="edit-actions">
             <button className="danger-button" onClick={handleCancelEdit}>
-              Cancel Edit
+              {t('cancelEdit')}
             </button>
 
             {selectedAppointment && (
-              <button className="danger-button" onClick={handleDeleteAppointment}>
-                Delete Appointment
+              <button
+                className="danger-button"
+                onClick={handleDeleteAppointment}
+              >
+                {t('deleteAppointment')}
               </button>
             )}
           </div>
 
-        <AppointmentForm
+          <AppointmentForm
             clients={clients}
             selectedAppointment={selectedAppointment}
             initialAppointment={initialAppointment}
@@ -363,71 +378,72 @@ function WeeklySchedulePage() {
         </div>
       )}
 
-        <div className="calendar-grid">
-          <div className="calendar-time-column">
-            <div className="calendar-header-cell"></div>
+      <div className="calendar-grid">
+        <div className="calendar-time-column">
+          <div className="calendar-header-cell"></div>
 
-            {Array.from({ length: timeSlotCount }, (_, index) => {
-              const hour = index + calendarStartHour
-
-              return (
-                <div className="calendar-time-slot" key={hour}>
-                  {String(hour).padStart(2, '0')}:00
-                </div>
-              )
-            })}
-          </div>
-
-          {weekDays.map((day) => {
-            const dayAppointments = getAppointmentsForDay(day.dateValue)
-            const isToday = day.dateValue === today
+          {Array.from({ length: timeSlotCount }, (_, index) => {
+            const hour = index + calendarStartHour
 
             return (
-              <div
-                className={`calendar-day-column ${
-                  isToday ? 'today-highlight' : ''
-                }`}
-                key={day.dateValue}
-              >
-                <div className="calendar-day-header">
-                  <span className="calendar-day-name">
-                    {day.label.dayName}
-                  </span>
-
-                  <span className="calendar-day-date">
-                    {day.label.date}
-                  </span>
-                </div>
-                <div
-                  className="calendar-day-body"
-                  onClick={(event) => handleCalendarSlotClick(event, day)}
-                >
-                  {isToday && currentTimePosition && (
-                    <div
-                      className="current-time-line"
-                      style={{ top: currentTimePosition }}
-                    />
-                  )}
-
-                  {dayAppointments.map((appointment) => (
-                    <div
-                      className={`calendar-appointment ${appointment.status}`}
-                      key={appointment.appointmentId}
-                      style={getAppointmentPosition(appointment)}
-                      onClick={() => handleEditAppointment(appointment)}
-                    >
-                      <strong>
-                        {appointment.startTime} - {appointment.endTime}
-                      </strong>
-
-                      <span>{appointment.clientName}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="calendar-time-slot" key={hour}>
+                {String(hour).padStart(2, '0')}:00
               </div>
             )
           })}
         </div>
+
+        {weekDays.map((day) => {
+          const dayAppointments = getAppointmentsForDay(day.dateValue)
+          const isToday = day.dateValue === today
+
+          return (
+            <div
+              className={`calendar-day-column ${
+                isToday ? 'today-highlight' : ''
+              }`}
+              key={day.dateValue}
+            >
+              <div className="calendar-day-header">
+                <span className="calendar-day-name">
+                  {day.label.dayName}
+                </span>
+
+                <span className="calendar-day-date">
+                  {day.label.date}
+                </span>
+              </div>
+
+              <div
+                className="calendar-day-body"
+                onClick={(event) => handleCalendarSlotClick(event, day)}
+              >
+                {isToday && currentTimePosition && (
+                  <div
+                    className="current-time-line"
+                    style={{ top: currentTimePosition }}
+                  />
+                )}
+
+                {dayAppointments.map((appointment) => (
+                  <div
+                    className={`calendar-appointment ${appointment.status}`}
+                    key={appointment.appointmentId}
+                    style={getAppointmentPosition(appointment)}
+                    onClick={() => handleEditAppointment(appointment)}
+                  >
+                    <strong>
+                      {appointment.startTime} - {appointment.endTime}
+                    </strong>
+
+                    <span>{appointment.clientName}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

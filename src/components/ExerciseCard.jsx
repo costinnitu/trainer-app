@@ -1,4 +1,12 @@
-function ExerciseCard({ exercise, onEditExercise, onDeleteExercise }) {
+import useTranslations from '../hooks/useTranslations'
+
+function ExerciseCard({
+  exercise,
+  onEditExercise,
+  onDeleteExercise,
+}) {
+  const { t } = useTranslations()
+
   return (
     <div className="client-card">
       <h3>
@@ -7,27 +15,48 @@ function ExerciseCard({ exercise, onEditExercise, onDeleteExercise }) {
       </h3>
 
       <p>
-        <strong>Body part:</strong> {exercise.bodyPart}
+        <strong>
+          {t('bodyPart')}:
+        </strong>{' '}
+        {exercise.bodyPart}
       </p>
 
-      <p>
-        <strong>Equipment:</strong> {exercise.equipment}
-      </p>
+      {exercise.equipment && (
+        <p>
+          <strong>
+            {t('equipment')}:
+          </strong>{' '}
+          {exercise.equipment}
+        </p>
+      )}
 
-      <p>
-        <strong>Notes:</strong> {exercise.defaultNotes}
-      </p>
+      {exercise.defaultNotes && (
+        <p>
+          <strong>
+            {t('notes')}:
+          </strong>{' '}
+          {exercise.defaultNotes}
+        </p>
+      )}
 
       <div className="card-actions">
-        <button onClick={() => onEditExercise(exercise)}>
-          Edit
+        <button
+          onClick={() =>
+            onEditExercise(exercise)
+          }
+        >
+          {t('edit')}
         </button>
 
         <button
           className="danger-button"
-          onClick={() => onDeleteExercise(exercise.exerciseId)}
+          onClick={() =>
+            onDeleteExercise(
+              exercise.exerciseId
+            )
+          }
         >
-          Delete
+          {t('delete')}
         </button>
       </div>
     </div>

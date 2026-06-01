@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import ClientCard from '../components/ClientCard'
 import ClientForm from '../components/ClientForm'
 
@@ -9,7 +10,11 @@ import {
   updateClient,
 } from '../services/clientService'
 
+import useTranslations from '../hooks/useTranslations'
+
 function ClientsPage() {
+  const { t } = useTranslations()
+
   const [showForm, setShowForm] = useState(false)
   const [selectedClient, setSelectedClient] = useState(null)
   const [clients, setClients] = useState([])
@@ -27,32 +32,44 @@ function ClientsPage() {
       setError('')
 
       const data = await getClients()
-      setClients([...data])
+      setClients(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error(error)
-      setError('Could not load clients')
+      setError(t('couldNotLoadClients'))
     } finally {
       setIsLoading(false)
     }
   }
 
   async function handleAddClient(newClient) {
-    await createClient(newClient)
-    await refreshClients()
-    setShowForm(false)
+    try {
+      setError('')
+
+      await createClient(newClient)
+      await refreshClients()
+      setShowForm(false)
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotSaveClient'))
+    }
   }
 
   async function handleDeleteClient(clientId) {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this client?'
-    )
+    const confirmed = window.confirm(t('confirmDeleteClient'))
 
     if (!confirmed) {
       return
     }
 
-    await deleteClient(clientId)
-    await refreshClients()
+    try {
+      setError('')
+
+      await deleteClient(clientId)
+      await refreshClients()
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotDeleteClient'))
+    }
   }
 
   function handleEditClient(client) {
@@ -61,10 +78,17 @@ function ClientsPage() {
   }
 
   async function handleUpdateClient(updatedClient) {
-    await updateClient(updatedClient)
-    await refreshClients()
-    setSelectedClient(null)
-    setShowForm(false)
+    try {
+      setError('')
+
+      await updateClient(updatedClient)
+      await refreshClients()
+      setSelectedClient(null)
+      setShowForm(false)
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotUpdateClient'))
+    }
   }
 
   function handleCancelForm() {
@@ -81,17 +105,17 @@ function ClientsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Clients</h2>
+        <h2>{t('clients')}</h2>
 
         <button onClick={showForm ? handleCancelForm : () => setShowForm(true)}>
-          {showForm ? 'Cancel' : 'Add Client'}
+          {showForm ? t('cancel') : t('addClient')}
         </button>
       </div>
 
       <input
         className="search-input"
         type="text"
-        placeholder="Search clients..."
+        placeholder={t('searchClients')}
         value={searchTerm}
         onChange={(event) => setSearchTerm(event.target.value)}
       />
@@ -104,7 +128,7 @@ function ClientsPage() {
         />
       )}
 
-      {isLoading && <p>Loading clients...</p>}
+      {isLoading && <p>{t('loadingClients')}</p>}
 
       {error && <p className="error-message">{error}</p>}
 

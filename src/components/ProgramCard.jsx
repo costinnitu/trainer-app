@@ -1,56 +1,75 @@
-function ProgramCard({ program, onEditProgram, onDeleteProgram }) {
+import useTranslations from '../hooks/useTranslations'
+
+function ProgramCard({
+  program,
+  onEditProgram,
+  onDeleteProgram,
+}) {
+  const { t } = useTranslations()
+
   return (
-<div
-  className="client-card program-card clickable-program-card"
-  onClick={() => onEditProgram(program)}
->      <button
-  className="delete-icon-button program-delete-button"
-onClick={(event) => {
-  event.stopPropagation()
-  onDeleteProgram(program.programId)
-}}>
-  ×
-</button>
+    <div
+      className="client-card program-card clickable-program-card"
+      onClick={() => onEditProgram(program)}
+    >
+      <button
+        className="delete-icon-button program-delete-button"
+        onClick={(event) => {
+          event.stopPropagation()
+
+          onDeleteProgram(program.programId)
+        }}
+      >
+        ×
+      </button>
+
       <h3>{program.programName}</h3>
 
       {program.goal && (
-  <p>
-    <strong>Goal:</strong> {program.goal}
-  </p>
-)}
+        <p>
+          <strong>{t('goal')}:</strong>{' '}
+          {program.goal}
+        </p>
+      )}
 
-      <p>
-        <strong>Duration:</strong> {program.durationWeeks} weeks
-      </p>
+      {program.durationWeeks > 0 && (
+        <p>
+          <strong>{t('duration')}:</strong>{' '}
+          {program.durationWeeks}{' '}
+          {t('weeks')}
+        </p>
+      )}
 
       <div>
-        <strong>Exercises:</strong>
-        
-  {program.exercises?.length > 0 ? (
-    <ul className="exercise-list">
-      {program.exercises.map((exercise, index) => (
-        <li key={index}>
-  {exercise.exerciseName}
+        <strong>{t('exercises')}:</strong>
 
-  {exercise.sets && ` — ${exercise.sets} sets`}
-  {exercise.reps && ` × ${exercise.reps} reps`}
-</li>
-      ))}
-    </ul>
-  ) : (
-    <p>No exercises added.</p>
-  )}
-</div>
+        {program.exercises?.length > 0 ? (
+          <ul className="exercise-list">
+            {program.exercises.map(
+              (exercise, index) => (
+                <li key={index}>
+                  {exercise.exerciseName}
 
-     {program.notes && (
-  <p>
-    <strong>Notes:</strong> {program.notes}
-  </p>
-)}
+                  {exercise.sets &&
+                    ` — ${exercise.sets} ${t('sets').toLowerCase()}`}
 
-      <div className="card-actions">
-
+                  {exercise.reps &&
+                    ` × ${exercise.reps} ${t('reps').toLowerCase()}`}
+                </li>
+              )
+            )}
+          </ul>
+        ) : (
+          <p>{t('noExercisesAdded')}</p>
+        )}
       </div>
+
+      {program.notes && (
+        <p>
+          <strong>{t('notes')}:</strong>{' '}
+          {program.notes}
+        </p>
+      )}
     </div>
   )
 }

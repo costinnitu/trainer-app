@@ -10,7 +10,11 @@ import {
   deleteProgram,
 } from '../services/programService'
 
+import useTranslations from '../hooks/useTranslations'
+
 function ProgramsPage() {
+  const { t } = useTranslations()
+
   const [programs, setPrograms] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [selectedProgram, setSelectedProgram] = useState(null)
@@ -25,10 +29,11 @@ function ProgramsPage() {
       setError('')
 
       const data = await getPrograms()
+
       setPrograms(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error(error)
-      setError('Could not load programs')
+      setError(t('couldNotLoadPrograms'))
     }
   }
 
@@ -38,10 +43,11 @@ function ProgramsPage() {
 
       await createProgram(newProgram)
       await loadPrograms()
+
       setShowForm(false)
     } catch (error) {
       console.error(error)
-      setError('Could not save program')
+      setError(t('couldNotSaveProgram'))
     }
   }
 
@@ -56,17 +62,18 @@ function ProgramsPage() {
 
       await updateProgram(updatedProgram)
       await loadPrograms()
+
       setSelectedProgram(null)
       setShowForm(false)
     } catch (error) {
       console.error(error)
-      setError('Could not update program')
+      setError(t('couldNotUpdateProgram'))
     }
   }
 
   async function handleDeleteProgram(programId) {
     const confirmed = window.confirm(
-      'Are you sure you want to delete this program?'
+      t('confirmDeleteProgram')
     )
 
     if (!confirmed) {
@@ -80,7 +87,7 @@ function ProgramsPage() {
       await loadPrograms()
     } catch (error) {
       console.error(error)
-      setError('Could not delete program')
+      setError(t('couldNotDeleteProgram'))
     }
   }
 
@@ -92,14 +99,24 @@ function ProgramsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Training Programs</h2>
+        <h2>{t('trainingPrograms')}</h2>
 
-        <button onClick={showForm ? handleCancelForm : () => setShowForm(true)}>
-          {showForm ? 'Cancel' : 'Add Program'}
+        <button
+          onClick={
+            showForm
+              ? handleCancelForm
+              : () => setShowForm(true)
+          }
+        >
+          {showForm
+            ? t('cancel')
+            : t('addProgram')}
         </button>
       </div>
 
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <p className="error-message">{error}</p>
+      )}
 
       {showForm && (
         <ProgramForm
@@ -110,7 +127,7 @@ function ProgramsPage() {
       )}
 
       {programs.length === 0 ? (
-        <p>No programs yet.</p>
+        <p>{t('noProgramsYet')}</p>
       ) : (
         <div className="client-grid">
           {programs.map((program) => (

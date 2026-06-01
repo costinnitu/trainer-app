@@ -5,7 +5,11 @@ import {
   saveTrainerProfile,
 } from '../services/settingsService'
 
+import useTranslations from '../hooks/useTranslations'
+
 function TrainerProfileForm() {
+  const { t } = useTranslations()
+
   const emptyProfile = {
     trainerName: '',
     businessName: '',
@@ -39,15 +43,13 @@ function TrainerProfileForm() {
         })
 
         setSavedProfile(data)
-        setShowForm(false)  
+        setShowForm(false)
+      } else {
+        setShowForm(true)
       }
-      else {
-          setShowForm(true)
-      }
-
     } catch (error) {
       console.error(error)
-      setError('Could not load trainer profile')
+      setError(t('couldNotLoadTrainerProfile'))
     } finally {
       setIsLoading(false)
     }
@@ -75,7 +77,7 @@ function TrainerProfileForm() {
       setShowForm(false)
     } catch (error) {
       console.error(error)
-      setError('Could not save trainer profile')
+      setError(t('couldNotSaveTrainerProfile'))
     } finally {
       setIsLoading(false)
     }
@@ -87,64 +89,81 @@ function TrainerProfileForm() {
 
   return (
     <div>
-      {isLoading && <p>Loading profile...</p>}
+      {isLoading && (
+        <p>{t('loadingProfile')}</p>
+      )}
 
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <p className="error-message">{error}</p>
+      )}
 
       {showForm && (
         <form className="client-form" onSubmit={handleSubmit}>
           <input
             name="trainerName"
-            placeholder="Trainer name"
+            placeholder={t('trainerName')}
             value={profile.trainerName}
             onChange={handleChange}
           />
 
           <input
             name="businessName"
-            placeholder="Business name"
+            placeholder={t('businessName')}
             value={profile.businessName}
             onChange={handleChange}
           />
 
           <input
             name="email"
-            placeholder="Email"
+            placeholder={t('email')}
             value={profile.email}
             onChange={handleChange}
           />
 
           <input
             name="phone"
-            placeholder="Phone"
+            placeholder={t('phone')}
             value={profile.phone}
             onChange={handleChange}
           />
 
           <button type="submit">
-            {savedProfile ? 'Update Profile' : 'Save Profile'}
+            {savedProfile
+              ? t('updateProfile')
+              : t('saveProfile')}
           </button>
         </form>
       )}
 
       {savedProfile && !showForm && (
         <div className="profile-summary">
-          <h4>{savedProfile.businessName}</h4>
+          {savedProfile.businessName && (
+            <h4>{savedProfile.businessName}</h4>
+          )}
 
-          <p>
-            <strong>Trainer:</strong> {savedProfile.trainerName}
-          </p>
+          {savedProfile.trainerName && (
+            <p>
+              <strong>{t('trainer')}:</strong>{' '}
+              {savedProfile.trainerName}
+            </p>
+          )}
 
-          <p>
-            <strong>Email:</strong> {savedProfile.email}
-          </p>
+          {savedProfile.email && (
+            <p>
+              <strong>{t('email')}:</strong>{' '}
+              {savedProfile.email}
+            </p>
+          )}
 
-          <p>
-            <strong>Phone:</strong> {savedProfile.phone}
-          </p>
+          {savedProfile.phone && (
+            <p>
+              <strong>{t('phone')}:</strong>{' '}
+              {savedProfile.phone}
+            </p>
+          )}
 
           <button onClick={handleEditProfile}>
-            Edit Profile
+            {t('editProfile')}
           </button>
         </div>
       )}

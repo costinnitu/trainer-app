@@ -9,7 +9,11 @@ import {
   deleteExercise,
 } from '../services/exerciseService'
 
+import useTranslations from '../hooks/useTranslations'
+
 function ExerciseLibraryPage() {
+  const { t } = useTranslations()
+
   const [exercises, setExercises] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [selectedExercise, setSelectedExercise] = useState(null)
@@ -25,13 +29,13 @@ function ExerciseLibraryPage() {
       setError('')
 
       const data = await getExercises()
+
       setExercises(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error(error)
-      setError('Could not load exercises')
+      setError(t('couldNotLoadExercises'))
     }
   }
-
 
   async function handleAddExercise(newExercise) {
     try {
@@ -39,10 +43,11 @@ function ExerciseLibraryPage() {
 
       await createExercise(newExercise)
       await loadExercises()
+
       setShowForm(false)
     } catch (error) {
       console.error(error)
-      setError('Could not save exercise')
+      setError(t('couldNotSaveExercise'))
     }
   }
 
@@ -57,17 +62,18 @@ function ExerciseLibraryPage() {
 
       await updateExercise(updatedExercise)
       await loadExercises()
+
       setSelectedExercise(null)
       setShowForm(false)
     } catch (error) {
       console.error(error)
-      setError('Could not update exercise')
+      setError(t('couldNotUpdateExercise'))
     }
   }
 
   async function handleDeleteExercise(exerciseId) {
     const confirmed = window.confirm(
-      'Are you sure you want to delete this exercise?'
+      t('confirmDeleteExercise')
     )
 
     if (!confirmed) {
@@ -81,35 +87,35 @@ function ExerciseLibraryPage() {
       await loadExercises()
     } catch (error) {
       console.error(error)
-      setError('Could not delete exercise')
+      setError(t('couldNotDeleteExercise'))
     }
   }
 
- async function handleToggleFavorite(exercise) {
-  const updatedExercises = exercises.map((currentExercise) =>
-    currentExercise.exerciseId === exercise.exerciseId
-      ? {
-          ...currentExercise,
-          isFavorite: !currentExercise.isFavorite,
-        }
-      : currentExercise
-  )
+  async function handleToggleFavorite(exercise) {
+    const updatedExercises = exercises.map((currentExercise) =>
+      currentExercise.exerciseId === exercise.exerciseId
+        ? {
+            ...currentExercise,
+            isFavorite: !currentExercise.isFavorite,
+          }
+        : currentExercise
+    )
 
-  setExercises(updatedExercises)
+    setExercises(updatedExercises)
 
-  try {
-    await updateExercise({
-      ...exercise,
-      isFavorite: !exercise.isFavorite,
-    })
-  } catch (error) {
-    console.error(error)
+    try {
+      await updateExercise({
+        ...exercise,
+        isFavorite: !exercise.isFavorite,
+      })
+    } catch (error) {
+      console.error(error)
 
-    setExercises(exercises)
+      setExercises(exercises)
 
-    setError('Could not update favorite')
+      setError(t('couldNotUpdateFavorite'))
+    }
   }
-}
 
   function handleCancelForm() {
     setSelectedExercise(null)
@@ -121,35 +127,54 @@ function ExerciseLibraryPage() {
       const searchValue = searchTerm.toLowerCase()
 
       return (
-        exercise.exerciseName.toLowerCase().includes(searchValue) ||
-        exercise.bodyPart.toLowerCase().includes(searchValue) ||
-        exercise.equipment?.toLowerCase().includes(searchValue)
+        exercise.exerciseName
+          .toLowerCase()
+          .includes(searchValue) ||
+        exercise.bodyPart
+          .toLowerCase()
+          .includes(searchValue) ||
+        exercise.equipment
+          ?.toLowerCase()
+          .includes(searchValue)
       )
     })
 
     const favorites = filteredExercises
       .filter((exercise) => exercise.isFavorite)
-      .sort((a, b) => a.exerciseName.localeCompare(b.exerciseName))
+      .sort((a, b) =>
+        a.exerciseName.localeCompare(b.exerciseName)
+      )
 
     const nonFavorites = filteredExercises
 
     const bodyParts = [
-      ...new Set(nonFavorites.map((exercise) => exercise.bodyPart)),
+      ...new Set(
+        nonFavorites.map(
+          (exercise) => exercise.bodyPart
+        )
+      ),
     ].sort()
 
     const groups = []
 
     if (favorites.length > 0) {
       groups.push({
-        label: '★ Favorites',
+        label: `★ ${t('favorites')}`,
         exercises: favorites,
       })
     }
 
     bodyParts.forEach((bodyPart) => {
       const exercisesForBodyPart = nonFavorites
-        .filter((exercise) => exercise.bodyPart === bodyPart)
-        .sort((a, b) => a.exerciseName.localeCompare(b.exerciseName))
+        .filter(
+          (exercise) =>
+            exercise.bodyPart === bodyPart
+        )
+        .sort((a, b) =>
+          a.exerciseName.localeCompare(
+            b.exerciseName
+          )
+        )
 
       groups.push({
         label: bodyPart,
@@ -165,12 +190,19 @@ function ExerciseLibraryPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Exercise Library</h2>
+        <h2>{t('exerciseLibrary')}</h2>
 
         <div className="card-actions">
-
-          <button onClick={showForm ? handleCancelForm : () => setShowForm(true)}>
-            {showForm ? 'Cancel' : 'Add Exercise'}
+          <button
+            onClick={
+              showForm
+                ? handleCancelForm
+                : () => setShowForm(true)
+            }
+          >
+            {showForm
+              ? t('cancel')
+              : t('addExercise')}
           </button>
         </div>
       </div>
@@ -178,12 +210,16 @@ function ExerciseLibraryPage() {
       <input
         className="search-input"
         type="text"
-        placeholder="Search exercises..."
+        placeholder={t('searchExercises')}
         value={searchTerm}
-        onChange={(event) => setSearchTerm(event.target.value)}
+        onChange={(event) =>
+          setSearchTerm(event.target.value)
+        }
       />
 
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <p className="error-message">{error}</p>
+      )}
 
       {showForm && (
         <ExerciseForm
@@ -194,61 +230,82 @@ function ExerciseLibraryPage() {
       )}
 
       {exerciseGroups.length === 0 ? (
-        <p>No exercises found.</p>
+        <p>{t('noExercisesFound')}</p>
       ) : (
         <div className="exercise-library-list">
           {exerciseGroups.map((group) => (
-            <div className="exercise-group" key={group.label}>
+            <div
+              className="exercise-group"
+              key={group.label}
+            >
               <h3>{group.label}</h3>
 
               <div className="exercise-table">
                 {group.exercises.map((exercise) => (
-                        <div
-                          className="exercise-row clickable"
-                          key={exercise.exerciseId}
-                          onClick={() => handleEditExercise(exercise)}
-                        >                    
-                        <div>
+                  <div
+                    className="exercise-row clickable"
+                    key={exercise.exerciseId}
+                    onClick={() =>
+                      handleEditExercise(exercise)
+                    }
+                  >
+                    <div>
                       <div className="exercise-name-cell">
                         <button
                           type="button"
                           className={`favorite-button ${
-                            exercise.isFavorite ? 'active' : ''
+                            exercise.isFavorite
+                              ? 'active'
+                              : ''
                           }`}
                           onClick={(event) => {
                             event.stopPropagation()
-                            handleToggleFavorite(exercise)
-                          }}                        >
+
+                            handleToggleFavorite(
+                              exercise
+                            )
+                          }}
+                        >
                           ★
                         </button>
 
-                        <strong>{exercise.exerciseName}</strong>
+                        <strong>
+                          {exercise.exerciseName}
+                        </strong>
                       </div>
 
                       {exercise.defaultNotes && (
-                        <p>{exercise.defaultNotes}</p>
+                        <p>
+                          {exercise.defaultNotes}
+                        </p>
                       )}
                     </div>
 
                     <span>{exercise.bodyPart}</span>
 
-                    <span>{exercise.equipment || '-'}</span>
+                    <span>
+                      {exercise.equipment || '-'}
+                    </span>
 
-                    {group.label !== '★ Favorites' ? (
-  <div className="exercise-row-actions">
-    <button
-      className="delete-icon-button"
-      onClick={(event) => {
-        event.stopPropagation()
-        handleDeleteExercise(exercise.exerciseId)
-      }}
-    >
-      ×
-    </button>
-  </div>
-) : (
-  <div />
-)}
+                    {group.label !==
+                    `★ ${t('favorites')}` ? (
+                      <div className="exercise-row-actions">
+                        <button
+                          className="delete-icon-button"
+                          onClick={(event) => {
+                            event.stopPropagation()
+
+                            handleDeleteExercise(
+                              exercise.exerciseId
+                            )
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <div />
+                    )}
                   </div>
                 ))}
               </div>
