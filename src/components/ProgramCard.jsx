@@ -2,6 +2,7 @@ import useTranslations from '../hooks/useTranslations'
 
 function ProgramCard({
   program,
+  assignedClients = [],
   onEditProgram,
   onDeleteProgram,
 }) {
@@ -16,7 +17,6 @@ function ProgramCard({
         className="delete-icon-button program-delete-button"
         onClick={(event) => {
           event.stopPropagation()
-
           onDeleteProgram(program.programId)
         }}
       >
@@ -27,16 +27,14 @@ function ProgramCard({
 
       {program.goal && (
         <p>
-          <strong>{t('goal')}:</strong>{' '}
-          {program.goal}
+          <strong>{t('goal')}:</strong> {program.goal}
         </p>
       )}
 
       {program.durationWeeks > 0 && (
         <p>
           <strong>{t('duration')}:</strong>{' '}
-          {program.durationWeeks}{' '}
-          {t('weeks')}
+          {program.durationWeeks} {t('weeks')}
         </p>
       )}
 
@@ -45,29 +43,45 @@ function ProgramCard({
 
         {program.exercises?.length > 0 ? (
           <ul className="exercise-list">
-            {program.exercises.map(
-              (exercise, index) => (
-                <li key={index}>
-                  {exercise.exerciseName}
+            {program.exercises.map((exercise, index) => (
+              <li key={index}>
+                {exercise.exerciseName}
 
-                  {exercise.sets &&
-                    ` — ${exercise.sets} ${t('sets').toLowerCase()}`}
+                {exercise.sets &&
+                  ` — ${exercise.sets} ${t('sets').toLowerCase()}`}
 
-                  {exercise.reps &&
-                    ` × ${exercise.reps} ${t('reps').toLowerCase()}`}
-                </li>
-              )
-            )}
+                {exercise.reps &&
+                  ` × ${exercise.reps} ${t('reps').toLowerCase()}`}
+              </li>
+            ))}
           </ul>
         ) : (
           <p>{t('noExercisesAdded')}</p>
         )}
       </div>
 
+      <div>
+        <strong>{t('assignedClients')}:</strong>
+
+        <div className="assigned-programs-cell">
+          {assignedClients.length > 0 ? (
+            assignedClients.map((client) => (
+              <span
+                className="assigned-program-badge"
+                key={client.clientId}
+              >
+                {client.firstName} {client.lastName}
+              </span>
+            ))
+          ) : (
+            <p>{t('noClientsAssigned')}</p>
+          )}
+        </div>
+      </div>
+
       {program.notes && (
         <p>
-          <strong>{t('notes')}:</strong>{' '}
-          {program.notes}
+          <strong>{t('notes')}:</strong> {program.notes}
         </p>
       )}
     </div>

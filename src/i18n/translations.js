@@ -60,6 +60,8 @@ const translations = {
     confirmDeleteClient: 'Are you sure you want to delete this client?',
     client: 'Client',
     assignedPrograms: 'Assigned Programs',
+    assignedClients: 'Assigned Clients',
+    noClientsAssigned: 'No clients assigned.',
 
     /* ---------- Weekly Schedule ---------- */
 
@@ -244,6 +246,8 @@ const translations = {
     confirmDeleteClient: 'Vuoi davvero eliminare questo cliente?',
     client: 'Cliente',
     assignedPrograms: 'Programmi Assegnati',
+    assignedClients: 'Clienti Assegnati',
+    noClientsAssigned: 'Nessun cliente assegnato.',
 
     /* ---------- Programma Settimanale ---------- */
 

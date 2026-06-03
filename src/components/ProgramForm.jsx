@@ -5,6 +5,8 @@ import { getExercises } from '../services/exerciseService'
 import useTranslations from '../hooks/useTranslations'
 
 function ProgramForm({
+  clients,
+  selectedClientIds,
   onAddProgram,
   onUpdateProgram,
   selectedProgram,
@@ -23,12 +25,13 @@ function ProgramForm({
   }
 
   const emptyProgram = {
-    programName: '',
-    goal: '',
-    durationWeeks: '',
-    notes: '',
-    exercises: [emptyExercise],
-  }
+  programName: '',
+  goal: '',
+  durationWeeks: '',
+  notes: '',
+  assignedClientIds: [],
+  exercises: [emptyExercise],
+}
 
   const [program, setProgram] = useState(emptyProgram)
   const [exerciseLibrary, setExerciseLibrary] = useState([])
@@ -38,12 +41,16 @@ function ProgramForm({
   }, [])
 
   useEffect(() => {
-    if (selectedProgram) {
-      setProgram(selectedProgram)
-    } else {
-      setProgram(emptyProgram)
-    }
-  }, [selectedProgram])
+  if (selectedProgram) {
+    setProgram({
+      ...selectedProgram,
+      assignedClientIds:
+        selectedClientIds || [],
+    })
+  } else {
+    setProgram(emptyProgram)
+  }
+}, [selectedProgram, selectedClientIds])
 
   async function loadExerciseLibrary() {
     try {
@@ -108,6 +115,28 @@ function ProgramForm({
       exercises: updatedExercises,
     })
   }
+
+  function handleClientToggle(clientId) {
+  const isSelected =
+    program.assignedClientIds.includes(
+      clientId
+    )
+
+  const updatedClientIds = isSelected
+    ? program.assignedClientIds.filter(
+        (id) => id !== clientId
+      )
+    : [
+        ...program.assignedClientIds,
+        clientId,
+      ]
+
+  setProgram({
+    ...program,
+    assignedClientIds:
+      updatedClientIds,
+  })
+}
 
   function addExercise() {
     setProgram({
@@ -243,6 +272,43 @@ function ProgramForm({
           onChange={handleChange}
         />
       </div>
+
+      <div className="exercise-input-group">
+  <label>
+    {t('assignedClients')}
+  </label>
+
+  {clients.length === 0 ? (
+    <p>{t('noClientsAssigned')}</p>
+  ) : (
+    <div className="program-chip-selector">
+      {clients.map((client) => {
+        const isSelected =
+          program.assignedClientIds.includes(
+            client.clientId
+          )
+
+        return (
+          <button
+            type="button"
+            key={client.clientId}
+            className={`program-chip ${
+              isSelected ? 'active' : ''
+            }`}
+            onClick={() =>
+              handleClientToggle(
+                client.clientId
+              )
+            }
+          >
+            {client.firstName}{' '}
+            {client.lastName}
+          </button>
+        )
+      })}
+    </div>
+  )}
+</div>
 
       <h3>{t('exercises')}</h3>
 

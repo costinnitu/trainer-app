@@ -10,12 +10,22 @@ import {
   deleteProgram,
 } from '../services/programService'
 
+import { getClients } from '../services/clientService'
+
+import {
+  getClientPrograms,
+  assignProgramToClient,
+  removeProgramAssignment,
+} from '../services/clientProgramService'
+
 import useTranslations from '../hooks/useTranslations'
 
 function ProgramsPage() {
   const { t } = useTranslations()
 
   const [programs, setPrograms] = useState([])
+  const [clients, setClients] = useState([])
+  const [clientPrograms, setClientPrograms] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [selectedProgram, setSelectedProgram] = useState(null)
   const [error, setError] = useState('')
@@ -28,12 +38,64 @@ function ProgramsPage() {
     try {
       setError('')
 
-      const data = await getPrograms()
+      const [programsData, clientsData, assignmentsData] =
+        await Promise.all([
+          getPrograms(),
+          getClients(),
+          getClientPrograms(),
+        ])
 
-      setPrograms(Array.isArray(data) ? data : [])
+      setPrograms(Array.isArray(programsData) ? programsData : [])
+      setClients(Array.isArray(clientsData) ? clientsData : [])
+      setClientPrograms(
+        Array.isArray(assignmentsData) ? assignmentsData : []
+      )
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadPrograms'))
+    }
+  }
+
+  function getAssignedClientIds(programId) {
+    return clientPrograms
+      .filter((assignment) => assignment.programId === programId)
+      .map((assignment) => assignment.clientId)
+  }
+
+  function getAssignedClients(programId) {
+    const assignedClientIds = getAssignedClientIds(programId)
+
+    return clients.filter((client) =>
+      assignedClientIds.includes(client.clientId)
+    )
+  }
+
+  async function syncClientAssignments(programId, selectedClientIds) {
+    const existingAssignments = clientPrograms.filter(
+      (assignment) => assignment.programId === programId
+    )
+
+    const existingClientIds = existingAssignments.map(
+      (assignment) => assignment.clientId
+    )
+
+    const clientsToAdd = selectedClientIds.filter(
+      (clientId) => !existingClientIds.includes(clientId)
+    )
+
+    const assignmentsToRemove = existingAssignments.filter(
+      (assignment) => !selectedClientIds.includes(assignment.clientId)
+    )
+
+    for (const clientId of clientsToAdd) {
+      await assignProgramToClient({
+        clientId,
+        programId,
+      })
+    }
+
+    for (const assignment of assignmentsToRemove) {
+      await removeProgramAssignment(assignment.assignmentId)
     }
   }
 
@@ -41,9 +103,16 @@ function ProgramsPage() {
     try {
       setError('')
 
-      await createProgram(newProgram)
-      await loadPrograms()
+      const { assignedClientIds, ...programData } = newProgram
 
+      const savedProgram = await createProgram(programData)
+
+      await syncClientAssignments(
+        savedProgram.programId,
+        assignedClientIds || []
+      )
+
+      await loadPrograms()
       setShowForm(false)
     } catch (error) {
       console.error(error)
@@ -60,9 +129,16 @@ function ProgramsPage() {
     try {
       setError('')
 
-      await updateProgram(updatedProgram)
-      await loadPrograms()
+      const { assignedClientIds, ...programData } = updatedProgram
 
+      await updateProgram(programData)
+
+      await syncClientAssignments(
+        updatedProgram.programId,
+        assignedClientIds || []
+      )
+
+      await loadPrograms()
       setSelectedProgram(null)
       setShowForm(false)
     } catch (error) {
@@ -82,6 +158,14 @@ function ProgramsPage() {
 
     try {
       setError('')
+
+      const assignmentsToRemove = clientPrograms.filter(
+        (assignment) => assignment.programId === programId
+      )
+
+      for (const assignment of assignmentsToRemove) {
+        await removeProgramAssignment(assignment.assignmentId)
+      }
 
       await deleteProgram(programId)
       await loadPrograms()
@@ -120,6 +204,12 @@ function ProgramsPage() {
 
       {showForm && (
         <ProgramForm
+          clients={clients}
+          selectedClientIds={
+            selectedProgram
+              ? getAssignedClientIds(selectedProgram.programId)
+              : []
+          }
           onAddProgram={handleAddProgram}
           onUpdateProgram={handleUpdateProgram}
           selectedProgram={selectedProgram}
@@ -134,6 +224,7 @@ function ProgramsPage() {
             <ProgramCard
               key={program.programId}
               program={program}
+              assignedClients={getAssignedClients(program.programId)}
               onEditProgram={handleEditProgram}
               onDeleteProgram={handleDeleteProgram}
             />
