@@ -75,8 +75,21 @@ button:hover {
 .client-grid,
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .client-card,
@@ -946,4 +959,13 @@ button:hover {
 
 .dark-mode .contact-action-button:hover {
   background: #4338ca;
+}
+
+.clickable-dashboard-card {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.clickable-dashboard-card:hover {
+  transform: translateY(-2px);
 }

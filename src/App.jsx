@@ -100,7 +100,9 @@ function App() {
             </div>
           </nav>
 
-          {currentPage === 'dashboard' && <DashboardPage />}
+          {currentPage === 'dashboard' && (
+  <DashboardPage setCurrentPage={setCurrentPage} />
+  )}
 
           {currentPage === 'contacts' && <ContactsPage />}
 

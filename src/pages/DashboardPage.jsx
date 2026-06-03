@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react'
 
 import { getClients } from '../services/clientService'
 import { getAppointments } from '../services/appointmentService'
-
+import { getClientStatusPreferences } from '../services/settingsService'
 import useTranslations from '../hooks/useTranslations'
 
-function DashboardPage() {
+function DashboardPage({ setCurrentPage }) {
   const { t, language } = useTranslations()
 
   const [clients, setClients] = useState([])
   const [appointments, setAppointments] = useState([])
   const [error, setError] = useState('')
-
+  const [clientStatusPreferences, setClientStatusPreferences] = useState({
+  enableAutoStatus: true,
+  autoPauseAfterDays: 30,
+})
   const locale = language === 'it' ? 'it-IT' : 'en-US'
 
   useEffect(() => {
@@ -22,11 +25,23 @@ function DashboardPage() {
     try {
       setError('')
 
-      const clientsData = await getClients()
-      const appointmentsData = await getAppointments()
+      const [clientsData, appointmentsData, preferencesData] = await Promise.all([
+          getClients(),
+          getAppointments(),
+          getClientStatusPreferences(),
+        ])
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
+      if (preferencesData) {
+  setClientStatusPreferences({
+    enableAutoStatus:
+      preferencesData.enableAutoStatus ?? true,
+
+    autoPauseAfterDays:
+      preferencesData.autoPauseAfterDays || 30,
+  })
+}
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadDashboardData'))
@@ -49,12 +64,55 @@ function DashboardPage() {
     }
   }
 
+  function getComputedClientStatus(client) {
+  if (!clientStatusPreferences.enableAutoStatus) {
+    return client.status
+  }
+
+  if (client.status === 'inactive') {
+    return 'inactive'
+  }
+
+  const today = new Date()
+
+  const clientAppointments = appointments.filter(
+    (appointment) => appointment.clientId === client.clientId
+  )
+
+  if (clientAppointments.length === 0) {
+    return 'paused'
+  }
+
+  const sortedAppointments = [...clientAppointments].sort((a, b) => {
+    const dateA = new Date(`${a.date}T${a.startTime}`)
+    const dateB = new Date(`${b.date}T${b.startTime}`)
+
+    return dateB - dateA
+  })
+
+  const latestAppointment = sortedAppointments[0]
+
+  const latestDate = new Date(
+    `${latestAppointment.date}T${latestAppointment.startTime}`
+  )
+
+  const differenceInDays =
+    (today - latestDate) / (1000 * 60 * 60 * 24)
+
+  if (differenceInDays > clientStatusPreferences.autoPauseAfterDays) {
+    return 'paused'
+  }
+
+  return 'active'
+}
+
+
+
   const today = new Date().toLocaleDateString('en-CA')
 
   const activeClients = clients.filter(
-    (client) => client.status === 'active'
-  )
-
+  (client) => getComputedClientStatus(client) === 'active'
+)
   const todayAppointments = appointments.filter(
     (appointment) => appointment.date === today
   )
@@ -63,9 +121,9 @@ function DashboardPage() {
     (appointment) => appointment.date >= today
   )
 
-  const sortedTodayAppointments = [...todayAppointments].sort((a, b) => {
-    return a.startTime.localeCompare(b.startTime)
-  })
+  const sortedTodayAppointments = [...todayAppointments].sort((a, b) =>
+    a.startTime.localeCompare(b.startTime)
+  )
 
   const sortedUpcomingAppointments = [...upcomingAppointments].sort((a, b) => {
     const dateA = new Date(`${a.date}T${a.startTime}`)
@@ -81,22 +139,34 @@ function DashboardPage() {
       {error && <p className="error-message">{error}</p>}
 
       <div className="dashboard-grid">
-        <div className="dashboard-card">
+        <div
+          className="dashboard-card clickable-dashboard-card"
+          onClick={() => setCurrentPage('clients')}
+        >
           <h3>{t('totalClients')}</h3>
           <p>{clients.length}</p>
         </div>
 
-        <div className="dashboard-card">
+        <div
+          className="dashboard-card clickable-dashboard-card"
+          onClick={() => setCurrentPage('clients')}
+        >
           <h3>{t('activeClients')}</h3>
           <p>{activeClients.length}</p>
         </div>
 
-        <div className="dashboard-card">
+        <div
+          className="dashboard-card clickable-dashboard-card"
+          onClick={() => setCurrentPage('weeklySchedule')}
+        >
           <h3>{t('todaysAppointments')}</h3>
           <p>{todayAppointments.length}</p>
         </div>
 
-        <div className="dashboard-card">
+        <div
+          className="dashboard-card clickable-dashboard-card"
+          onClick={() => setCurrentPage('weeklySchedule')}
+        >
           <h3>{t('upcomingAppointments')}</h3>
           <p>{upcomingAppointments.length}</p>
         </div>
