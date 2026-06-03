@@ -1,7 +1,7 @@
 import TrainerProfileForm from '../components/TrainerProfileForm'
 import SchedulePreferencesForm from '../components/SchedulePreferencesForm'
 import AppPreferencesForm from '../components/AppPreferencesForm'
-
+import ClientStatusPreferencesForm from '../components/ClientStatusPreferencesForm'
 import useTranslations from '../hooks/useTranslations'
 
 function SettingsPage() {
@@ -19,6 +19,12 @@ function SettingsPage() {
       <div className="settings-card">
         <h3>{t('schedulePreferences')}</h3>
         <SchedulePreferencesForm />
+      </div>
+
+      <div className="settings-section">
+         <h3>{t('clientStatusPreferences')}</h3>
+
+        <ClientStatusPreferencesForm />
       </div>
 
       <div className="settings-card">

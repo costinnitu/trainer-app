@@ -183,6 +183,44 @@ const translations = {
     invalidWorkingHours: 'Work end time must be after work start time.',
     couldNotLoadSchedulePreferences: 'Could not load schedule preferences',
     couldNotSaveSchedulePreferences: 'Could not save schedule preferences',
+
+
+    contacts: 'Contacts',
+    contact: 'Contact',
+    addContact: 'Add Contact',
+    searchContacts: 'Search contacts...',
+    source: 'Source',
+
+    new: 'New',
+    contacted: 'Contacted',
+    interested: 'Interested',
+    notInterested: 'Not Interested',
+    converted: 'Converted',
+
+    saveContact: 'Save Contact',
+    updateContact: 'Update Contact',
+
+    couldNotLoadContacts: 'Could not load contacts',
+    couldNotSaveContact: 'Could not save contact',
+    couldNotUpdateContact: 'Could not update contact',
+    couldNotDeleteContact: 'Could not delete contact',
+    confirmDeleteContact: 'Are you sure you want to delete this contact?',
+    convert: 'Convert',
+    confirmConvertContact: 'Convert this contact into a client?',
+    couldNotConvertContact: 'Could not convert contact',
+
+
+
+    clientStatusPreferences: 'Client Status Preferences',
+    enableAutoClientStatus: 'Enable automatic client status',
+    autoPauseAfterDays: 'Auto-pause after days without appointments',
+    saveClientStatusPreferences: 'Save Client Status Preferences',
+    loadingClientStatusPreferences: 'Loading client status preferences...',
+    couldNotLoadClientStatusPreferences: 'Could not load client status preferences',
+    couldNotSaveClientStatusPreferences: 'Could not save client status preferences',
+
+
+
   },
 
   it: {
@@ -369,6 +407,42 @@ const translations = {
     invalidWorkingHours: "L'orario di fine deve essere successivo all'inizio.",
     couldNotLoadSchedulePreferences: 'Impossibile caricare le preferenze orari',
     couldNotSaveSchedulePreferences: 'Impossibile salvare le preferenze orari',
+
+
+    contacts: 'Contatti',
+    contact: 'Contatto',
+    addContact: 'Aggiungi Contatto',
+    searchContacts: 'Cerca contatti...',
+    source: 'Fonte',
+
+    new: 'Nuovo',
+    contacted: 'Contattato',
+    interested: 'Interessato',
+    notInterested: 'Non interessato',
+    converted: 'Convertito',
+
+    saveContact: 'Salva Contatto',
+    updateContact: 'Aggiorna Contatto',
+
+    couldNotLoadContacts: 'Impossibile caricare i contatti',
+    couldNotSaveContact: 'Impossibile salvare il contatto',
+    couldNotUpdateContact: 'Impossibile aggiornare il contatto',
+    couldNotDeleteContact: 'Impossibile eliminare il contatto',
+    confirmDeleteContact: 'Vuoi davvero eliminare questo contatto?',
+    convert: 'Converti',
+    confirmConvertContact: 'Convertire questo contatto in cliente?',
+    couldNotConvertContact: 'Impossibile convertire il contatto',
+
+
+
+    clientStatusPreferences: 'Preferenze Stato Clienti',
+    enableAutoClientStatus: 'Abilita stato automatico clienti',
+    autoPauseAfterDays: 'Metti in pausa dopo giorni senza appuntamenti',
+    saveClientStatusPreferences: 'Salva Preferenze Stato Clienti',
+    loadingClientStatusPreferences: 'Caricamento preferenze stato clienti...',
+    couldNotLoadClientStatusPreferences: 'Impossibile caricare le preferenze stato clienti',
+    couldNotSaveClientStatusPreferences: 'Impossibile salvare le preferenze stato clienti',
+
   },
 }
 

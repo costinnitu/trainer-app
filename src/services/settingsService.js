@@ -89,3 +89,21 @@ export async function saveAppPreferences(preferences) {
 
   return response.json()
 }
+
+export async function getClientStatusPreferences() {
+  const response = await fetch(`${API_URL}/settings/client-status`, {
+    headers: await getAuthHeaders(),
+  })
+
+  return response.json()
+}
+
+export async function saveClientStatusPreferences(preferences) {
+  const response = await fetch(`${API_URL}/settings/client-status`, {
+    method: 'PUT',
+    headers: await getAuthHeaders(),
+    body: JSON.stringify(preferences),
+  })
+
+  return response.json()
+}

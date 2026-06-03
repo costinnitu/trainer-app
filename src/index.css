@@ -913,3 +913,37 @@ button:hover {
   color: white;
   border-color: #2563eb;
 }
+
+.contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-action-button {
+  border: none;
+  border-radius: 999px;
+
+  padding: 6px 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.contact-action-button:hover {
+  background: #dbeafe;
+}
+
+.dark-mode .contact-action-button {
+  background: #312e81;
+  color: #c7d2fe;
+}
+
+.dark-mode .contact-action-button:hover {
+  background: #4338ca;
+}

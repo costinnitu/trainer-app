@@ -18,6 +18,12 @@ import {
   removeProgramAssignment,
 } from '../services/clientProgramService'
 
+import { getAppointments } from '../services/appointmentService'
+
+import {
+  getClientStatusPreferences,
+} from '../services/settingsService'
+
 import useTranslations from '../hooks/useTranslations'
 
 function ClientsPage() {
@@ -32,6 +38,14 @@ function ClientsPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const [appointments, setAppointments] = useState([])
+
+  const [clientStatusPreferences, setClientStatusPreferences] =
+  useState({
+    enableAutoStatus: true,
+    autoPauseAfterDays: 30,
+  })
+
   useEffect(() => {
     refreshClients()
   }, [])
@@ -41,18 +55,41 @@ function ClientsPage() {
       setIsLoading(true)
       setError('')
 
-      const [clientsData, programsData, assignmentsData] =
+     const [
+  clientsData,
+  programsData,
+  assignmentsData,
+  appointmentsData,
+  preferencesData,
+] =
         await Promise.all([
-          getClients(),
-          getPrograms(),
-          getClientPrograms(),
-        ])
+  getClients(),
+  getPrograms(),
+  getClientPrograms(),
+  getAppointments(),
+  getClientStatusPreferences(),
+])
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
       setPrograms(Array.isArray(programsData) ? programsData : [])
       setClientPrograms(
         Array.isArray(assignmentsData) ? assignmentsData : []
       )
+      setAppointments(
+  Array.isArray(appointmentsData)
+    ? appointmentsData
+    : []
+)
+
+if (preferencesData) {
+  setClientStatusPreferences({
+    enableAutoStatus:
+      preferencesData.enableAutoStatus ?? true,
+
+    autoPauseAfterDays:
+      preferencesData.autoPauseAfterDays || 30,
+  })
+}
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadClients'))
@@ -74,6 +111,62 @@ function ClientsPage() {
       assignedProgramIds.includes(program.programId)
     )
   }
+
+  function getComputedClientStatus(client) {
+  if (
+    !clientStatusPreferences.enableAutoStatus
+  ) {
+    return client.status
+  }
+
+  if (client.status === 'inactive') {
+    return 'inactive'
+  }
+
+  const today = new Date()
+
+  const clientAppointments = appointments.filter(
+    (appointment) =>
+      appointment.clientId === client.clientId
+  )
+
+  if (clientAppointments.length === 0) {
+    return 'paused'
+  }
+
+  const sortedAppointments =
+    [...clientAppointments].sort((a, b) => {
+      const dateA = new Date(
+        `${a.date}T${a.startTime}`
+      )
+
+      const dateB = new Date(
+        `${b.date}T${b.startTime}`
+      )
+
+      return dateB - dateA
+    })
+
+  const latestAppointment =
+    sortedAppointments[0]
+
+  const latestDate = new Date(
+    `${latestAppointment.date}T${latestAppointment.startTime}`
+  )
+
+  const differenceInDays =
+    (today - latestDate) /
+    (1000 * 60 * 60 * 24)
+
+  if (
+    differenceInDays >
+    clientStatusPreferences.autoPauseAfterDays
+  ) {
+    return 'paused'
+  }
+
+  return 'active'
+}
 
   async function syncProgramAssignments(clientId, selectedProgramIds) {
     const existingAssignments = clientPrograms.filter(
@@ -238,7 +331,10 @@ function ClientsPage() {
         {filteredClients.map((client) => (
           <ClientCard
             key={client.clientId}
-            client={client}
+          client={{
+            ...client,
+            status: getComputedClientStatus(client),
+          }}
             assignedPrograms={getAssignedPrograms(client.clientId)}
             onDeleteClient={handleDeleteClient}
             onEditClient={handleEditClient}

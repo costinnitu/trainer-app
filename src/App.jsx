@@ -8,6 +8,7 @@ import {
 import '@aws-amplify/ui-react/styles.css'
 
 import DashboardPage from './pages/DashboardPage'
+import ContactsPage from './pages/ContactsPage'
 import ClientsPage from './pages/ClientsPage'
 import WeeklySchedulePage from './pages/WeeklySchedulePage'
 import ProgramsPage from './pages/ProgramsPage'
@@ -67,6 +68,10 @@ function App() {
                 {t('dashboard')}
               </button>
 
+              <button onClick={() => setCurrentPage('contacts')}>
+                {t('contacts')}
+              </button>
+
               <button onClick={() => setCurrentPage('clients')}>
                 {t('clients')}
               </button>
@@ -96,6 +101,8 @@ function App() {
           </nav>
 
           {currentPage === 'dashboard' && <DashboardPage />}
+
+          {currentPage === 'contacts' && <ContactsPage />}
 
           {currentPage === 'clients' && <ClientsPage />}
 
