@@ -2,6 +2,7 @@ import useTranslations from '../hooks/useTranslations'
 
 function ClientCard({
   client,
+  paymentHealth,
   assignedPrograms,
   onDeleteClient,
   onEditClient,
@@ -21,6 +22,38 @@ function ClientCard({
 
       default:
         return status
+    }
+  }
+
+  function getPaymentHealthLabel() {
+    switch (paymentHealth) {
+      case 'paid':
+        return t('allPaid')
+
+      case 'partial':
+        return t('partialPayments')
+
+      case 'unpaid':
+        return t('noPaymentsMade')
+
+      default:
+        return ''
+    }
+  }
+
+  function getPaymentHealthClass() {
+    switch (paymentHealth) {
+      case 'paid':
+        return 'paid'
+
+      case 'partial':
+        return 'paused'
+
+      case 'unpaid':
+        return 'unpaid'
+
+      default:
+        return ''
     }
   }
 
@@ -44,19 +77,27 @@ function ClientCard({
       <span>{client.goal || '-'}</span>
 
       <div className="assigned-programs-cell">
-  {assignedPrograms.length > 0 ? (
-    assignedPrograms.map((program) => (
-      <span
-        className="assigned-program-badge"
-        key={program.programId}
-      >
-        {program.programName}
-      </span>
-    ))
-  ) : (
-    <span>-</span>
-  )}
-</div>
+        {assignedPrograms.length > 0 ? (
+          assignedPrograms.map((program) => (
+            <span
+              className="assigned-program-badge"
+              key={program.programId}
+            >
+              {program.programName}
+            </span>
+          ))
+        ) : (
+          <span>-</span>
+        )}
+      </div>
+
+      <div>
+        {paymentHealth !== 'none' && (
+          <span className={`status-badge ${getPaymentHealthClass()}`}>
+            {getPaymentHealthLabel()}
+          </span>
+        )}
+      </div>
 
       <div className="client-row-actions">
         <button

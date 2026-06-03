@@ -24,6 +24,8 @@ import {
   getClientStatusPreferences,
 } from '../services/settingsService'
 
+import { getPayments } from '../services/paymentService'
+
 import useTranslations from '../hooks/useTranslations'
 
 function ClientsPage() {
@@ -39,6 +41,7 @@ function ClientsPage() {
   const [error, setError] = useState('')
 
   const [appointments, setAppointments] = useState([])
+  const [payments, setPayments] = useState([])
 
   const [clientStatusPreferences, setClientStatusPreferences] =
   useState({
@@ -61,6 +64,7 @@ function ClientsPage() {
   assignmentsData,
   appointmentsData,
   preferencesData,
+  paymentsData,
 ] =
         await Promise.all([
   getClients(),
@@ -68,6 +72,7 @@ function ClientsPage() {
   getClientPrograms(),
   getAppointments(),
   getClientStatusPreferences(),
+  getPayments(),
 ])
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
@@ -76,10 +81,15 @@ function ClientsPage() {
         Array.isArray(assignmentsData) ? assignmentsData : []
       )
       setAppointments(
-  Array.isArray(appointmentsData)
-    ? appointmentsData
-    : []
-)
+        Array.isArray(appointmentsData)
+        ? appointmentsData
+        : []
+      )
+      setPayments(
+        Array.isArray(paymentsData)
+          ? paymentsData
+          : []
+      )
 
 if (preferencesData) {
   setClientStatusPreferences({
@@ -167,6 +177,59 @@ if (preferencesData) {
 
   return 'active'
 }
+
+function getClientPaymentHealth(clientId) {
+  const clientAppointments = appointments.filter(
+    (appointment) =>
+      appointment.clientId === clientId
+  )
+
+  const clientAssignments = clientPrograms.filter(
+    (assignment) =>
+      assignment.clientId === clientId
+  )
+
+  const billableItems = [
+    ...clientAppointments.map((appointment) => ({
+      itemType: 'appointment',
+      itemId: appointment.appointmentId,
+    })),
+
+    ...clientAssignments.map((assignment) => ({
+      itemType: 'program',
+      itemId: assignment.assignmentId,
+    })),
+  ]
+
+  if (billableItems.length === 0) {
+    return 'none'
+  }
+
+  let paidCount = 0
+
+  for (const item of billableItems) {
+    const payment = payments.find(
+      (payment) =>
+        payment.itemType === item.itemType &&
+        payment.itemId === item.itemId
+    )
+
+    if (payment?.status === 'paid') {
+      paidCount++
+    }
+  }
+
+  if (paidCount === 0) {
+    return 'unpaid'
+  }
+
+  if (paidCount === billableItems.length) {
+    return 'paid'
+  }
+
+  return 'partial'
+}
+
 
   async function syncProgramAssignments(clientId, selectedProgramIds) {
     const existingAssignments = clientPrograms.filter(
@@ -325,6 +388,7 @@ if (preferencesData) {
           <strong>{t('phone')}</strong>
           <strong>{t('goal')}</strong>
           <strong>{t('assignedPrograms')}</strong>
+          <strong>{t('payments')}</strong>
           <div></div>
         </div>
 
@@ -335,6 +399,7 @@ if (preferencesData) {
             ...client,
             status: getComputedClientStatus(client),
           }}
+            paymentHealth={getClientPaymentHealth(client.clientId)}
             assignedPrograms={getAssignedPrograms(client.clientId)}
             onDeleteClient={handleDeleteClient}
             onEditClient={handleEditClient}

@@ -14,7 +14,7 @@ import WeeklySchedulePage from './pages/WeeklySchedulePage'
 import ProgramsPage from './pages/ProgramsPage'
 import ExerciseLibraryPage from './pages/ExerciseLibraryPage'
 import SettingsPage from './pages/SettingsPage'
-
+import PaymentTrackingPage from './pages/PaymentTrackingPage'
 import { getAppPreferences } from './services/settingsService'
 import useTranslations from './hooks/useTranslations'
 
@@ -84,6 +84,10 @@ function App() {
                 {t('programs')}
               </button>
 
+              <button onClick={() => setCurrentPage('paymentTracking')}>
+                {t('paymentTracking')}
+              </button>
+
               <button onClick={() => setCurrentPage('exerciseLibrary')}>
                 {t('exercises')}
               </button>
@@ -109,6 +113,8 @@ function App() {
           {currentPage === 'clients' && <ClientsPage />}
 
           {currentPage === 'programs' && <ProgramsPage />}
+
+          {currentPage === 'paymentTracking' && <PaymentTrackingPage />}
 
           {currentPage === 'weeklySchedule' && <WeeklySchedulePage />}
 

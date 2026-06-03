@@ -220,6 +220,27 @@ const translations = {
     couldNotSaveClientStatusPreferences: 'Could not save client status preferences',
 
 
+    paymentTracking: 'Payment Tracking',
+    appointment: 'Appointment',
+    program: 'Program',
+    type: 'Type',
+    description: 'Description',
+    paid: 'Paid',
+    unpaid: 'Unpaid',
+    markPaid: 'Mark Paid',
+    markUnpaid: 'Mark Unpaid',
+    noBillableItems: 'No billable items yet.',
+    couldNotLoadPayments: 'Could not load payments',
+    couldNotUpdatePayment: 'Could not update payment',
+
+    payments: 'Payments',
+    allPaid: 'All Paid',
+    missingPayments: 'Missing Payments',
+    noPayments: 'No Payments',
+    partialPayments: 'Pagamenti Parziali',
+    noPaymentsMade: 'Nessun Pagamento',
+
+
 
   },
 
@@ -443,6 +464,30 @@ const translations = {
     couldNotLoadClientStatusPreferences: 'Impossibile caricare le preferenze stato clienti',
     couldNotSaveClientStatusPreferences: 'Impossibile salvare le preferenze stato clienti',
 
+
+
+
+    paymentTracking: 'Tracciamento Pagamenti',
+    appointment: 'Appuntamento',
+    program: 'Programma',
+    type: 'Tipo',
+    description: 'Descrizione',
+    paid: 'Pagato',
+    unpaid: 'Non pagato',
+    markPaid: 'Segna Pagato',
+    markUnpaid: 'Segna Non Pagato',
+    noBillableItems: 'Nessun elemento da pagare.',
+    couldNotLoadPayments: 'Impossibile caricare i pagamenti',
+    couldNotUpdatePayment: 'Impossibile aggiornare il pagamento',
+
+    payments: 'Pagamenti',
+    allPaid: 'Tutto Pagato',
+    missingPayments: 'Pagamenti Mancanti',
+    noPayments: 'Nessun Pagamento',
+    partialPayments: 'Pagamenti Parziali',
+    noPaymentsMade: 'Nessun Pagamento',
+
+    
   },
 }
 
