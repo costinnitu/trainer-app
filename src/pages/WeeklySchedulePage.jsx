@@ -269,7 +269,23 @@ function WeeklySchedulePage() {
     setSelectedAppointment(appointment)
   }
 
-  async function handleAddAppointment(newAppointment) {
+  async function updatePackageRemainingSessions(packageId, change) {
+  const targetPackage = clientPackages.find(
+    (clientPackage) => clientPackage.packageId === packageId
+  )
+
+  if (!targetPackage) {
+    return
+  }
+
+  await updateClientPackage({
+    ...targetPackage,
+    remainingSessions:
+      Number(targetPackage.remainingSessions || 0) + change,
+  })
+}
+
+async function handleAddAppointment(newAppointment) {
   if (hasOverlap(newAppointment)) {
     alert(t('appointmentOverlap'))
     return
@@ -278,41 +294,38 @@ function WeeklySchedulePage() {
   await createAppointment(newAppointment)
 
   if (newAppointment.packageId) {
-    const selectedPackage =
-      clientPackages.find(
-        (clientPackage) =>
-          clientPackage.packageId ===
-          newAppointment.packageId
-      )
-
-    if (
-      selectedPackage &&
-      selectedPackage.remainingSessions > 0
-    ) {
-      await updateClientPackage({
-        ...selectedPackage,
-        remainingSessions:
-          selectedPackage.remainingSessions - 1,
-      })
-    }
+    await updatePackageRemainingSessions(newAppointment.packageId, -1)
   }
 
   await loadPageData()
   setInitialAppointment(null)
 }
 
-  async function handleUpdateAppointment(updatedAppointment) {
-    if (hasOverlap(updatedAppointment)) {
-      alert(t('appointmentOverlap'))
-      return
-    }
-
-    await updateAppointment(updatedAppointment)
-    await loadPageData()
-    setSelectedAppointment(null)
+async function handleUpdateAppointment(updatedAppointment) {
+  if (hasOverlap(updatedAppointment)) {
+    alert(t('appointmentOverlap'))
+    return
   }
 
-  async function handleDeleteAppointment() {
+  const oldPackageId = selectedAppointment?.packageId || ''
+  const newPackageId = updatedAppointment.packageId || ''
+
+  if (oldPackageId !== newPackageId) {
+    if (oldPackageId) {
+      await updatePackageRemainingSessions(oldPackageId, 1)
+    }
+
+    if (newPackageId) {
+      await updatePackageRemainingSessions(newPackageId, -1)
+    }
+  }
+
+  await updateAppointment(updatedAppointment)
+  await loadPageData()
+  setSelectedAppointment(null)
+}
+
+async function handleDeleteAppointment() {
   if (!selectedAppointment) {
     return
   }
@@ -326,18 +339,7 @@ function WeeklySchedulePage() {
   await deleteAppointment(selectedAppointment.appointmentId)
 
   if (selectedAppointment.packageId) {
-    const selectedPackage = clientPackages.find(
-      (clientPackage) =>
-        clientPackage.packageId === selectedAppointment.packageId
-    )
-
-    if (selectedPackage) {
-      await updateClientPackage({
-        ...selectedPackage,
-        remainingSessions:
-          Number(selectedPackage.remainingSessions || 0) + 1,
-      })
-    }
+    await updatePackageRemainingSessions(selectedAppointment.packageId, 1)
   }
 
   await loadPageData()

@@ -63,16 +63,22 @@ function AppointmentForm({
   }, [selectedAppointment, initialAppointment])
 
   function getAvailableClientPackages() {
-    if (!formData.clientId) {
-      return []
+  if (!formData.clientId) {
+    return []
+  }
+
+  return clientPackages.filter((clientPackage) => {
+    if (clientPackage.clientId !== formData.clientId) {
+      return false
     }
 
-    return clientPackages.filter(
-      (clientPackage) =>
-        clientPackage.clientId === formData.clientId &&
-        clientPackage.remainingSessions > 0
-    )
-  }
+    if (clientPackage.remainingSessions > 0) {
+      return true
+    }
+
+    return clientPackage.packageId === formData.packageId
+  })
+}
 
   function calculateEndTime(startTime) {
     const [hours, minutes] = startTime.split(':').map(Number)

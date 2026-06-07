@@ -1034,3 +1034,23 @@ button:hover {
 .dark-mode .payment-row-header strong {
   color: #9ca3af;
 }
+
+.status-badge.package-session-healthy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.package-session-low {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.package-session-last {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.status-badge.package-session-exhausted {
+  background: #fee2e2;
+  color: #991b1b;
+}

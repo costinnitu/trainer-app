@@ -127,6 +127,7 @@ function PackagesPage() {
           <strong>{t('client')}</strong>
           <strong>{t('package')}</strong>
           <strong>{t('sessions')}</strong>
+          <strong>{t('sessionStatus')}</strong>
           <strong>{t('amount')}</strong>
           <strong>{t('status')}</strong>
           <div></div>

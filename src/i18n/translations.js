@@ -258,6 +258,11 @@ const translations = {
     confirmDeletePackage: 'Are you sure you want to delete this package?',
     remainingSessions: 'Remaining Sessions',
     noPackage: 'No Package',
+    sessionStatus: 'Session Status',
+    healthy: 'Healthy',
+    lowSessions: 'Low Sessions',
+    lastSession: 'Last Session',
+    exhausted: 'Exhausted',
 
   },
 
@@ -522,7 +527,11 @@ const translations = {
     confirmDeletePackage: 'Vuoi davvero eliminare questo pacchetto?',
     remainingSessions: 'Sessioni Rimanenti',
     noPackage: 'Nessun Pacchetto',
-
+    sessionStatus: 'Stato Sessioni',
+    healthy: 'Buono',
+    lowSessions: 'Poche Sessioni',
+    lastSession: 'Ultima Sessione',
+    exhausted: 'Esaurito',
 
   },
 }
