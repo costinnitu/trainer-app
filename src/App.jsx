@@ -17,6 +17,7 @@ import SettingsPage from './pages/SettingsPage'
 import PaymentTrackingPage from './pages/PaymentTrackingPage'
 import { getAppPreferences } from './services/settingsService'
 import useTranslations from './hooks/useTranslations'
+import PackagesPage from './pages/PackagesPage'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
@@ -84,6 +85,10 @@ function App() {
                 {t('programs')}
               </button>
 
+              <button onClick={() => setCurrentPage('packages')}>
+                {t('packages')}
+              </button>
+
               <button onClick={() => setCurrentPage('paymentTracking')}>
                 {t('paymentTracking')}
               </button>
@@ -117,6 +122,8 @@ function App() {
           {currentPage === 'paymentTracking' && <PaymentTrackingPage />}
 
           {currentPage === 'weeklySchedule' && <WeeklySchedulePage />}
+
+          {currentPage === 'packages' && <PackagesPage />}
 
           {currentPage === 'exerciseLibrary' && <ExerciseLibraryPage />}
 

@@ -6,6 +6,7 @@ import useTranslations from '../hooks/useTranslations'
 
 function AppointmentForm({
   clients,
+  clientPackages,
   onAddAppointment,
   onUpdateAppointment,
   selectedAppointment,
@@ -20,6 +21,8 @@ function AppointmentForm({
     startTime: '',
     endTime: '',
     status: 'scheduled',
+    packageId: '',
+    packageName: '',
     notes: '',
 
     calendarProvider: null,
@@ -27,11 +30,8 @@ function AppointmentForm({
     syncedToCalendar: false,
   }
 
-  const [defaultSessionDuration, setDefaultSessionDuration] =
-    useState(60)
-
-  const [formData, setFormData] =
-    useState(emptyForm)
+  const [defaultSessionDuration, setDefaultSessionDuration] = useState(60)
+  const [formData, setFormData] = useState(emptyForm)
 
   useEffect(() => {
     loadSchedulePreferences()
@@ -39,13 +39,10 @@ function AppointmentForm({
 
   async function loadSchedulePreferences() {
     try {
-      const data =
-        await getSchedulePreferences()
+      const data = await getSchedulePreferences()
 
       if (data?.defaultSessionDuration) {
-        setDefaultSessionDuration(
-          data.defaultSessionDuration
-        )
+        setDefaultSessionDuration(data.defaultSessionDuration)
       }
     } catch (error) {
       console.error(error)
@@ -65,24 +62,28 @@ function AppointmentForm({
     }
   }, [selectedAppointment, initialAppointment])
 
+  function getAvailableClientPackages() {
+    if (!formData.clientId) {
+      return []
+    }
+
+    return clientPackages.filter(
+      (clientPackage) =>
+        clientPackage.clientId === formData.clientId &&
+        clientPackage.remainingSessions > 0
+    )
+  }
+
   function calculateEndTime(startTime) {
-    const [hours, minutes] =
-      startTime.split(':').map(Number)
+    const [hours, minutes] = startTime.split(':').map(Number)
 
     const startDate = new Date()
 
     startDate.setHours(hours)
-    startDate.setMinutes(
-      minutes + defaultSessionDuration
-    )
+    startDate.setMinutes(minutes + defaultSessionDuration)
 
-    const endHours = String(
-      startDate.getHours()
-    ).padStart(2, '0')
-
-    const endMinutes = String(
-      startDate.getMinutes()
-    ).padStart(2, '0')
+    const endHours = String(startDate.getHours()).padStart(2, '0')
+    const endMinutes = String(startDate.getMinutes()).padStart(2, '0')
 
     return `${endHours}:${endMinutes}`
   }
@@ -92,8 +93,7 @@ function AppointmentForm({
 
     if (name === 'clientId') {
       const selectedClient = clients.find(
-        (client) =>
-          client.clientId === value
+        (client) => client.clientId === value
       )
 
       setFormData({
@@ -102,15 +102,28 @@ function AppointmentForm({
         clientName: selectedClient
           ? `${selectedClient.firstName} ${selectedClient.lastName}`
           : '',
+        packageId: '',
+        packageName: '',
       })
 
       return
     }
 
-    if (
-      name === 'startTime' &&
-      !selectedAppointment
-    ) {
+    if (name === 'packageId') {
+      const selectedPackage = clientPackages.find(
+        (clientPackage) => clientPackage.packageId === value
+      )
+
+      setFormData({
+        ...formData,
+        packageId: value,
+        packageName: selectedPackage?.packageName || '',
+      })
+
+      return
+    }
+
+    if (name === 'startTime' && !selectedAppointment) {
       setFormData({
         ...formData,
         startTime: value,
@@ -129,18 +142,12 @@ function AppointmentForm({
   function handleSubmit(event) {
     event.preventDefault()
 
-    if (
-      formData.endTime <=
-      formData.startTime
-    ) {
+    if (formData.endTime <= formData.startTime) {
       alert(t('invalidAppointmentTime'))
       return
     }
 
-    const today =
-      new Date().toLocaleDateString(
-        'en-CA'
-      )
+    const today = new Date().toLocaleDateString('en-CA')
 
     if (formData.date < today) {
       alert(t('appointmentPastDate'))
@@ -156,31 +163,44 @@ function AppointmentForm({
     setFormData(emptyForm)
   }
 
+  const availableClientPackages = getAvailableClientPackages()
+
   return (
-    <form
-      className="client-form"
-      onSubmit={handleSubmit}
-    >
+    <form className="client-form" onSubmit={handleSubmit}>
       <select
         name="clientId"
         value={formData.clientId}
         onChange={handleChange}
         required
       >
-        <option value="">
-          {t('selectClient')}
-        </option>
+        <option value="">{t('selectClient')}</option>
 
         {clients.map((client) => (
-          <option
-            key={client.clientId}
-            value={client.clientId}
-          >
-            {client.firstName}{' '}
-            {client.lastName}
+          <option key={client.clientId} value={client.clientId}>
+            {client.firstName} {client.lastName}
           </option>
         ))}
       </select>
+
+      {formData.clientId && (
+        <select
+          name="packageId"
+          value={formData.packageId}
+          onChange={handleChange}
+        >
+          <option value="">{t('noPackage')}</option>
+
+          {availableClientPackages.map((clientPackage) => (
+            <option
+              key={clientPackage.packageId}
+              value={clientPackage.packageId}
+            >
+              {clientPackage.packageName} -{' '}
+              {clientPackage.remainingSessions} {t('remainingSessions')}
+            </option>
+          ))}
+        </select>
+      )}
 
       <input
         type="date"
@@ -211,17 +231,9 @@ function AppointmentForm({
         value={formData.status}
         onChange={handleChange}
       >
-        <option value="scheduled">
-          {t('scheduled')}
-        </option>
-
-        <option value="completed">
-          {t('completed')}
-        </option>
-
-        <option value="cancelled">
-          {t('cancelled')}
-        </option>
+        <option value="scheduled">{t('scheduled')}</option>
+        <option value="completed">{t('completed')}</option>
+        <option value="cancelled">{t('cancelled')}</option>
       </select>
 
       <input

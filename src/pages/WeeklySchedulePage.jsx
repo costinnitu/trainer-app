@@ -12,6 +12,11 @@ import {
   deleteAppointment,
 } from '../services/appointmentService'
 
+import {
+  getClientPackages,
+  updateClientPackage,
+} from '../services/clientPackageService'
+
 import useTranslations from '../hooks/useTranslations'
 
 const DEFAULT_SCHEDULE = {
@@ -38,6 +43,7 @@ function WeeklySchedulePage() {
 
   const [clients, setClients] = useState([])
   const [appointments, setAppointments] = useState([])
+  const [clientPackages, setClientPackages] = useState([])
   const [schedulePreferences, setSchedulePreferences] =
     useState(DEFAULT_SCHEDULE)
   const [selectedAppointment, setSelectedAppointment] = useState(null)
@@ -62,14 +68,25 @@ function WeeklySchedulePage() {
     try {
       setError('')
 
-      const [clientsData, appointmentsData, scheduleData] = await Promise.all([
+      const [
+          clientsData,
+          appointmentsData,
+          scheduleData,
+          packagesData,
+        ] = await Promise.all([
         getClients(),
         getAppointments(),
         getSchedulePreferences(),
+        getClientPackages(),
       ])
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
+      setClientPackages(
+  Array.isArray(packagesData)
+    ? packagesData
+    : []
+)
 
       if (scheduleData) {
         setSchedulePreferences({
@@ -253,15 +270,36 @@ function WeeklySchedulePage() {
   }
 
   async function handleAddAppointment(newAppointment) {
-    if (hasOverlap(newAppointment)) {
-      alert(t('appointmentOverlap'))
-      return
-    }
-
-    await createAppointment(newAppointment)
-    await loadPageData()
-    setInitialAppointment(null)
+  if (hasOverlap(newAppointment)) {
+    alert(t('appointmentOverlap'))
+    return
   }
+
+  await createAppointment(newAppointment)
+
+  if (newAppointment.packageId) {
+    const selectedPackage =
+      clientPackages.find(
+        (clientPackage) =>
+          clientPackage.packageId ===
+          newAppointment.packageId
+      )
+
+    if (
+      selectedPackage &&
+      selectedPackage.remainingSessions > 0
+    ) {
+      await updateClientPackage({
+        ...selectedPackage,
+        remainingSessions:
+          selectedPackage.remainingSessions - 1,
+      })
+    }
+  }
+
+  await loadPageData()
+  setInitialAppointment(null)
+}
 
   async function handleUpdateAppointment(updatedAppointment) {
     if (hasOverlap(updatedAppointment)) {
@@ -275,21 +313,37 @@ function WeeklySchedulePage() {
   }
 
   async function handleDeleteAppointment() {
-    if (!selectedAppointment) {
-      return
-    }
-
-    const confirmed = window.confirm(t('confirmDeleteAppointment'))
-
-    if (!confirmed) {
-      return
-    }
-
-    await deleteAppointment(selectedAppointment.appointmentId)
-    await loadPageData()
-    setSelectedAppointment(null)
-    setInitialAppointment(null)
+  if (!selectedAppointment) {
+    return
   }
+
+  const confirmed = window.confirm(t('confirmDeleteAppointment'))
+
+  if (!confirmed) {
+    return
+  }
+
+  await deleteAppointment(selectedAppointment.appointmentId)
+
+  if (selectedAppointment.packageId) {
+    const selectedPackage = clientPackages.find(
+      (clientPackage) =>
+        clientPackage.packageId === selectedAppointment.packageId
+    )
+
+    if (selectedPackage) {
+      await updateClientPackage({
+        ...selectedPackage,
+        remainingSessions:
+          Number(selectedPackage.remainingSessions || 0) + 1,
+      })
+    }
+  }
+
+  await loadPageData()
+  setSelectedAppointment(null)
+  setInitialAppointment(null)
+}
 
   function handleCancelEdit() {
     setSelectedAppointment(null)
@@ -370,6 +424,7 @@ function WeeklySchedulePage() {
 
           <AppointmentForm
             clients={clients}
+            clientPackages={clientPackages}
             selectedAppointment={selectedAppointment}
             initialAppointment={initialAppointment}
             onUpdateAppointment={handleUpdateAppointment}

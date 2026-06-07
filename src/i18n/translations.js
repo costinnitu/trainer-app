@@ -220,7 +220,7 @@ const translations = {
     couldNotSaveClientStatusPreferences: 'Could not save client status preferences',
 
 
-    paymentTracking: 'Payment Tracking',
+    paymentTracking: 'Payment',
     appointment: 'Appointment',
     program: 'Program',
     type: 'Type',
@@ -241,6 +241,23 @@ const translations = {
     noPaymentsMade: 'Nessun Pagamento',
 
 
+
+    packages: 'Packages',
+    package: 'Package',
+    addPackage: 'Add Package',
+    packageName: 'Package name',
+    sessions: 'Sessions',
+    amount: 'Amount',
+    savePackage: 'Save Package',
+    updatePackage: 'Update Package',
+    noPackagesYet: 'No packages yet.',
+    couldNotLoadPackages: 'Could not load packages',
+    couldNotSavePackage: 'Could not save package',
+    couldNotUpdatePackage: 'Could not update package',
+    couldNotDeletePackage: 'Could not delete package',
+    confirmDeletePackage: 'Are you sure you want to delete this package?',
+    remainingSessions: 'Remaining Sessions',
+    noPackage: 'No Package',
 
   },
 
@@ -467,7 +484,7 @@ const translations = {
 
 
 
-    paymentTracking: 'Tracciamento Pagamenti',
+    paymentTracking: 'Pagamenti',
     appointment: 'Appuntamento',
     program: 'Programma',
     type: 'Tipo',
@@ -487,7 +504,26 @@ const translations = {
     partialPayments: 'Pagamenti Parziali',
     noPaymentsMade: 'Nessun Pagamento',
 
-    
+
+
+    packages: 'Pacchetti',
+    package: 'Pacchetto',
+    addPackage: 'Aggiungi Pacchetto',
+    packageName: 'Nome pacchetto',
+    sessions: 'Sessioni',
+    amount: 'Importo',
+    savePackage: 'Salva Pacchetto',
+    updatePackage: 'Aggiorna Pacchetto',
+    noPackagesYet: 'Nessun pacchetto presente.',
+    couldNotLoadPackages: 'Impossibile caricare i pacchetti',
+    couldNotSavePackage: 'Impossibile salvare il pacchetto',
+    couldNotUpdatePackage: 'Impossibile aggiornare il pacchetto',
+    couldNotDeletePackage: 'Impossibile eliminare il pacchetto',
+    confirmDeletePackage: 'Vuoi davvero eliminare questo pacchetto?',
+    remainingSessions: 'Sessioni Rimanenti',
+    noPackage: 'Nessun Pacchetto',
+
+
   },
 }
 
