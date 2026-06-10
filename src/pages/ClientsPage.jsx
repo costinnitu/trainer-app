@@ -1,31 +1,34 @@
 import { useEffect, useState } from 'react'
-
 import ClientCard from '../components/ClientCard'
 import ClientForm from '../components/ClientForm'
-
 import {
   getClients,
   createClient,
   deleteClient,
   updateClient,
 } from '../services/clientService'
-
 import { getPrograms } from '../services/programService'
-
 import {
   getClientPrograms,
   assignProgramToClient,
   removeProgramAssignment,
 } from '../services/clientProgramService'
-
 import { getAppointments } from '../services/appointmentService'
-
 import {
   getClientStatusPreferences,
 } from '../services/settingsService'
-
-import { getPayments } from '../services/paymentService'
-
+import {
+  getPayments,
+  createPayment,
+  updatePayment,
+  deletePayment,
+} from '../services/paymentService'
+import {
+  getClientPackages,
+  createClientPackage,
+  updateClientPackage,
+  deleteClientPackage,
+} from '../services/clientPackageService'
 import useTranslations from '../hooks/useTranslations'
 
 function ClientsPage() {
@@ -39,7 +42,7 @@ function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-
+  const [clientPackages, setClientPackages] = useState([])
   const [appointments, setAppointments] = useState([])
   const [payments, setPayments] = useState([])
 
@@ -65,14 +68,15 @@ function ClientsPage() {
   appointmentsData,
   preferencesData,
   paymentsData,
-] =
-        await Promise.all([
+  packagesData,
+] = await Promise.all([
   getClients(),
   getPrograms(),
   getClientPrograms(),
   getAppointments(),
   getClientStatusPreferences(),
   getPayments(),
+  getClientPackages(),
 ])
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
@@ -89,6 +93,9 @@ function ClientsPage() {
         Array.isArray(paymentsData)
           ? paymentsData
           : []
+      )
+      setClientPackages(
+        Array.isArray(packagesData) ? packagesData : []
       )
 
 if (preferencesData) {
@@ -107,6 +114,26 @@ if (preferencesData) {
       setIsLoading(false)
     }
   }
+
+  function getPackagesForClient(clientId) {
+  return clientPackages.filter(
+    (clientPackage) => clientPackage.clientId === clientId
+  )
+}
+
+  function getActivePackage(clientId) {
+  const activePackages = clientPackages.filter(
+    (clientPackage) =>
+      clientPackage.clientId === clientId &&
+      Number(clientPackage.remainingSessions || 0) > 0
+  )
+
+  if (activePackages.length === 0) {
+    return null
+  }
+
+  return activePackages[0]
+}
 
   function getAssignedProgramIds(clientId) {
     return clientPrograms
@@ -229,6 +256,117 @@ function getClientPaymentHealth(clientId) {
 
   return 'partial'
 }
+
+function getPaymentForPackage(packageId) {
+  return payments.find(
+    (payment) =>
+      payment.itemType === 'package' &&
+      payment.itemId === packageId
+  )
+}
+
+
+async function handleAddPackage(newPackage) {
+  try {
+    setError('')
+
+    const savedPackage = await createClientPackage(newPackage)
+
+    await createPayment({
+      clientId: savedPackage.clientId,
+      clientName: savedPackage.clientName,
+      itemType: 'package',
+      itemId: savedPackage.packageId,
+      description: savedPackage.packageName,
+      amount: Number(savedPackage.amount || 0),
+      status: savedPackage.paymentStatus || 'unpaid',
+      paidAt:
+        savedPackage.paymentStatus === 'paid'
+          ? new Date().toISOString()
+          : null,
+      method: 'other',
+      notes: savedPackage.notes || '',
+    })
+
+    await refreshClients()
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotSavePackage'))
+  }
+}
+
+async function handleUpdatePackage(updatedPackage) {
+  try {
+    setError('')
+
+    const savedPackage = await updateClientPackage(updatedPackage)
+    const existingPayment = getPaymentForPackage(savedPackage.packageId)
+
+    if (existingPayment) {
+      await updatePayment({
+        ...existingPayment,
+        clientId: savedPackage.clientId,
+        clientName: savedPackage.clientName,
+        itemType: 'package',
+        itemId: savedPackage.packageId,
+        description: savedPackage.packageName,
+        amount: Number(savedPackage.amount || 0),
+        status: savedPackage.paymentStatus || 'unpaid',
+        paidAt:
+          savedPackage.paymentStatus === 'paid'
+            ? existingPayment.paidAt || new Date().toISOString()
+            : null,
+        notes: savedPackage.notes || '',
+      })
+    } else {
+      await createPayment({
+        clientId: savedPackage.clientId,
+        clientName: savedPackage.clientName,
+        itemType: 'package',
+        itemId: savedPackage.packageId,
+        description: savedPackage.packageName,
+        amount: Number(savedPackage.amount || 0),
+        status: savedPackage.paymentStatus || 'unpaid',
+        paidAt:
+          savedPackage.paymentStatus === 'paid'
+            ? new Date().toISOString()
+            : null,
+        method: 'other',
+        notes: savedPackage.notes || '',
+      })
+    }
+
+    await refreshClients()
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotUpdatePackage'))
+  }
+}
+
+async function handleDeletePackage(packageId) {
+  const confirmed = window.confirm(t('confirmDeletePackage'))
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    setError('')
+
+    const existingPayment = getPaymentForPackage(packageId)
+
+    if (existingPayment) {
+      await deletePayment(existingPayment.paymentId)
+    }
+
+    await deleteClientPackage(packageId)
+    await refreshClients()
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotDeletePackage'))
+  }
+}
+
 
 
   async function syncProgramAssignments(clientId, selectedProgramIds) {
@@ -365,16 +503,24 @@ function getClientPaymentHealth(clientId) {
 
       {showForm && (
         <ClientForm
-          programs={programs}
-          selectedProgramIds={
-            selectedClient
-              ? getAssignedProgramIds(selectedClient.clientId)
-              : []
-          }
-          onAddClient={handleAddClient}
-          onUpdateClient={handleUpdateClient}
-          selectedClient={selectedClient}
-        />
+  programs={programs}
+  clientPackages={
+    selectedClient
+      ? getPackagesForClient(selectedClient.clientId)
+      : []
+  }
+  selectedProgramIds={
+    selectedClient
+      ? getAssignedProgramIds(selectedClient.clientId)
+      : []
+  }
+  onAddClient={handleAddClient}
+  onUpdateClient={handleUpdateClient}
+  onAddPackage={handleAddPackage}
+  onUpdatePackage={handleUpdatePackage}
+  onDeletePackage={handleDeletePackage}
+  selectedClient={selectedClient}
+/>
       )}
 
       {isLoading && <p>{t('loadingClients')}</p>}
@@ -385,8 +531,8 @@ function getClientPaymentHealth(clientId) {
         <div className="client-row client-row-header">
           <strong>{t('client')}</strong>
           <strong>{t('status')}</strong>
-          <strong>{t('phone')}</strong>
-          <strong>{t('goal')}</strong>
+          <strong>WhatsApp</strong>
+          <strong>{t('activePackage')}</strong>
           <strong>{t('assignedPrograms')}</strong>
           <strong>{t('payments')}</strong>
           <div></div>
@@ -400,6 +546,7 @@ function getClientPaymentHealth(clientId) {
             status: getComputedClientStatus(client),
           }}
             paymentHealth={getClientPaymentHealth(client.clientId)}
+            activePackage={getActivePackage(client.clientId)}
             assignedPrograms={getAssignedPrograms(client.clientId)}
             onDeleteClient={handleDeleteClient}
             onEditClient={handleEditClient}

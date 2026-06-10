@@ -263,6 +263,7 @@ const translations = {
     lowSessions: 'Low Sessions',
     lastSession: 'Last Session',
     exhausted: 'Exhausted',
+    activePackage: 'Active Package',
 
   },
 
@@ -532,6 +533,8 @@ const translations = {
     lowSessions: 'Poche Sessioni',
     lastSession: 'Ultima Sessione',
     exhausted: 'Esaurito',
+    activePackage: 'Pacchetto Attivo',
+
 
   },
 }

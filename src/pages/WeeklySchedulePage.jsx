@@ -382,6 +382,17 @@ async function handleDeleteAppointment() {
   const weekDays = getWeekDays()
   const timeSlotCount = calendarEndHour - calendarStartHour + 1
 
+  function getPackageForAppointment(appointment) {
+  if (!appointment.packageId) {
+    return null
+  }
+
+  return clientPackages.find(
+    (clientPackage) =>
+      clientPackage.packageId === appointment.packageId
+  )
+}
+
   return (
     <div className="page">
       <div className="page-header">
@@ -494,6 +505,16 @@ async function handleDeleteAppointment() {
                     </strong>
 
                     <span>{appointment.clientName}</span>
+
+                          {appointment.packageName && (
+                            <small className="calendar-package-info">
+                              {appointment.packageName}
+                              {getPackageForAppointment(appointment) &&
+                                ` · ${
+                                  getPackageForAppointment(appointment).remainingSessions
+                                } ${t('remainingSessions')}`}
+                            </small>
+                          )}
                   </div>
                 ))}
               </div>

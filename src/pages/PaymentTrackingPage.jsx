@@ -4,6 +4,7 @@ import { getClients } from '../services/clientService'
 import { getAppointments } from '../services/appointmentService'
 import { getPrograms } from '../services/programService'
 import { getClientPrograms } from '../services/clientProgramService'
+import { getClientPackages } from '../services/clientPackageService'
 
 import {
   getPayments,
@@ -20,6 +21,7 @@ function PaymentTrackingPage() {
   const [appointments, setAppointments] = useState([])
   const [programs, setPrograms] = useState([])
   const [clientPrograms, setClientPrograms] = useState([])
+  const [clientPackages, setClientPackages] = useState([])
   const [payments, setPayments] = useState([])
   const [error, setError] = useState('')
 
@@ -38,12 +40,14 @@ function PaymentTrackingPage() {
         appointmentsData,
         programsData,
         clientProgramsData,
+        packagesData,
         paymentsData,
       ] = await Promise.all([
         getClients(),
         getAppointments(),
         getPrograms(),
         getClientPrograms(),
+        getClientPackages(),
         getPayments(),
       ])
 
@@ -53,6 +57,7 @@ function PaymentTrackingPage() {
       setClientPrograms(
         Array.isArray(clientProgramsData) ? clientProgramsData : []
       )
+      setClientPackages(Array.isArray(packagesData) ? packagesData : [])
       setPayments(Array.isArray(paymentsData) ? paymentsData : [])
     } catch (error) {
       console.error(error)
@@ -85,16 +90,31 @@ function PaymentTrackingPage() {
   }
 
   function getBillableItems() {
-    const appointmentItems = appointments.map((appointment) => ({
-      itemType: 'appointment',
-      itemId: appointment.appointmentId,
-      clientId: appointment.clientId,
-      clientName: appointment.clientName || getClientName(appointment.clientId),
-      description: `${t('appointment')} - ${new Date(
-        appointment.date
-      ).toLocaleDateString(locale)} ${appointment.startTime}`,
-      date: appointment.date,
+    const packageItems = clientPackages.map((clientPackage) => ({
+      itemType: 'package',
+      itemId: clientPackage.packageId,
+      clientId: clientPackage.clientId,
+      clientName:
+        clientPackage.clientName || getClientName(clientPackage.clientId),
+      description: clientPackage.packageName,
+      amount: Number(clientPackage.amount || 0),
+      date: clientPackage.purchaseDate || clientPackage.createdAt,
     }))
+
+    const standaloneAppointmentItems = appointments
+      .filter((appointment) => !appointment.packageId)
+      .map((appointment) => ({
+        itemType: 'appointment',
+        itemId: appointment.appointmentId,
+        clientId: appointment.clientId,
+        clientName:
+          appointment.clientName || getClientName(appointment.clientId),
+        description: `${t('appointment')} - ${new Date(
+          appointment.date
+        ).toLocaleDateString(locale)} ${appointment.startTime}`,
+        amount: 0,
+        date: appointment.date,
+      }))
 
     const programItems = clientPrograms.map((assignment) => ({
       itemType: 'program',
@@ -102,10 +122,15 @@ function PaymentTrackingPage() {
       clientId: assignment.clientId,
       clientName: getClientName(assignment.clientId),
       description: getProgramName(assignment.programId),
+      amount: 0,
       date: assignment.assignedAt,
     }))
 
-    return [...appointmentItems, ...programItems].sort((a, b) => {
+    return [
+      ...packageItems,
+      ...standaloneAppointmentItems,
+      ...programItems,
+    ].sort((a, b) => {
       const dateA = new Date(a.date)
       const dateB = new Date(b.date)
 
@@ -122,6 +147,7 @@ function PaymentTrackingPage() {
       if (existingPayment) {
         await updatePayment({
           ...existingPayment,
+          amount: item.amount || existingPayment.amount || 0,
           status: 'paid',
           paidAt: new Date().toISOString(),
         })
@@ -132,6 +158,7 @@ function PaymentTrackingPage() {
           itemType: item.itemType,
           itemId: item.itemId,
           description: item.description,
+          amount: item.amount || 0,
           status: 'paid',
           paidAt: new Date().toISOString(),
           method: 'other',
@@ -155,6 +182,7 @@ function PaymentTrackingPage() {
       if (existingPayment) {
         await updatePayment({
           ...existingPayment,
+          amount: item.amount || existingPayment.amount || 0,
           status: 'unpaid',
           paidAt: null,
         })
@@ -165,6 +193,7 @@ function PaymentTrackingPage() {
           itemType: item.itemType,
           itemId: item.itemId,
           description: item.description,
+          amount: item.amount || 0,
           status: 'unpaid',
           paidAt: null,
           method: 'other',
@@ -181,6 +210,9 @@ function PaymentTrackingPage() {
 
   function getTranslatedItemType(itemType) {
     switch (itemType) {
+      case 'package':
+        return t('package')
+
       case 'appointment':
         return t('appointment')
 
@@ -207,6 +239,7 @@ function PaymentTrackingPage() {
           <strong>{t('client')}</strong>
           <strong>{t('type')}</strong>
           <strong>{t('description')}</strong>
+          <strong>{t('amount')}</strong>
           <strong>{t('status')}</strong>
           <div></div>
         </div>
@@ -217,6 +250,7 @@ function PaymentTrackingPage() {
           billableItems.map((item) => {
             const payment = getPaymentForItem(item.itemType, item.itemId)
             const status = payment?.status || 'unpaid'
+            const amount = payment?.amount ?? item.amount ?? 0
 
             return (
               <div
@@ -228,6 +262,8 @@ function PaymentTrackingPage() {
                 <span>{getTranslatedItemType(item.itemType)}</span>
 
                 <span>{item.description}</span>
+
+                <span>€{amount}</span>
 
                 <span className={`status-badge ${status}`}>
                   {status === 'paid' ? t('paid') : t('unpaid')}
