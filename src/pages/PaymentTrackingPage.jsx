@@ -4,7 +4,10 @@ import { getClients } from '../services/clientService'
 import { getAppointments } from '../services/appointmentService'
 import { getPrograms } from '../services/programService'
 import { getClientPrograms } from '../services/clientProgramService'
-import { getClientPackages } from '../services/clientPackageService'
+import {
+  getClientPackages,
+  updateClientPackage,
+} from '../services/clientPackageService'
 
 import {
   getPayments,
@@ -30,6 +33,26 @@ function PaymentTrackingPage() {
   useEffect(() => {
     loadPaymentData()
   }, [])
+
+
+  async function syncPackagePaymentStatus(item, status) {
+  if (item.itemType !== 'package') {
+    return
+  }
+
+  const linkedPackage = clientPackages.find(
+    (clientPackage) => clientPackage.packageId === item.itemId
+  )
+
+  if (!linkedPackage) {
+    return
+  }
+
+  await updateClientPackage({
+    ...linkedPackage,
+    paymentStatus: status,
+  })
+}
 
   async function loadPaymentData() {
     try {
@@ -166,6 +189,7 @@ function PaymentTrackingPage() {
         })
       }
 
+      await syncPackagePaymentStatus(item, 'paid')
       await loadPaymentData()
     } catch (error) {
       console.error(error)
@@ -201,6 +225,7 @@ function PaymentTrackingPage() {
         })
       }
 
+      await syncPackagePaymentStatus(item, 'unpaid')
       await loadPaymentData()
     } catch (error) {
       console.error(error)

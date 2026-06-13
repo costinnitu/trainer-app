@@ -206,51 +206,23 @@ if (preferencesData) {
 }
 
 function getClientPaymentHealth(clientId) {
-  const clientAppointments = appointments.filter(
-    (appointment) =>
-      appointment.clientId === clientId
+  const clientPayments = payments.filter(
+    (payment) => payment.clientId === clientId
   )
 
-  const clientAssignments = clientPrograms.filter(
-    (assignment) =>
-      assignment.clientId === clientId
-  )
-
-  const billableItems = [
-    ...clientAppointments.map((appointment) => ({
-      itemType: 'appointment',
-      itemId: appointment.appointmentId,
-    })),
-
-    ...clientAssignments.map((assignment) => ({
-      itemType: 'program',
-      itemId: assignment.assignmentId,
-    })),
-  ]
-
-  if (billableItems.length === 0) {
+  if (clientPayments.length === 0) {
     return 'none'
   }
 
-  let paidCount = 0
+  const paidPayments = clientPayments.filter(
+    (payment) => payment.status === 'paid'
+  )
 
-  for (const item of billableItems) {
-    const payment = payments.find(
-      (payment) =>
-        payment.itemType === item.itemType &&
-        payment.itemId === item.itemId
-    )
-
-    if (payment?.status === 'paid') {
-      paidCount++
-    }
-  }
-
-  if (paidCount === 0) {
+  if (paidPayments.length === 0) {
     return 'unpaid'
   }
 
-  if (paidCount === billableItems.length) {
+  if (paidPayments.length === clientPayments.length) {
     return 'paid'
   }
 
