@@ -49,8 +49,9 @@ function WeeklySchedulePage() {
   const [selectedAppointment, setSelectedAppointment] = useState(null)
   const [initialAppointment, setInitialAppointment] = useState(null)
   const [selectedWeekDate, setSelectedWeekDate] = useState(new Date())
-  const [error, setError] = useState('')
   const [hoverPreview, setHoverPreview] = useState(null)
+  const [error, setError] = useState('')
+
   const locale = language === 'it' ? 'it-IT' : 'en-US'
 
   const calendarStartHour = Number(
@@ -69,11 +70,11 @@ function WeeklySchedulePage() {
       setError('')
 
       const [
-          clientsData,
-          appointmentsData,
-          scheduleData,
-          packagesData,
-        ] = await Promise.all([
+        clientsData,
+        appointmentsData,
+        scheduleData,
+        packagesData,
+      ] = await Promise.all([
         getClients(),
         getAppointments(),
         getSchedulePreferences(),
@@ -82,11 +83,7 @@ function WeeklySchedulePage() {
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
-      setClientPackages(
-  Array.isArray(packagesData)
-    ? packagesData
-    : []
-)
+      setClientPackages(Array.isArray(packagesData) ? packagesData : [])
 
       if (scheduleData) {
         setSchedulePreferences({
@@ -106,41 +103,6 @@ function WeeklySchedulePage() {
       setError(t('couldNotLoadWeeklySchedule'))
     }
   }
-
-
-  function handleCalendarSlotHover(event, day) {
-  const rect = event.currentTarget.getBoundingClientRect()
-  const clickY = event.clientY - rect.top
-
-  const duration =
-    schedulePreferences.defaultSessionDuration || 60
-
-  const durationPixels =
-    (duration / 60) * HOUR_HEIGHT
-
-  const centeredY = clickY - durationPixels / 2
-
-  const minutesFromStart =
-    Math.round((centeredY / HOUR_HEIGHT) * 2) * 30
-
-  const totalMinutes =
-    calendarStartHour * 60 + minutesFromStart
-
-  const hours = Math.floor(totalMinutes / 60)
-  const minutes = totalMinutes % 60
-
-  const startTime = `${String(hours).padStart(2, '0')}:${String(
-    minutes
-  ).padStart(2, '0')}`
-
-  const endTime = calculateEndTime(startTime)
-
-  setHoverPreview({
-    date: day.dateValue,
-    startTime,
-    endTime,
-  })
-}
 
   function getStartOfWeek(date) {
     const currentDate = new Date(date)
@@ -190,23 +152,6 @@ function WeeklySchedulePage() {
       .sort((a, b) => a.startTime.localeCompare(b.startTime))
   }
 
-  function hasOverlap(targetAppointment) {
-    return appointments.some((appointment) => {
-      if (appointment.appointmentId === targetAppointment.appointmentId) {
-        return false
-      }
-
-      if (appointment.date !== targetAppointment.date) {
-        return false
-      }
-
-      return (
-        targetAppointment.startTime < appointment.endTime &&
-        targetAppointment.endTime > appointment.startTime
-      )
-    })
-  }
-
   function calculateEndTime(startTime) {
     const duration = schedulePreferences.defaultSessionDuration || 60
     const [hours, minutes] = startTime.split(':').map(Number)
@@ -220,11 +165,17 @@ function WeeklySchedulePage() {
     ).padStart(2, '0')}`
   }
 
-  function getTimeFromClick(event) {
+  function getCenteredTimeFromClick(event) {
     const rect = event.currentTarget.getBoundingClientRect()
     const clickY = event.clientY - rect.top
 
-    const minutesFromStart = Math.round((clickY / HOUR_HEIGHT) * 2) * 30
+    const duration = schedulePreferences.defaultSessionDuration || 60
+    const durationPixels = (duration / 60) * HOUR_HEIGHT
+    const centeredY = clickY - durationPixels / 2
+
+    const minutesFromStart =
+      Math.round((centeredY / HOUR_HEIGHT) * 2) * 30
+
     const totalMinutes = calendarStartHour * 60 + minutesFromStart
 
     const hours = Math.floor(totalMinutes / 60)
@@ -249,13 +200,15 @@ function WeeklySchedulePage() {
     const endTotalMinutes = endHour * 60 + endMinute
     const calendarStartMinutes = calendarStartHour * 60
 
+    const top =
+      ((startTotalMinutes - calendarStartMinutes) / 60) * HOUR_HEIGHT
+
+    const height =
+      ((endTotalMinutes - startTotalMinutes) / 60) * HOUR_HEIGHT
+
     return {
-      top: `${
-        ((startTotalMinutes - calendarStartMinutes) / 60) * HOUR_HEIGHT
-      }px`,
-      height: `${
-        ((endTotalMinutes - startTotalMinutes) / 60) * HOUR_HEIGHT
-      }px`,
+      top: `${top}px`,
+      height: `${Math.max(height - 2, 20)}px`,
     }
   }
 
@@ -275,12 +228,40 @@ function WeeklySchedulePage() {
     return `${((currentMinutes - calendarStartMinutes) / 60) * HOUR_HEIGHT}px`
   }
 
+  function hasOverlap(targetAppointment) {
+    return appointments.some((appointment) => {
+      if (appointment.appointmentId === targetAppointment.appointmentId) {
+        return false
+      }
+
+      if (appointment.date !== targetAppointment.date) {
+        return false
+      }
+
+      return (
+        targetAppointment.startTime < appointment.endTime &&
+        targetAppointment.endTime > appointment.startTime
+      )
+    })
+  }
+
+  function handleCalendarSlotHover(event, day) {
+    const startTime = getCenteredTimeFromClick(event)
+    const endTime = calculateEndTime(startTime)
+
+    setHoverPreview({
+      date: day.dateValue,
+      startTime,
+      endTime,
+    })
+  }
+
   function handleCalendarSlotClick(event, day) {
     if (event.target.closest('.calendar-appointment')) {
       return
     }
 
-    const startTime = getTimeFromClick(event)
+    const startTime = getCenteredTimeFromClick(event)
     const endTime = calculateEndTime(startTime)
 
     setSelectedAppointment(null)
@@ -305,82 +286,82 @@ function WeeklySchedulePage() {
   }
 
   async function updatePackageRemainingSessions(packageId, change) {
-  const targetPackage = clientPackages.find(
-    (clientPackage) => clientPackage.packageId === packageId
-  )
+    const targetPackage = clientPackages.find(
+      (clientPackage) => clientPackage.packageId === packageId
+    )
 
-  if (!targetPackage) {
-    return
-  }
-
-  await updateClientPackage({
-    ...targetPackage,
-    remainingSessions:
-      Number(targetPackage.remainingSessions || 0) + change,
-  })
-}
-
-async function handleAddAppointment(newAppointment) {
-  if (hasOverlap(newAppointment)) {
-    alert(t('appointmentOverlap'))
-    return
-  }
-
-  await createAppointment(newAppointment)
-
-  if (newAppointment.packageId) {
-    await updatePackageRemainingSessions(newAppointment.packageId, -1)
-  }
-
-  await loadPageData()
-  setInitialAppointment(null)
-}
-
-async function handleUpdateAppointment(updatedAppointment) {
-  if (hasOverlap(updatedAppointment)) {
-    alert(t('appointmentOverlap'))
-    return
-  }
-
-  const oldPackageId = selectedAppointment?.packageId || ''
-  const newPackageId = updatedAppointment.packageId || ''
-
-  if (oldPackageId !== newPackageId) {
-    if (oldPackageId) {
-      await updatePackageRemainingSessions(oldPackageId, 1)
+    if (!targetPackage) {
+      return
     }
 
-    if (newPackageId) {
-      await updatePackageRemainingSessions(newPackageId, -1)
+    await updateClientPackage({
+      ...targetPackage,
+      remainingSessions:
+        Number(targetPackage.remainingSessions || 0) + change,
+    })
+  }
+
+  async function handleAddAppointment(newAppointment) {
+    if (hasOverlap(newAppointment)) {
+      alert(t('appointmentOverlap'))
+      return
     }
+
+    await createAppointment(newAppointment)
+
+    if (newAppointment.packageId) {
+      await updatePackageRemainingSessions(newAppointment.packageId, -1)
+    }
+
+    await loadPageData()
+    setInitialAppointment(null)
   }
 
-  await updateAppointment(updatedAppointment)
-  await loadPageData()
-  setSelectedAppointment(null)
-}
+  async function handleUpdateAppointment(updatedAppointment) {
+    if (hasOverlap(updatedAppointment)) {
+      alert(t('appointmentOverlap'))
+      return
+    }
 
-async function handleDeleteAppointment() {
-  if (!selectedAppointment) {
-    return
+    const oldPackageId = selectedAppointment?.packageId || ''
+    const newPackageId = updatedAppointment.packageId || ''
+
+    if (oldPackageId !== newPackageId) {
+      if (oldPackageId) {
+        await updatePackageRemainingSessions(oldPackageId, 1)
+      }
+
+      if (newPackageId) {
+        await updatePackageRemainingSessions(newPackageId, -1)
+      }
+    }
+
+    await updateAppointment(updatedAppointment)
+    await loadPageData()
+    setSelectedAppointment(null)
   }
 
-  const confirmed = window.confirm(t('confirmDeleteAppointment'))
+  async function handleDeleteAppointment() {
+    if (!selectedAppointment) {
+      return
+    }
 
-  if (!confirmed) {
-    return
+    const confirmed = window.confirm(t('confirmDeleteAppointment'))
+
+    if (!confirmed) {
+      return
+    }
+
+    await deleteAppointment(selectedAppointment.appointmentId)
+
+    if (selectedAppointment.packageId) {
+      await updatePackageRemainingSessions(selectedAppointment.packageId, 1)
+    }
+
+    await loadPageData()
+    setSelectedAppointment(null)
+    setInitialAppointment(null)
   }
-
-  await deleteAppointment(selectedAppointment.appointmentId)
-
-  if (selectedAppointment.packageId) {
-    await updatePackageRemainingSessions(selectedAppointment.packageId, 1)
-  }
-
-  await loadPageData()
-  setSelectedAppointment(null)
-  setInitialAppointment(null)
-}
 
   function handleCancelEdit() {
     setSelectedAppointment(null)
@@ -403,6 +384,17 @@ async function handleDeleteAppointment() {
     setSelectedWeekDate(new Date())
   }
 
+  function getPackageForAppointment(appointment) {
+    if (!appointment.packageId) {
+      return null
+    }
+
+    return clientPackages.find(
+      (clientPackage) =>
+        clientPackage.packageId === appointment.packageId
+    )
+  }
+
   const startOfWeek = getStartOfWeek(selectedWeekDate)
 
   const endOfWeek = new Date(startOfWeek)
@@ -416,17 +408,6 @@ async function handleDeleteAppointment() {
   const currentTimePosition = getCurrentTimePosition()
   const weekDays = getWeekDays()
   const timeSlotCount = calendarEndHour - calendarStartHour + 1
-
-  function getPackageForAppointment(appointment) {
-  if (!appointment.packageId) {
-    return null
-  }
-
-  return clientPackages.find(
-    (clientPackage) =>
-      clientPackage.packageId === appointment.packageId
-  )
-}
 
   return (
     <div className="page">
@@ -518,11 +499,11 @@ async function handleDeleteAppointment() {
               </div>
 
               <div
-                  className="calendar-day-body"
-                  onClick={(event) => handleCalendarSlotClick(event, day)}
-                  onMouseMove={(event) => handleCalendarSlotHover(event, day)}
-                  onMouseLeave={() => setHoverPreview(null)}
-                >
+                className="calendar-day-body"
+                onClick={(event) => handleCalendarSlotClick(event, day)}
+                onMouseMove={(event) => handleCalendarSlotHover(event, day)}
+                onMouseLeave={() => setHoverPreview(null)}
+              >
                 {isToday && currentTimePosition && (
                   <div
                     className="current-time-line"
@@ -538,31 +519,34 @@ async function handleDeleteAppointment() {
                 )}
 
                 {dayAppointments.map((appointment) => {
-                      const appointmentPackage = getPackageForAppointment(appointment)
+                  const appointmentPackage =
+                    getPackageForAppointment(appointment)
 
-                      return (
-                        <div
-                          className={`calendar-appointment ${appointment.status}`}
-                          key={appointment.appointmentId}
-                          style={getAppointmentPosition(appointment)}
-                          onClick={() => handleEditAppointment(appointment)}
-                        >
-                          <strong>{appointment.clientName}</strong>
+                  return (
+                    <div
+                      className={`calendar-appointment ${appointment.status}`}
+                      key={appointment.appointmentId}
+                      style={getAppointmentPosition(appointment)}
+                      onClick={() => handleEditAppointment(appointment)}
+                    >
+                      <strong>{appointment.clientName}</strong>
 
-                          <span>
-                            {appointment.startTime} - {appointment.endTime}
-                          </span>
+                      <span>
+                        {appointment.startTime} - {appointment.endTime}
+                      </span>
 
-                          {appointment.packageName && (
-                            <small className="calendar-package-info">
-                              {appointmentPackage
-                                ? `${appointmentPackage.remainingSessions} ${t('remainingSessions')}`
-                                : appointment.packageName}
-                            </small>
-                          )}
-                        </div>
-                      )
-                    })}
+                      {appointment.packageName && (
+                        <small className="calendar-package-info">
+                          {appointmentPackage
+                            ? `${appointmentPackage.remainingSessions} ${t(
+                                'remainingSessions'
+                              )}`
+                            : appointment.packageName}
+                        </small>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )
