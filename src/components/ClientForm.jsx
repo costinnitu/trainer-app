@@ -4,6 +4,7 @@ import useTranslations from '../hooks/useTranslations'
 
 function ClientForm({
   programs,
+  payments,
   clientPackages,
   selectedProgramIds,
   onAddClient,
@@ -51,6 +52,16 @@ function ClientForm({
     setPackageForm(emptyPackageForm)
     setSelectedPackage(null)
   }, [selectedClient, selectedProgramIds])
+
+  function getPackagePaymentStatus(packageId) {
+    const payment = payments?.find(
+      (payment) =>
+        payment.itemType === 'package' &&
+        payment.itemId === packageId
+    )
+
+    return payment?.status || 'unpaid'
+  }
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -133,7 +144,7 @@ function ClientForm({
       totalSessions: clientPackage.totalSessions || 10,
       remainingSessions: clientPackage.remainingSessions || 0,
       amount: clientPackage.amount || '',
-      paymentStatus: clientPackage.paymentStatus || 'paid',
+      paymentStatus: getPackagePaymentStatus(clientPackage.packageId),
       purchaseDate:
         clientPackage.purchaseDate ||
         new Date().toISOString().split('T')[0],
@@ -228,39 +239,43 @@ function ClientForm({
             <p>{t('noPackagesYet')}</p>
           ) : (
             <div className="client-package-list">
-              {clientPackages.map((clientPackage) => (
-                <div
-                  className="client-package-row clickable"
-                  key={clientPackage.packageId}
-                  onClick={() => handleEditPackage(clientPackage)}
-                >
-                  <strong>{clientPackage.packageName}</strong>
+              {clientPackages.map((clientPackage) => {
+                const paymentStatus = getPackagePaymentStatus(
+                  clientPackage.packageId
+                )
 
-                  <span>
-                    {clientPackage.remainingSessions}/
-                    {clientPackage.totalSessions}
-                  </span>
-
-                  <span>€{clientPackage.amount || 0}</span>
-
-                  <span className={`status-badge ${clientPackage.paymentStatus}`}>
-                    {clientPackage.paymentStatus === 'paid'
-                      ? t('paid')
-                      : t('unpaid')}
-                  </span>
-
-                  <button
-                    type="button"
-                    className="delete-icon-button"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      onDeletePackage(clientPackage.packageId)
-                    }}
+                return (
+                  <div
+                    className="client-package-row clickable"
+                    key={clientPackage.packageId}
+                    onClick={() => handleEditPackage(clientPackage)}
                   >
-                    ×
-                  </button>
-                </div>
-              ))}
+                    <strong>{clientPackage.packageName}</strong>
+
+                    <span>
+                      {clientPackage.remainingSessions}/
+                      {clientPackage.totalSessions}
+                    </span>
+
+                    <span>€{clientPackage.amount || 0}</span>
+
+                    <span className={`status-badge ${paymentStatus}`}>
+                      {paymentStatus === 'paid' ? t('paid') : t('unpaid')}
+                    </span>
+
+                    <button
+                      type="button"
+                      className="delete-icon-button"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        onDeletePackage(clientPackage.packageId)
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )
+              })}
             </div>
           )}
 

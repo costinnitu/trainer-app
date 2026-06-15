@@ -113,16 +113,17 @@ function PaymentTrackingPage() {
   }
 
   function getBillableItems() {
-    const packageItems = clientPackages.map((clientPackage) => ({
-      itemType: 'package',
-      itemId: clientPackage.packageId,
-      clientId: clientPackage.clientId,
-      clientName:
-        clientPackage.clientName || getClientName(clientPackage.clientId),
-      description: clientPackage.packageName,
-      amount: Number(clientPackage.amount || 0),
-      date: clientPackage.purchaseDate || clientPackage.createdAt,
-    }))
+   const packageItems = clientPackages.map((clientPackage) => ({
+  itemType: 'package',
+  itemId: clientPackage.packageId,
+  clientId: clientPackage.clientId,
+  clientName:
+    clientPackage.clientName || getClientName(clientPackage.clientId),
+  description: clientPackage.packageName,
+  amount: Number(clientPackage.amount || 0),
+  date: clientPackage.purchaseDate || clientPackage.createdAt,
+  paymentStatus: clientPackage.paymentStatus || 'unpaid',
+}))
 
     const standaloneAppointmentItems = appointments
       .filter((appointment) => !appointment.packageId)
@@ -274,7 +275,7 @@ function PaymentTrackingPage() {
         ) : (
           billableItems.map((item) => {
             const payment = getPaymentForItem(item.itemType, item.itemId)
-            const status = payment?.status || 'unpaid'
+            const status = payment?.status || item.paymentStatus || 'unpaid'
             const amount = payment?.amount ?? item.amount ?? 0
 
             return (

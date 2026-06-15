@@ -1,34 +1,42 @@
 import { useEffect, useState } from 'react'
 import ClientCard from '../components/ClientCard'
 import ClientForm from '../components/ClientForm'
+
 import {
   getClients,
   createClient,
   deleteClient,
   updateClient,
 } from '../services/clientService'
+
 import { getPrograms } from '../services/programService'
+
 import {
   getClientPrograms,
   assignProgramToClient,
   removeProgramAssignment,
 } from '../services/clientProgramService'
+
 import { getAppointments } from '../services/appointmentService'
+
 import {
   getClientStatusPreferences,
 } from '../services/settingsService'
+
 import {
   getPayments,
   createPayment,
   updatePayment,
   deletePayment,
 } from '../services/paymentService'
+
 import {
   getClientPackages,
   createClientPackage,
   updateClientPackage,
   deleteClientPackage,
 } from '../services/clientPackageService'
+
 import useTranslations from '../hooks/useTranslations'
 
 function ClientsPage() {
@@ -39,15 +47,14 @@ function ClientsPage() {
   const [clients, setClients] = useState([])
   const [programs, setPrograms] = useState([])
   const [clientPrograms, setClientPrograms] = useState([])
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
   const [clientPackages, setClientPackages] = useState([])
   const [appointments, setAppointments] = useState([])
   const [payments, setPayments] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const [clientStatusPreferences, setClientStatusPreferences] =
-  useState({
+  const [clientStatusPreferences, setClientStatusPreferences] = useState({
     enableAutoStatus: true,
     autoPauseAfterDays: 30,
   })
@@ -61,52 +68,37 @@ function ClientsPage() {
       setIsLoading(true)
       setError('')
 
-     const [
-  clientsData,
-  programsData,
-  assignmentsData,
-  appointmentsData,
-  preferencesData,
-  paymentsData,
-  packagesData,
-] = await Promise.all([
-  getClients(),
-  getPrograms(),
-  getClientPrograms(),
-  getAppointments(),
-  getClientStatusPreferences(),
-  getPayments(),
-  getClientPackages(),
-])
+      const [
+        clientsData,
+        programsData,
+        assignmentsData,
+        appointmentsData,
+        preferencesData,
+        paymentsData,
+        packagesData,
+      ] = await Promise.all([
+        getClients(),
+        getPrograms(),
+        getClientPrograms(),
+        getAppointments(),
+        getClientStatusPreferences(),
+        getPayments(),
+        getClientPackages(),
+      ])
 
       setClients(Array.isArray(clientsData) ? clientsData : [])
       setPrograms(Array.isArray(programsData) ? programsData : [])
-      setClientPrograms(
-        Array.isArray(assignmentsData) ? assignmentsData : []
-      )
-      setAppointments(
-        Array.isArray(appointmentsData)
-        ? appointmentsData
-        : []
-      )
-      setPayments(
-        Array.isArray(paymentsData)
-          ? paymentsData
-          : []
-      )
-      setClientPackages(
-        Array.isArray(packagesData) ? packagesData : []
-      )
+      setClientPrograms(Array.isArray(assignmentsData) ? assignmentsData : [])
+      setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
+      setPayments(Array.isArray(paymentsData) ? paymentsData : [])
+      setClientPackages(Array.isArray(packagesData) ? packagesData : [])
 
-if (preferencesData) {
-  setClientStatusPreferences({
-    enableAutoStatus:
-      preferencesData.enableAutoStatus ?? true,
-
-    autoPauseAfterDays:
-      preferencesData.autoPauseAfterDays || 30,
-  })
-}
+      if (preferencesData) {
+        setClientStatusPreferences({
+          enableAutoStatus: preferencesData.enableAutoStatus ?? true,
+          autoPauseAfterDays: preferencesData.autoPauseAfterDays || 30,
+        })
+      }
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadClients'))
@@ -116,24 +108,20 @@ if (preferencesData) {
   }
 
   function getPackagesForClient(clientId) {
-  return clientPackages.filter(
-    (clientPackage) => clientPackage.clientId === clientId
-  )
-}
-
-  function getActivePackage(clientId) {
-  const activePackages = clientPackages.filter(
-    (clientPackage) =>
-      clientPackage.clientId === clientId &&
-      Number(clientPackage.remainingSessions || 0) > 0
-  )
-
-  if (activePackages.length === 0) {
-    return null
+    return clientPackages.filter(
+      (clientPackage) => clientPackage.clientId === clientId
+    )
   }
 
-  return activePackages[0]
-}
+  function getActivePackage(clientId) {
+    const activePackages = clientPackages.filter(
+      (clientPackage) =>
+        clientPackage.clientId === clientId &&
+        Number(clientPackage.remainingSessions || 0) > 0
+    )
+
+    return activePackages[0] || null
+  }
 
   function getAssignedProgramIds(clientId) {
     return clientPrograms
@@ -150,196 +138,203 @@ if (preferencesData) {
   }
 
   function getComputedClientStatus(client) {
-  if (
-    !clientStatusPreferences.enableAutoStatus
-  ) {
-    return client.status
-  }
+    if (!clientStatusPreferences.enableAutoStatus) {
+      return client.status
+    }
 
-  if (client.status === 'inactive') {
-    return 'inactive'
-  }
+    if (client.status === 'inactive') {
+      return 'inactive'
+    }
 
-  const today = new Date()
+    const clientAppointments = appointments.filter(
+      (appointment) => appointment.clientId === client.clientId
+    )
 
-  const clientAppointments = appointments.filter(
-    (appointment) =>
-      appointment.clientId === client.clientId
-  )
+    if (clientAppointments.length === 0) {
+      return 'paused'
+    }
 
-  if (clientAppointments.length === 0) {
-    return 'paused'
-  }
-
-  const sortedAppointments =
-    [...clientAppointments].sort((a, b) => {
-      const dateA = new Date(
-        `${a.date}T${a.startTime}`
-      )
-
-      const dateB = new Date(
-        `${b.date}T${b.startTime}`
-      )
+    const sortedAppointments = [...clientAppointments].sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.startTime}`)
+      const dateB = new Date(`${b.date}T${b.startTime}`)
 
       return dateB - dateA
     })
 
-  const latestAppointment =
-    sortedAppointments[0]
+    const latestAppointment = sortedAppointments[0]
+    const latestDate = new Date(
+      `${latestAppointment.date}T${latestAppointment.startTime}`
+    )
 
-  const latestDate = new Date(
-    `${latestAppointment.date}T${latestAppointment.startTime}`
-  )
+    const differenceInDays =
+      (new Date() - latestDate) / (1000 * 60 * 60 * 24)
 
-  const differenceInDays =
-    (today - latestDate) /
-    (1000 * 60 * 60 * 24)
+    if (differenceInDays > clientStatusPreferences.autoPauseAfterDays) {
+      return 'paused'
+    }
 
-  if (
-    differenceInDays >
-    clientStatusPreferences.autoPauseAfterDays
-  ) {
-    return 'paused'
+    return 'active'
   }
 
-  return 'active'
-}
-
-function getClientPaymentHealth(clientId) {
-  const clientPayments = payments.filter(
-    (payment) => payment.clientId === clientId
-  )
-
-  if (clientPayments.length === 0) {
-    return 'none'
+  function getPaymentForItem(itemType, itemId) {
+    return payments.find(
+      (payment) =>
+        payment.itemType === itemType &&
+        payment.itemId === itemId
+    )
   }
 
-  const paidPayments = clientPayments.filter(
-    (payment) => payment.status === 'paid'
-  )
-
-  if (paidPayments.length === 0) {
-    return 'unpaid'
+  function getPaymentForPackage(packageId) {
+    return getPaymentForItem('package', packageId)
   }
 
-  if (paidPayments.length === clientPayments.length) {
-    return 'paid'
-  }
+  function getClientPaymentHealth(clientId) {
+    const clientBillableItems = [
+      ...clientPackages
+        .filter((clientPackage) => clientPackage.clientId === clientId)
+        .map((clientPackage) => ({
+          itemType: 'package',
+          itemId: clientPackage.packageId,
+        })),
 
-  return 'partial'
-}
+      ...appointments
+        .filter(
+          (appointment) =>
+            appointment.clientId === clientId &&
+            !appointment.packageId
+        )
+        .map((appointment) => ({
+          itemType: 'appointment',
+          itemId: appointment.appointmentId,
+        })),
 
-function getPaymentForPackage(packageId) {
-  return payments.find(
-    (payment) =>
-      payment.itemType === 'package' &&
-      payment.itemId === packageId
-  )
-}
+      ...clientPrograms
+        .filter((assignment) => assignment.clientId === clientId)
+        .map((assignment) => ({
+          itemType: 'program',
+          itemId: assignment.assignmentId,
+        })),
+    ]
 
+    if (clientBillableItems.length === 0) {
+      return 'none'
+    }
 
-async function handleAddPackage(newPackage) {
-  try {
-    setError('')
+    const unpaidItems = clientBillableItems.filter((item) => {
+      const payment = getPaymentForItem(item.itemType, item.itemId)
 
-    const savedPackage = await createClientPackage(newPackage)
-
-    await createPayment({
-      clientId: savedPackage.clientId,
-      clientName: savedPackage.clientName,
-      itemType: 'package',
-      itemId: savedPackage.packageId,
-      description: savedPackage.packageName,
-      amount: Number(savedPackage.amount || 0),
-      status: savedPackage.paymentStatus || 'unpaid',
-      paidAt:
-        savedPackage.paymentStatus === 'paid'
-          ? new Date().toISOString()
-          : null,
-      method: 'other',
-      notes: savedPackage.notes || '',
+      return !payment || payment.status !== 'paid'
     })
 
-    await refreshClients()
-  } catch (error) {
-    console.error(error)
-    setError(t('couldNotSavePackage'))
-  }
-}
-
-async function handleUpdatePackage(updatedPackage) {
-  try {
-    setError('')
-
-    const savedPackage = await updateClientPackage(updatedPackage)
-    const existingPayment = getPaymentForPackage(savedPackage.packageId)
-
-    if (existingPayment) {
-      await updatePayment({
-        ...existingPayment,
-        clientId: savedPackage.clientId,
-        clientName: savedPackage.clientName,
-        itemType: 'package',
-        itemId: savedPackage.packageId,
-        description: savedPackage.packageName,
-        amount: Number(savedPackage.amount || 0),
-        status: savedPackage.paymentStatus || 'unpaid',
-        paidAt:
-          savedPackage.paymentStatus === 'paid'
-            ? existingPayment.paidAt || new Date().toISOString()
-            : null,
-        notes: savedPackage.notes || '',
-      })
-    } else {
-      await createPayment({
-        clientId: savedPackage.clientId,
-        clientName: savedPackage.clientName,
-        itemType: 'package',
-        itemId: savedPackage.packageId,
-        description: savedPackage.packageName,
-        amount: Number(savedPackage.amount || 0),
-        status: savedPackage.paymentStatus || 'unpaid',
-        paidAt:
-          savedPackage.paymentStatus === 'paid'
-            ? new Date().toISOString()
-            : null,
-        method: 'other',
-        notes: savedPackage.notes || '',
-      })
+    if (unpaidItems.length === 0) {
+      return 'paid'
     }
 
-    await refreshClients()
-  } catch (error) {
-    console.error(error)
-    setError(t('couldNotUpdatePackage'))
-  }
-}
-
-async function handleDeletePackage(packageId) {
-  const confirmed = window.confirm(t('confirmDeletePackage'))
-
-  if (!confirmed) {
-    return
-  }
-
-  try {
-    setError('')
-
-    const existingPayment = getPaymentForPackage(packageId)
-
-    if (existingPayment) {
-      await deletePayment(existingPayment.paymentId)
+    if (unpaidItems.length === clientBillableItems.length) {
+      return 'unpaid'
     }
 
-    await deleteClientPackage(packageId)
-    await refreshClients()
-  } catch (error) {
-    console.error(error)
-    setError(t('couldNotDeletePackage'))
+    return 'partial'
+  }
+
+  async function upsertPackagePayment(savedPackage, paymentStatus) {
+  const freshPayments = await getPayments()
+
+  const existingPayment = freshPayments.find(
+    (payment) =>
+      payment.itemType === 'package' &&
+      payment.itemId === savedPackage.packageId
+  )
+
+  const paymentPayload = {
+    clientId: savedPackage.clientId,
+    clientName: savedPackage.clientName,
+    itemType: 'package',
+    itemId: savedPackage.packageId,
+    description: savedPackage.packageName,
+    amount: Number(savedPackage.amount || 0),
+    status: paymentStatus,
+    paidAt:
+      paymentStatus === 'paid'
+        ? existingPayment?.paidAt || new Date().toISOString()
+        : null,
+    method: existingPayment?.method || 'other',
+    notes: savedPackage.notes || '',
+  }
+
+  if (existingPayment) {
+    await updatePayment({
+      ...existingPayment,
+      ...paymentPayload,
+    })
+  } else {
+    await createPayment(paymentPayload)
   }
 }
 
+  async function handleAddPackage(newPackage) {
+    try {
+      setError('')
 
+      const savedPackage = await createClientPackage(newPackage)
+
+      const paymentStatus =
+        newPackage.paymentStatus ||
+        savedPackage.paymentStatus ||
+        'unpaid'
+
+      await upsertPackagePayment(savedPackage, paymentStatus)
+
+      await refreshClients()
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotSavePackage'))
+    }
+  }
+
+  async function handleUpdatePackage(updatedPackage) {
+    try {
+      setError('')
+
+      const savedPackage = await updateClientPackage(updatedPackage)
+
+      const paymentStatus =
+        updatedPackage.paymentStatus ||
+        savedPackage.paymentStatus ||
+        'unpaid'
+
+      await upsertPackagePayment(savedPackage, paymentStatus)
+
+      await refreshClients()
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotUpdatePackage'))
+    }
+  }
+
+  async function handleDeletePackage(packageId) {
+    const confirmed = window.confirm(t('confirmDeletePackage'))
+
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      setError('')
+
+      const existingPayment = getPaymentForPackage(packageId)
+
+      if (existingPayment) {
+        await deletePayment(existingPayment.paymentId)
+      }
+
+      await deleteClientPackage(packageId)
+      await refreshClients()
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotDeletePackage'))
+    }
+  }
 
   async function syncProgramAssignments(clientId, selectedProgramIds) {
     const existingAssignments = clientPrograms.filter(
@@ -375,7 +370,6 @@ async function handleDeletePackage(packageId) {
       setError('')
 
       const { assignedProgramIds, ...clientData } = newClient
-
       const savedClient = await createClient(clientData)
 
       await syncProgramAssignments(
@@ -388,6 +382,28 @@ async function handleDeletePackage(packageId) {
     } catch (error) {
       console.error(error)
       setError(t('couldNotSaveClient'))
+    }
+  }
+
+  async function handleUpdateClient(updatedClient) {
+    try {
+      setError('')
+
+      const { assignedProgramIds, ...clientData } = updatedClient
+
+      await updateClient(clientData)
+
+      await syncProgramAssignments(
+        updatedClient.clientId,
+        assignedProgramIds || []
+      )
+
+      await refreshClients()
+      setSelectedClient(null)
+      setShowForm(false)
+    } catch (error) {
+      console.error(error)
+      setError(t('couldNotUpdateClient'))
     }
   }
 
@@ -422,28 +438,6 @@ async function handleDeletePackage(packageId) {
     setShowForm(true)
   }
 
-  async function handleUpdateClient(updatedClient) {
-    try {
-      setError('')
-
-      const { assignedProgramIds, ...clientData } = updatedClient
-
-      await updateClient(clientData)
-
-      await syncProgramAssignments(
-        updatedClient.clientId,
-        assignedProgramIds || []
-      )
-
-      await refreshClients()
-      setSelectedClient(null)
-      setShowForm(false)
-    } catch (error) {
-      console.error(error)
-      setError(t('couldNotUpdateClient'))
-    }
-  }
-
   function handleCancelForm() {
     setSelectedClient(null)
     setShowForm(false)
@@ -476,23 +470,24 @@ async function handleDeletePackage(packageId) {
       {showForm && (
         <ClientForm
   programs={programs}
+  payments={payments}
   clientPackages={
     selectedClient
       ? getPackagesForClient(selectedClient.clientId)
       : []
   }
-  selectedProgramIds={
-    selectedClient
-      ? getAssignedProgramIds(selectedClient.clientId)
-      : []
-  }
-  onAddClient={handleAddClient}
-  onUpdateClient={handleUpdateClient}
-  onAddPackage={handleAddPackage}
-  onUpdatePackage={handleUpdatePackage}
-  onDeletePackage={handleDeletePackage}
-  selectedClient={selectedClient}
-/>
+          selectedProgramIds={
+            selectedClient
+              ? getAssignedProgramIds(selectedClient.clientId)
+              : []
+          }
+          onAddClient={handleAddClient}
+          onUpdateClient={handleUpdateClient}
+          onAddPackage={handleAddPackage}
+          onUpdatePackage={handleUpdatePackage}
+          onDeletePackage={handleDeletePackage}
+          selectedClient={selectedClient}
+        />
       )}
 
       {isLoading && <p>{t('loadingClients')}</p>}
@@ -513,10 +508,10 @@ async function handleDeletePackage(packageId) {
         {filteredClients.map((client) => (
           <ClientCard
             key={client.clientId}
-          client={{
-            ...client,
-            status: getComputedClientStatus(client),
-          }}
+            client={{
+              ...client,
+              status: getComputedClientStatus(client),
+            }}
             paymentHealth={getClientPaymentHealth(client.clientId)}
             activePackage={getActivePackage(client.clientId)}
             assignedPrograms={getAssignedPrograms(client.clientId)}
