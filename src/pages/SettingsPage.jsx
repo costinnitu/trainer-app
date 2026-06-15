@@ -21,7 +21,7 @@ function SettingsPage() {
         <SchedulePreferencesForm />
       </div>
 
-      <div className="settings-section">
+      <div className="settings-card">
          <h3>{t('clientStatusPreferences')}</h3>
 
         <ClientStatusPreferencesForm />

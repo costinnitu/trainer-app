@@ -163,7 +163,7 @@ function TrainerProfileForm() {
           )}
 
           <button onClick={handleEditProfile}>
-            {t('editProfile')}
+            {t('edit')}
           </button>
         </div>
       )}

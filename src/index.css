@@ -1102,3 +1102,80 @@ button:hover {
   background: #1f2937;
   color: #f9fafb;
 }
+
+.calendar-appointment {
+  gap: 3px;
+}
+
+.calendar-appointment strong {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+.calendar-appointment span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.calendar-package-info {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.calendar-day-body {
+  cursor: pointer;
+}
+
+.calendar-day-body:hover {
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.dark-mode .calendar-day-body:hover {
+  background: rgba(96, 165, 250, 0.08);
+}
+
+
+.calendar-time-slot {
+  height: 80px;
+}
+
+.calendar-day-body {
+  height: 1040px;
+}
+
+.calendar-hover-preview {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px dashed rgba(37, 99, 235, 0.35);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dark-mode .calendar-hover-preview {
+  background: rgba(96, 165, 250, 0.12);
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+.calendar-day-body {
+  position: relative;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 79px,
+    #e5e7eb 80px
+  );
+  background-size: 100% 80px;
+}
+
+.dark-mode .calendar-day-body {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 79px,
+    #374151 80px
+  );
+}

@@ -356,7 +356,7 @@ function SchedulePreferencesForm() {
               }
             >
               {t(
-                'editSchedulePreferences'
+                'edit'
               )}
             </button>
           </div>

@@ -536,6 +536,11 @@ const translations = {
     activePackage: 'Pacchetto Attivo',
 
 
+
+    yes: 'Sì',
+    no: 'No',
+    editClientStatusPreferences: 'Modifica Preferenze Stato Clienti',
+
   },
 }
 

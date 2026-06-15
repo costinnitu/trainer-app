@@ -36,7 +36,7 @@ const DAY_NAME_MAP = {
   sunday: 0,
 }
 
-const HOUR_HEIGHT = 64
+const HOUR_HEIGHT = 80
 
 function WeeklySchedulePage() {
   const { t, language } = useTranslations()
@@ -50,7 +50,7 @@ function WeeklySchedulePage() {
   const [initialAppointment, setInitialAppointment] = useState(null)
   const [selectedWeekDate, setSelectedWeekDate] = useState(new Date())
   const [error, setError] = useState('')
-
+  const [hoverPreview, setHoverPreview] = useState(null)
   const locale = language === 'it' ? 'it-IT' : 'en-US'
 
   const calendarStartHour = Number(
@@ -106,6 +106,41 @@ function WeeklySchedulePage() {
       setError(t('couldNotLoadWeeklySchedule'))
     }
   }
+
+
+  function handleCalendarSlotHover(event, day) {
+  const rect = event.currentTarget.getBoundingClientRect()
+  const clickY = event.clientY - rect.top
+
+  const duration =
+    schedulePreferences.defaultSessionDuration || 60
+
+  const durationPixels =
+    (duration / 60) * HOUR_HEIGHT
+
+  const centeredY = clickY - durationPixels / 2
+
+  const minutesFromStart =
+    Math.round((centeredY / HOUR_HEIGHT) * 2) * 30
+
+  const totalMinutes =
+    calendarStartHour * 60 + minutesFromStart
+
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+
+  const startTime = `${String(hours).padStart(2, '0')}:${String(
+    minutes
+  ).padStart(2, '0')}`
+
+  const endTime = calculateEndTime(startTime)
+
+  setHoverPreview({
+    date: day.dateValue,
+    startTime,
+    endTime,
+  })
+}
 
   function getStartOfWeek(date) {
     const currentDate = new Date(date)
@@ -483,9 +518,11 @@ async function handleDeleteAppointment() {
               </div>
 
               <div
-                className="calendar-day-body"
-                onClick={(event) => handleCalendarSlotClick(event, day)}
-              >
+                  className="calendar-day-body"
+                  onClick={(event) => handleCalendarSlotClick(event, day)}
+                  onMouseMove={(event) => handleCalendarSlotHover(event, day)}
+                  onMouseLeave={() => setHoverPreview(null)}
+                >
                 {isToday && currentTimePosition && (
                   <div
                     className="current-time-line"
@@ -493,30 +530,39 @@ async function handleDeleteAppointment() {
                   />
                 )}
 
-                {dayAppointments.map((appointment) => (
+                {hoverPreview?.date === day.dateValue && (
                   <div
-                    className={`calendar-appointment ${appointment.status}`}
-                    key={appointment.appointmentId}
-                    style={getAppointmentPosition(appointment)}
-                    onClick={() => handleEditAppointment(appointment)}
-                  >
-                    <strong>
-                      {appointment.startTime} - {appointment.endTime}
-                    </strong>
+                    className="calendar-hover-preview"
+                    style={getAppointmentPosition(hoverPreview)}
+                  />
+                )}
 
-                    <span>{appointment.clientName}</span>
+                {dayAppointments.map((appointment) => {
+                      const appointmentPackage = getPackageForAppointment(appointment)
+
+                      return (
+                        <div
+                          className={`calendar-appointment ${appointment.status}`}
+                          key={appointment.appointmentId}
+                          style={getAppointmentPosition(appointment)}
+                          onClick={() => handleEditAppointment(appointment)}
+                        >
+                          <strong>{appointment.clientName}</strong>
+
+                          <span>
+                            {appointment.startTime} - {appointment.endTime}
+                          </span>
 
                           {appointment.packageName && (
                             <small className="calendar-package-info">
-                              {appointment.packageName}
-                              {getPackageForAppointment(appointment) &&
-                                ` · ${
-                                  getPackageForAppointment(appointment).remainingSessions
-                                } ${t('remainingSessions')}`}
+                              {appointmentPackage
+                                ? `${appointmentPackage.remainingSessions} ${t('remainingSessions')}`
+                                : appointment.packageName}
                             </small>
                           )}
-                  </div>
-                ))}
+                        </div>
+                      )
+                    })}
               </div>
             </div>
           )

@@ -16,6 +16,7 @@ function ClientStatusPreferencesForm() {
   }
 
   const [preferences, setPreferences] = useState(defaultPreferences)
+  const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -66,12 +67,34 @@ function ClientStatusPreferencesForm() {
       setError('')
 
       await saveClientStatusPreferences(preferences)
+
+      setIsEditing(false)
     } catch (error) {
       console.error(error)
       setError(t('couldNotSaveClientStatusPreferences'))
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (!isEditing) {
+    return (
+      <div className="profile-summary">
+        <p>
+          <strong>{t('enableAutoClientStatus')}:</strong>{' '}
+          {preferences.enableAutoStatus ? t('yes') : t('no')}
+        </p>
+
+        <p>
+          <strong>{t('autoPauseAfterDays')}:</strong>{' '}
+          {preferences.autoPauseAfterDays}
+        </p>
+
+        <button type="button" onClick={() => setIsEditing(true)}>
+          {t('edit')}
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -108,7 +131,7 @@ function ClientStatusPreferencesForm() {
         />
       </div>
 
-      <button type="submit">
+      <button type="submit" disabled={isLoading}>
         {t('saveClientStatusPreferences')}
       </button>
     </form>
