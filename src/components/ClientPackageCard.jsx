@@ -4,23 +4,16 @@ function ClientPackageCard({
   clientPackage,
   onEditPackage,
   onDeletePackage,
+  onTogglePaymentStatus,
 }) {
   const { t } = useTranslations()
 
   function getSessionStatus() {
     const remaining = Number(clientPackage.remainingSessions || 0)
 
-    if (remaining === 0) {
-      return 'exhausted'
-    }
-
-    if (remaining === 1) {
-      return 'last'
-    }
-
-    if (remaining <= 3) {
-      return 'low'
-    }
+    if (remaining === 0) return 'exhausted'
+    if (remaining === 1) return 'last'
+    if (remaining <= 3) return 'low'
 
     return 'healthy'
   }
@@ -28,24 +21,16 @@ function ClientPackageCard({
   function getSessionStatusLabel() {
     const remaining = Number(clientPackage.remainingSessions || 0)
 
-    if (remaining === 0) {
-      return t('exhausted')
-    }
-
-    if (remaining === 1) {
-      return t('lastSession')
-    }
-
-    if (remaining <= 3) {
-      return t('lowSessions')
-    }
+    if (remaining === 0) return t('exhausted')
+    if (remaining === 1) return t('lastSession')
+    if (remaining <= 3) return t('lowSessions')
 
     return t('healthy')
   }
 
   return (
     <div
-      className="client-row clickable"
+      className="package-list-row clickable"
       onClick={() => onEditPackage(clientPackage)}
     >
       <strong>{clientPackage.clientName}</strong>
@@ -57,22 +42,35 @@ function ClientPackageCard({
         {clientPackage.totalSessions}
       </span>
 
-      <span
-        className={`status-badge package-session-${getSessionStatus()}`}
-      >
-        {getSessionStatusLabel()}
-      </span>
+      <div className="package-cell">
+  <span className={`status-badge package-session-${getSessionStatus()}`}>
+    {getSessionStatusLabel()}
+  </span>
+</div>
 
       <span>€{clientPackage.amount || 0}</span>
 
-      <span className={`status-badge ${clientPackage.paymentStatus}`}>
-        {clientPackage.paymentStatus === 'paid'
-          ? t('paid')
-          : t('unpaid')}
-      </span>
-
-      <div className="client-row-actions">
+      <div className="package-cell">
+  <button
+    type="button"
+    className={`payment-status-toggle ${
+      clientPackage.paymentStatus || 'unpaid'
+    }`}
+    onClick={(event) => {
+      event.stopPropagation()
+      onTogglePaymentStatus(clientPackage)
+    }}
+  >
+    <span>
+      {clientPackage.paymentStatus === 'paid'
+        ? t('paid')
+        : t('unpaid')}
+    </span>
+  </button>
+</div>
+      <div className="client-row-actions">    
         <button
+          type="button"
           className="delete-icon-button"
           onClick={(event) => {
             event.stopPropagation()
@@ -81,7 +79,7 @@ function ClientPackageCard({
         >
           ×
         </button>
-      </div>
+      </div>  
     </div>
   )
 }

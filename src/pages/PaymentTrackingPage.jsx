@@ -267,7 +267,6 @@ function PaymentTrackingPage() {
           <strong>{t('description')}</strong>
           <strong>{t('amount')}</strong>
           <strong>{t('status')}</strong>
-          <div></div>
         </div>
 
         {billableItems.length === 0 ? (
@@ -291,29 +290,17 @@ function PaymentTrackingPage() {
 
                 <span>€{amount}</span>
 
-                <span className={`status-badge ${status}`}>
-                  {status === 'paid' ? t('paid') : t('unpaid')}
-                </span>
-
-                <div className="payment-actions">
-                  {status === 'paid' ? (
-                    <button
-                      type="button"
-                      className="contact-action-button"
-                      onClick={() => handleMarkUnpaid(item)}
-                    >
-                      {t('markUnpaid')}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="contact-action-button"
-                      onClick={() => handleMarkPaid(item)}
-                    >
-                      {t('markPaid')}
-                    </button>
-                  )}
-                </div>
+                <button
+  type="button"
+  className={`payment-status-toggle ${status}`}
+  onClick={() =>
+    status === 'paid'
+      ? handleMarkUnpaid(item)
+      : handleMarkPaid(item)
+  }
+>
+  <span>{status === 'paid' ? t('paid') : t('unpaid')}</span>
+</button>
               </div>
             )
           })

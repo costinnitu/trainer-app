@@ -122,6 +122,33 @@ function PackagesPage() {
     }
   }
 
+  async function handleTogglePackagePaymentStatus(clientPackage) {
+  try {
+    setError('')
+
+    const nextStatus =
+      clientPackage.paymentStatus === 'paid' ? 'unpaid' : 'paid'
+
+    const updatedPackage = {
+      ...clientPackage,
+      paymentStatus: nextStatus,
+    }
+
+    const savedPackage = await updateClientPackage(updatedPackage)
+
+    await upsertPackagePayment({
+      ...updatedPackage,
+      ...savedPackage,
+      paymentStatus: nextStatus,
+    })
+
+    await loadPackages()
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotUpdatePackage'))
+  }
+}
+
   function handleEditPackage(clientPackage) {
     setSelectedPackage(clientPackage)
     setShowForm(true)
@@ -221,6 +248,7 @@ function PackagesPage() {
               clientPackage={clientPackage}
               onEditPackage={handleEditPackage}
               onDeletePackage={handleDeletePackage}
+              onTogglePaymentStatus={handleTogglePackagePaymentStatus}
             />
           ))
         )}
