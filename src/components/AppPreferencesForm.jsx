@@ -8,6 +8,8 @@ import {
 import useTranslations from '../hooks/useTranslations'
 
 function AppPreferencesForm() {
+  const { t } = useTranslations()
+
   const defaultPreferences = {
     darkMode: false,
     language: 'en',
@@ -16,8 +18,6 @@ function AppPreferencesForm() {
   const [preferences, setPreferences] = useState(defaultPreferences)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-
-  const { t } = useTranslations()
 
   useEffect(() => {
     loadPreferences()
@@ -52,14 +52,10 @@ function AppPreferencesForm() {
 
     setPreferences(updatedPreferences)
 
-    localStorage.setItem(
-      'language',
-      updatedPreferences.language
-    )
+    localStorage.setItem('language', updatedPreferences.language)
 
     try {
       await saveAppPreferences(updatedPreferences)
-
       alert(t('languageSaved'))
     } catch (error) {
       console.error(error)
@@ -75,10 +71,7 @@ function AppPreferencesForm() {
 
     setPreferences(updatedPreferences)
 
-    localStorage.setItem(
-      'darkMode',
-      String(updatedPreferences.darkMode)
-    )
+    localStorage.setItem('darkMode', String(updatedPreferences.darkMode))
 
     if (updatedPreferences.darkMode) {
       document.body.classList.add('dark-mode')
@@ -95,75 +88,71 @@ function AppPreferencesForm() {
   }
 
   return (
-    <div className="client-form">
-      {isLoading && (
-        <p>{t('loadingAppPreferences')}</p>
-      )}
+    <div className="profile-summary">
+      {isLoading && <p>{t('loadingAppPreferences')}</p>}
 
-      {error && (
-        <p className="error-message">{error}</p>
-      )}
+      {error && <p className="error-message">{error}</p>}
 
       <div className="settings-row">
-  <span>{t('darkMode')}</span>
+        <span>{t('darkMode')}</span>
 
-  <div className="settings-control">
-    <button
-      type="button"
-      className={`toggle-switch ${preferences.darkMode ? 'on' : ''}`}
-      onClick={handleDarkModeToggle}
-    >
-      <span className="toggle-thumb"></span>
-    </button>
-  </div>
-</div>
+        <div className="settings-control">
+          <button
+            type="button"
+            className={`toggle-switch ${preferences.darkMode ? 'on' : ''}`}
+            onClick={handleDarkModeToggle}
+          >
+            <span className="toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
 
-<div className="settings-row">
-  <span>{t('language')}</span>
+      <div className="settings-row">
+        <span>{t('language')}</span>
 
-  <div className="language-selector">
-  <button
-    type="button"
-    className={`language-option ${
-      preferences.language === 'en' ? 'active' : ''
-    }`}
-    onClick={() =>
-      handleLanguageChange({
-        target: { value: 'en' },
-      })
-    }
-  >
-    <img
-      src="https://flagcdn.com/w40/gb.png"
-      alt="English"
-      className="language-flag"
-    />
+        <div className="language-selector">
+          <button
+            type="button"
+            className={`language-option ${
+              preferences.language === 'en' ? 'active' : ''
+            }`}
+            onClick={() =>
+              handleLanguageChange({
+                target: { value: 'en' },
+              })
+            }
+          >
+            <img
+              src="https://flagcdn.com/w40/gb.png"
+              alt="English"
+              className="language-flag"
+            />
 
-    English
-  </button>
+            English
+          </button>
 
-  <button
-    type="button"
-    className={`language-option ${
-      preferences.language === 'it' ? 'active' : ''
-    }`}
-    onClick={() =>
-      handleLanguageChange({
-        target: { value: 'it' },
-      })
-    }
-  >
-    <img
-      src="https://flagcdn.com/w40/it.png"
-      alt="Italiano"
-      className="language-flag"
-    />
+          <button
+            type="button"
+            className={`language-option ${
+              preferences.language === 'it' ? 'active' : ''
+            }`}
+            onClick={() =>
+              handleLanguageChange({
+                target: { value: 'it' },
+              })
+            }
+          >
+            <img
+              src="https://flagcdn.com/w40/it.png"
+              alt="Italiano"
+              className="language-flag"
+            />
 
-    Italiano
-  </button>
-</div>
-</div>
-</div>
+            Italiano
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

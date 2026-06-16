@@ -398,9 +398,12 @@ function ClientsPage() {
         assignedProgramIds || []
       )
 
-      await refreshClients()
-      setSelectedClient(null)
-      setShowForm(false)
+     await refreshClients()
+
+      setSelectedClient({
+        ...clientData,
+        assignedProgramIds: updatedClient.assignedProgramIds || [],
+      })
     } catch (error) {
       console.error(error)
       setError(t('couldNotUpdateClient'))
@@ -459,6 +462,8 @@ function ClientsPage() {
         </button>
       </div>
 
+
+{!showForm && (
       <input
         className="search-input"
         type="text"
@@ -466,7 +471,7 @@ function ClientsPage() {
         value={searchTerm}
         onChange={(event) => setSearchTerm(event.target.value)}
       />
-
+)}
       {showForm && (
         <ClientForm
   programs={programs}
@@ -494,6 +499,7 @@ function ClientsPage() {
 
       {error && <p className="error-message">{error}</p>}
 
+{!showForm && (
       <div className="client-list">
         <div className="client-row client-row-header">
           <strong>{t('client')}</strong>
@@ -520,6 +526,7 @@ function ClientsPage() {
           />
         ))}
       </div>
+      )}
     </div>
   )
 }

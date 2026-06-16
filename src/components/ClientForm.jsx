@@ -38,6 +38,10 @@ function ClientForm({
   const [formData, setFormData] = useState(emptyForm)
   const [packageForm, setPackageForm] = useState(emptyPackageForm)
   const [selectedPackage, setSelectedPackage] = useState(null)
+  const [activeSection, setActiveSection] = useState(
+    selectedClient ? null : 'details'
+  )
+  const [showPackageForm, setShowPackageForm] = useState(false)
 
   useEffect(() => {
     if (selectedClient) {
@@ -45,12 +49,16 @@ function ClientForm({
         ...selectedClient,
         assignedProgramIds: selectedProgramIds || [],
       })
+
+      setActiveSection(null)
     } else {
       setFormData(emptyForm)
+      setActiveSection('details')
     }
 
     setPackageForm(emptyPackageForm)
     setSelectedPackage(null)
+    setShowPackageForm(false)
   }, [selectedClient, selectedProgramIds])
 
   function getPackagePaymentStatus(packageId) {
@@ -99,6 +107,7 @@ function ClientForm({
 
     if (selectedClient) {
       onUpdateClient(formData)
+      setActiveSection(null)
     } else {
       const newClient = {
         clientId: crypto.randomUUID(),
@@ -106,9 +115,13 @@ function ClientForm({
       }
 
       onAddClient(newClient)
+      setFormData(emptyForm)
     }
+  }
 
-    setFormData(emptyForm)
+  function handleSavePrograms() {
+    onUpdateClient(formData)
+    setActiveSection(null)
   }
 
   function handlePackageSubmit(event) {
@@ -134,10 +147,12 @@ function ClientForm({
 
     setPackageForm(emptyPackageForm)
     setSelectedPackage(null)
+    setShowPackageForm(false)
   }
 
   function handleEditPackage(clientPackage) {
     setSelectedPackage(clientPackage)
+    setShowPackageForm(true)
 
     setPackageForm({
       packageName: clientPackage.packageName || '',
@@ -152,13 +167,29 @@ function ClientForm({
     })
   }
 
+  function handleAddPackageClick() {
+    setSelectedPackage(null)
+    setPackageForm(emptyPackageForm)
+    setShowPackageForm(true)
+  }
+
   function handleCancelPackageEdit() {
     setSelectedPackage(null)
     setPackageForm(emptyPackageForm)
+    setShowPackageForm(false)
   }
 
-  return (
-    <div>
+  function getSelectedProgramNames() {
+    return programs
+      .filter((program) =>
+        formData.assignedProgramIds.includes(program.programId)
+      )
+      .map((program) => program.programName)
+      .join(', ')
+  }
+
+  if (!selectedClient) {
+    return (
       <form className="client-form" onSubmit={handleSubmit}>
         <input
           name="firstName"
@@ -226,12 +257,133 @@ function ClientForm({
           )}
         </div>
 
-        <button type="submit">
-          {selectedClient ? t('updateClient') : t('saveClient')}
-        </button>
+        <button type="submit">{t('saveClient')}</button>
       </form>
+    )
+  }
 
-      {selectedClient && (
+  return (
+    <div>
+      {activeSection === 'details' ? (
+        <form className="client-form" onSubmit={handleSubmit}>
+          <input
+            name="firstName"
+            placeholder={t('firstName')}
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            name="lastName"
+            placeholder={t('lastName')}
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            name="phone"
+            placeholder={t('phone')}
+            value={formData.phone}
+            onChange={handleChange}
+          />
+
+          <input
+            name="goal"
+            placeholder={t('goal')}
+            value={formData.goal}
+            onChange={handleChange}
+          />
+
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+          >
+            <option value="active">{t('active')}</option>
+            <option value="paused">{t('paused')}</option>
+            <option value="inactive">{t('inactive')}</option>
+          </select>
+
+          <button type="submit">{t('updateClient')}</button>
+        </form>
+      ) : (
+        <div
+          className="profile-summary clickable-summary"
+          onClick={() => setActiveSection('details')}
+        >
+          <h4>{t('client')}</h4>
+
+          <p>
+            <strong>{t('client')}:</strong>{' '}
+            {formData.firstName} {formData.lastName}
+          </p>
+
+          {formData.phone && (
+            <p>
+              <strong>{t('phone')}:</strong> {formData.phone}
+            </p>
+          )}
+
+          {formData.goal && (
+            <p>
+              <strong>{t('goal')}:</strong> {formData.goal}
+            </p>
+          )}
+
+          <p>
+            <strong>{t('status')}:</strong> {t(formData.status)}
+          </p>
+        </div>
+      )}
+
+      {activeSection === 'programs' ? (
+        <div className="client-form">
+          <div className="exercise-input-group">
+            <label>{t('assignedPrograms')}</label>
+
+            {programs.length === 0 ? (
+              <p>{t('noProgramsYet')}</p>
+            ) : (
+              <div className="program-chip-selector">
+                {programs.map((program) => {
+                  const isSelected =
+                    formData.assignedProgramIds.includes(program.programId)
+
+                  return (
+                    <button
+                      type="button"
+                      key={program.programId}
+                      className={`program-chip ${isSelected ? 'active' : ''}`}
+                      onClick={() => handleProgramToggle(program.programId)}
+                    >
+                      {program.programName}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          <button type="button" onClick={handleSavePrograms}>
+            {t('updateClient')}
+          </button>
+        </div>
+      ) : (
+        <div
+          className="profile-summary clickable-summary"
+          onClick={() => setActiveSection('programs')}
+        >
+          <h4>{t('assignedPrograms')}</h4>
+
+          <p>
+            {getSelectedProgramNames() || t('noProgramsYet')}
+          </p>
+        </div>
+      )}
+
+      {activeSection === 'packages' ? (
         <div className="client-package-section">
           <h3>{t('packages')}</h3>
 
@@ -279,65 +431,114 @@ function ClientForm({
             </div>
           )}
 
-          <form className="client-form" onSubmit={handlePackageSubmit}>
-            <input
-              name="packageName"
-              placeholder={t('packageName')}
-              value={packageForm.packageName}
-              onChange={handlePackageChange}
-              required
-            />
+          {!showPackageForm && (
+                <div
+                  className="add-package-row"
+                  onClick={handleAddPackageClick}
+                >
+                  <span className="add-package-icon">+</span>
+                  <span>{t('addPackage')}</span>
 
-            <input
-              type="number"
-              name="totalSessions"
-              placeholder={t('sessions')}
-              value={packageForm.totalSessions}
-              onChange={handlePackageChange}
-              required
-            />
+                  
+                </div>
+               
+              )}
 
-            <input
-              type="number"
-              name="remainingSessions"
-              placeholder={t('remainingSessions')}
-              value={packageForm.remainingSessions}
-              onChange={handlePackageChange}
-              required
-            />
+          {showPackageForm && (
+            <form className="client-form" onSubmit={handlePackageSubmit}>
+              <input
+                name="packageName"
+                placeholder={t('packageName')}
+                value={packageForm.packageName}
+                onChange={handlePackageChange}
+                required
+              />
 
-            <input
-              type="number"
-              name="amount"
-              placeholder={t('amount')}
-              value={packageForm.amount}
-              onChange={handlePackageChange}
-            />
+              <input
+                type="number"
+                name="totalSessions"
+                placeholder={t('sessions')}
+                value={packageForm.totalSessions}
+                onChange={handlePackageChange}
+                required
+              />
 
-            <select
-              name="paymentStatus"
-              value={packageForm.paymentStatus}
-              onChange={handlePackageChange}
-            >
-              <option value="paid">{t('paid')}</option>
-              <option value="unpaid">{t('unpaid')}</option>
-            </select>
+              <input
+                type="number"
+                name="remainingSessions"
+                placeholder={t('remainingSessions')}
+                value={packageForm.remainingSessions}
+                onChange={handlePackageChange}
+                required
+              />
 
-            <button type="submit">
-              {selectedPackage ? t('updatePackage') : t('savePackage')}
-            </button>
+              <input
+                type="number"
+                name="amount"
+                placeholder={t('amount')}
+                value={packageForm.amount}
+                onChange={handlePackageChange}
+              />
 
-            {selectedPackage && (
-              <button
-                type="button"
-                onClick={handleCancelPackageEdit}
+              <select
+                name="paymentStatus"
+                value={packageForm.paymentStatus}
+                onChange={handlePackageChange}
               >
-                {t('cancel')}
-              </button>
-            )}
-          </form>
+                <option value="paid">{t('paid')}</option>
+                <option value="unpaid">{t('unpaid')}</option>
+              </select>
+
+              <div className="form-actions">
+  <button
+    type="button"
+    className="secondary-button"
+    onClick={handleCancelPackageEdit}
+  >
+    {t('cancel')}
+  </button>
+
+  <button type="submit">
+    {selectedPackage ? t('updatePackage') : t('savePackage')}
+  </button>
+</div>
+            </form>
+          )}
+
+        <div className="form-actions">
+  <button
+    type="button"
+    className="secondary-button"
+    onClick={() => {
+      setShowPackageForm(false)
+      setSelectedPackage(null)
+      setActiveSection(null)
+    }}
+  >
+    {t('close')}
+  </button>
+</div>
+
+</div>
+
+      ) : (
+        <div
+          className="profile-summary clickable-summary"
+          onClick={() => setActiveSection('packages')}
+        >
+          <h4>{t('packages')}</h4>
+
+          <p>
+            {clientPackages.length > 0
+              ? `${clientPackages.length} ${t('packages')}`
+              : t('noPackagesYet')}
+          </p>
         </div>
+
+
       )}
+
+      
     </div>
   )
 }

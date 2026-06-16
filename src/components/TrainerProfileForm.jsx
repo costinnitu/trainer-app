@@ -136,7 +136,10 @@ function TrainerProfileForm() {
       )}
 
       {savedProfile && !showForm && (
-        <div className="profile-summary">
+        <div
+  className="profile-summary clickable-summary"
+  onClick={handleEditProfile}
+>
           {savedProfile.businessName && (
             <h4>{savedProfile.businessName}</h4>
           )}
@@ -161,10 +164,6 @@ function TrainerProfileForm() {
               {savedProfile.phone}
             </p>
           )}
-
-          <button onClick={handleEditProfile}>
-            {t('edit')}
-          </button>
         </div>
       )}
     </div>

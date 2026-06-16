@@ -79,7 +79,10 @@ function ClientStatusPreferencesForm() {
 
   if (!isEditing) {
     return (
-      <div className="profile-summary">
+      <div
+  className="profile-summary clickable-summary"
+  onClick={() => setIsEditing(true)}
+>
         <p>
           <strong>{t('enableAutoClientStatus')}:</strong>{' '}
           {preferences.enableAutoStatus ? t('yes') : t('no')}
@@ -90,9 +93,6 @@ function ClientStatusPreferencesForm() {
           {preferences.autoPauseAfterDays}
         </p>
 
-        <button type="button" onClick={() => setIsEditing(true)}>
-          {t('edit')}
-        </button>
       </div>
     )
   }

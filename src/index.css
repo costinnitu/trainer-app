@@ -1234,3 +1234,91 @@ button:hover {
   display: flex;
   align-items: center;
 }
+
+.clickable-summary {
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.clickable-summary:hover {
+  transform: translateY(-1px);
+  border-color: #93c5fd;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+}
+
+.dark-mode .clickable-summary:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.16);
+}
+
+.add-package-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: white;
+  border-radius: 10px;
+
+  padding: 10px 14px;
+  margin-top: 8px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  cursor: pointer;
+
+  font-weight: 600;
+  color: #2563eb;
+
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.add-package-row:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.add-package-icon {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dark-mode .add-package-row {
+  background: #1f2937;
+  color: #93c5fd;
+}
+
+.dark-mode .add-package-row:hover {
+  background: #111827;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.secondary-button {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.secondary-button:hover {
+  background: #dbeafe;
+}
+
+.dark-mode .secondary-button {
+  background: #312e81;
+  color: #c7d2fe;
+}
+
+.dark-mode .secondary-button:hover {
+  background: #4338ca;
+}

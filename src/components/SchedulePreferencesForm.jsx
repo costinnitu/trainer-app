@@ -302,7 +302,10 @@ function SchedulePreferencesForm() {
 
       {savedPreferences &&
         !showForm && (
-          <div className="profile-summary">
+          <div
+  className="profile-summary clickable-summary"
+  onClick={handleEditPreferences}
+>
             <h4>
               {t(
                 'schedulePreferences'
@@ -350,15 +353,6 @@ function SchedulePreferencesForm() {
               {t('minutes')}
             </p>
 
-            <button
-              onClick={
-                handleEditPreferences
-              }
-            >
-              {t(
-                'edit'
-              )}
-            </button>
           </div>
         )}
     </div>
