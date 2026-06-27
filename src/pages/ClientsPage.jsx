@@ -456,10 +456,6 @@ function ClientsPage() {
     <div className="page">
       <div className="page-header">
         <h2>{t('clients')}</h2>
-
-        <button onClick={showForm ? handleCancelForm : () => setShowForm(true)}>
-          {showForm ? t('cancel') : t('addClient')}
-        </button>
       </div>
 
 
@@ -525,6 +521,17 @@ function ClientsPage() {
             onEditClient={handleEditClient}
           />
         ))}
+          {!showForm && (
+            <div
+              className="add-package-row"
+              onClick={() => setShowForm(true)}
+            >
+              <span className="add-package-icon">+</span>
+              <span>{t('addClient')}</span>
+            </div>
+          )}
+
+
       </div>
       )}
     </div>

@@ -212,9 +212,6 @@ function PackagesPage() {
       <div className="page-header">
         <h2>{t('packages')}</h2>
 
-        <button onClick={showForm ? handleCancelForm : () => setShowForm(true)}>
-          {showForm ? t('cancel') : t('addPackage')}
-        </button>
       </div>
 
       {showForm && (
@@ -252,6 +249,15 @@ function PackagesPage() {
             />
           ))
         )}
+              {!showForm && (
+        <div
+          className="add-package-row"
+          onClick={() => setShowForm(true)}
+        >
+          <span className="add-package-icon">+</span>
+          <span>{t('addPackage')}</span>
+        </div>
+      )}
       </div>
     </div>
   )

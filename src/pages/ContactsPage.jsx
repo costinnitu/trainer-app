@@ -156,17 +156,6 @@ function ContactsPage() {
       <div className="page-header">
         <h2>{t('contacts')}</h2>
 
-        <button
-          onClick={
-            showForm
-              ? handleCancelForm
-              : () => setShowForm(true)
-          }
-        >
-          {showForm
-            ? t('cancel')
-            : t('addContact')}
-        </button>
       </div>
 
       <input
@@ -214,6 +203,16 @@ function ContactsPage() {
             onConvertContact={handleConvertContact}
           />
         ))}
+
+                {!showForm && (
+          <div
+            className="add-package-row"
+            onClick={() => setShowForm(true)}
+          >
+            <span className="add-package-icon">+</span>
+            <span>{t('addContact')}</span>
+          </div>
+        )}
       </div>
     </div>
   )

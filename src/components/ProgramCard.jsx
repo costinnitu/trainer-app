@@ -2,7 +2,6 @@ import useTranslations from '../hooks/useTranslations'
 
 function ProgramCard({
   program,
-  assignedClients = [],
   onEditProgram,
   onDeleteProgram,
 }) {
@@ -58,25 +57,6 @@ function ProgramCard({
         ) : (
           <p>{t('noExercisesAdded')}</p>
         )}
-      </div>
-
-      <div>
-        <strong>{t('assignedClients')}:</strong>
-
-        <div className="assigned-programs-cell">
-          {assignedClients.length > 0 ? (
-            assignedClients.map((client) => (
-              <span
-                className="assigned-program-badge"
-                key={client.clientId}
-              >
-                {client.firstName} {client.lastName}
-              </span>
-            ))
-          ) : (
-            <p>{t('noClientsAssigned')}</p>
-          )}
-        </div>
       </div>
 
       {program.notes && (
