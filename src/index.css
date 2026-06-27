@@ -1421,3 +1421,240 @@ button:hover {
   gap: 16px;
   margin-bottom: 24px;
 }
+
+.program-editor {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.program-details-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 0.8fr;
+  gap: 12px;
+}
+
+.program-exercise-list {
+  display: grid;
+  gap: 12px;
+}
+
+.program-notes-textarea {
+  min-height: 96px;
+  resize: vertical;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.dark-mode .program-notes-textarea {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.program-exercise-row {
+  display: grid;
+  grid-template-columns: 2.2fr 70px 70px 80px 2.3fr 40px;
+  gap: 18px;
+  align-items: center;
+
+  background: white;
+  border-radius: 10px;
+  padding: 8px 16px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.program-exercise-row input,
+.program-exercise-row select {
+  width: 100%;
+  height: 34px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: #f9fafb;
+
+  padding: 6px 8px;
+
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.program-exercise-row input:focus,
+.program-exercise-row select:focus {
+  outline: none;
+  border-color: #93c5fd;
+  background: white;
+}
+
+.dark-mode .program-exercise-row {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.dark-mode .program-exercise-row input,
+.dark-mode .program-exercise-row select {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.program-exercise-row-header {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 0;
+  padding-bottom: 0;
+  text-align: center;
+}
+
+.program-exercise-row-header strong {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dark-mode .program-exercise-row-header strong {
+  color: #9ca3af;
+}
+
+.program-exercise-row input:nth-child(2),
+.program-exercise-row input:nth-child(3),
+.program-exercise-row input:nth-child(4) {
+  text-align: center;
+}
+
+.program-details-row {
+  display: grid;
+  grid-template-columns:
+2.4fr
+2fr
+70px;
+  gap: 18px;
+  align-items: center;
+}
+
+.program-details-row input {
+  height: 38px;
+  background: #f9fafb;
+}
+
+.program-details-row {
+  display: grid;
+  grid-template-columns: 2.5fr 2fr 80px;
+  gap: 18px;
+  align-items: center;
+
+}
+
+.program-details-row input {
+  width: 100%;
+  height: 34px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: #f9fafb;
+
+  padding: 6px 8px;
+
+  font-size: 13px;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.program-details-row input:focus {
+  outline: none;
+  border-color: #93c5fd;
+  background: white;
+}
+
+.program-details-header {
+  margin-bottom: 8px;
+}
+
+.program-details-header strong {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  
+}
+
+.dark-mode .program-details-row input {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.dark-mode .program-details-header strong {
+  color: #9ca3af;
+}
+
+.dark-mode .program-details-row input {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.dark-mode .program-details-row input:focus {
+  background: #1f2937;
+  border-color: #60a5fa;
+}
+
+.program-details-row:not(.program-details-header) {
+  background: white;
+
+  border-radius: 10px;
+
+  padding: 8px 16px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dark-mode .program-details-row:not(.program-details-header) {
+  background: #1f2937;
+}
+
+.program-details-header,
+.program-exercise-row-header {
+  align-items: end;
+}
+
+.program-details-header strong,
+.program-exercise-row-header strong {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.program-details-header strong:first-child,
+.program-exercise-row-header strong:first-child {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.program-details-header strong:last-child,
+.program-exercise-row-header strong:last-child {
+  justify-content: flex-start;
+}
+
+.program-editor-title {
+  margin: 0 0 24px;
+
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+
+  color: inherit;
+}

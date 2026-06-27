@@ -32,7 +32,6 @@ function ProgramForm({
 
   const [program, setProgram] = useState(emptyProgram)
   const [exerciseLibrary, setExerciseLibrary] = useState([])
-  const [activeSection, setActiveSection] = useState(null)
 
   useEffect(() => {
     loadExerciseLibrary()
@@ -51,24 +50,15 @@ function ProgramForm({
     } else {
       setProgram(emptyProgram)
     }
-
-    setActiveSection(null)
   }, [selectedProgram])
 
   async function loadExerciseLibrary() {
     try {
       const data = await getExercises()
-
       setExerciseLibrary(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error(error)
     }
-  }
-
-  function toggleSection(sectionName) {
-    setActiveSection(
-      activeSection === sectionName ? null : sectionName
-    )
   }
 
   function handleChange(event) {
@@ -126,10 +116,7 @@ function ProgramForm({
   function addExercise() {
     setProgram({
       ...program,
-      exercises: [
-        ...program.exercises,
-        emptyExercise,
-      ],
+      exercises: [...program.exercises, emptyExercise],
     })
   }
 
@@ -189,18 +176,6 @@ function ProgramForm({
     return groups
   }
 
-  function getExerciseSummary() {
-    const exerciseCount = program.exercises.filter(
-      (exercise) => exercise.exerciseName
-    ).length
-
-    if (exerciseCount === 0) {
-      return t('noExercisesAdded')
-    }
-
-    return `${exerciseCount} ${t('exercises')}`
-  }
-
   function handleSubmit(event) {
     event.preventDefault()
 
@@ -215,237 +190,142 @@ function ProgramForm({
 
   return (
     <form className="program-editor" onSubmit={handleSubmit}>
-      <div
-        className="profile-summary clickable-summary"
-        onClick={() => toggleSection('details')}
-      >
-        <h4>{t('programDetails') || t('program')}</h4>
+      <section className="profile-summary">
+ <h2 className="program-editor-title">
+  {program.programName || t('...')}
+</h2>
+  <div className="program-details-row program-details-header">
+    <strong>{t('programName')}</strong>
+    <strong>{t('goal')}</strong>
+    <strong>{t('weeks')}</strong>
+  </div>
 
-        <p>
-          <strong>{t('programName')}:</strong>{' '}
-          {program.programName || '-'}
-        </p>
+  <div className="program-details-row">
+    <input
+      name="programName"
+      value={program.programName}
+      onChange={handleChange}
+      required
+    />
 
-        {program.goal && (
-          <p>
-            <strong>{t('goal')}:</strong> {program.goal}
-          </p>
-        )}
+    <input
+      name="goal"
+      value={program.goal}
+      onChange={handleChange}
+    />
 
-        {program.durationWeeks > 0 && (
-          <p>
-            <strong>{t('duration')}:</strong>{' '}
-            {program.durationWeeks} {t('weeks')}
-          </p>
-        )}
+    <input
+      type="number"
+      name="durationWeeks"
+      value={program.durationWeeks}
+      onChange={handleChange}
+      min="1"
+    />
+  </div>
+</section>
 
-        {activeSection === 'details' && (
-          <div
-            className="section-content"
-            onClick={(event) => event.stopPropagation()}
+      <section className="profile-summary">
+        <h3>{t('exercises')}</h3>
+
+        <div className="program-exercise-list">
+          <div className="program-exercise-row program-exercise-row-header">
+  <strong>{t('exercise')}</strong>
+  <strong>{t('sets')}</strong>
+  <strong>{t('reps')}</strong>
+  <strong>{t('rest')}</strong>
+  <strong>{t('notes')}</strong>
+  <div></div>
+</div>
+          {program.exercises.map((exercise, index) => (
+            <div className="program-exercise-row" key={index}>
+  <select
+    value={exercise.exerciseId}
+    onChange={(event) =>
+      handleExerciseSelect(index, event.target.value)
+    }
+    required
+  >
+    <option value="">{t('selectExercise')}</option>
+
+    {getGroupedExerciseOptions().map((group) => (
+      <optgroup key={group.label} label={group.label}>
+        {group.exercises.map((libraryExercise) => (
+          <option
+            key={libraryExercise.exerciseId}
+            value={libraryExercise.exerciseId}
           >
-            <div className="client-form">
-              <div className="exercise-input-group">
-                <label>{t('programName')}</label>
+            {libraryExercise.isFavorite ? '★ ' : ''}
+            {libraryExercise.exerciseName}
+          </option>
+        ))}
+      </optgroup>
+    ))}
+  </select>
 
-                <input
-                  name="programName"
-                  value={program.programName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+  <input
+    
+    value={exercise.sets}
+    onChange={(event) =>
+      handleExerciseChange(index, 'sets', event.target.value)
+    }
+  />
 
-              <div className="exercise-input-group">
-                <label>{t('goal')}</label>
+  <input
+    
+    value={exercise.reps}
+    onChange={(event) =>
+      handleExerciseChange(index, 'reps', event.target.value)
+    }
+  />
 
-                <input
-                  name="goal"
-                  value={program.goal}
-                  onChange={handleChange}
-                />
-              </div>
+  <input
+    
+    value={exercise.restSeconds}
+    onChange={(event) =>
+      handleExerciseChange(index, 'restSeconds', event.target.value)
+    }
+  />
 
-              <div className="exercise-input-group">
-                <label>{t('durationWeeks')}</label>
+  <input
+    
+    value={exercise.notes}
+    onChange={(event) =>
+      handleExerciseChange(index, 'notes', event.target.value)
+    }
+  />
 
-                <input
-                  type="number"
-                  name="durationWeeks"
-                  value={program.durationWeeks}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+  <button
+    type="button"
+    className="delete-icon-button"
+    onClick={() => removeExercise(index)}
+  >
+    ×
+  </button>
+</div>
+          ))}
+        </div>
 
-      <div
-        className="profile-summary clickable-summary"
-        onClick={() => toggleSection('exercises')}
-      >
-        <h4>{t('exercises')}</h4>
+        <div className="add-package-row" onClick={addExercise}>
+          <span className="add-package-icon">+</span>
+          <span>{t('addExercise')}</span>
+        </div>
+      </section>
 
-        <p>{getExerciseSummary()}</p>
+      <section className="profile-summary">
+        <h3>{t('notes')}</h3>
 
-        {activeSection === 'exercises' && (
-          <div
-            className="section-content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            {program.exercises.map((exercise, index) => (
-              <div
-                className="exercise-form-card"
-                key={index}
-              >
-                <div className="exercise-form-grid">
-                  <div className="exercise-input-group">
-                    <label>{t('exercise')}</label>
+        <div className="exercise-input-group">
+          <label>{t('programNotes')}</label>
 
-                    <select
-                      value={exercise.exerciseId}
-                      onChange={(event) =>
-                        handleExerciseSelect(index, event.target.value)
-                      }
-                      required
-                    >
-                      <option value="">
-                        {t('selectExercise')}
-                      </option>
-
-                      {getGroupedExerciseOptions().map((group) => (
-                        <optgroup
-                          key={group.label}
-                          label={group.label}
-                        >
-                          {group.exercises.map((libraryExercise) => (
-                            <option
-                              key={libraryExercise.exerciseId}
-                              value={libraryExercise.exerciseId}
-                            >
-                              {libraryExercise.isFavorite ? '★ ' : ''}
-                              {libraryExercise.exerciseName}
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="exercise-input-group">
-                    <label>{t('sets')}</label>
-
-                    <input
-                      value={exercise.sets}
-                      onChange={(event) =>
-                        handleExerciseChange(
-                          index,
-                          'sets',
-                          event.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="exercise-input-group">
-                    <label>{t('reps')}</label>
-
-                    <input
-                      value={exercise.reps}
-                      onChange={(event) =>
-                        handleExerciseChange(
-                          index,
-                          'reps',
-                          event.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="exercise-input-group">
-                    <label>{t('rest')}</label>
-
-                    <input
-                      value={exercise.restSeconds}
-                      onChange={(event) =>
-                        handleExerciseChange(
-                          index,
-                          'restSeconds',
-                          event.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="exercise-delete-cell">
-                    {program.exercises.length > 1 && (
-                      <button
-                        type="button"
-                        className="delete-icon-button"
-                        onClick={() => removeExercise(index)}
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="exercise-input-group exercise-form-notes">
-                    <label>{t('notes')}</label>
-
-                    <input
-                      value={exercise.notes}
-                      onChange={(event) =>
-                        handleExerciseChange(
-                          index,
-                          'notes',
-                          event.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div
-              className="add-package-row"
-              onClick={addExercise}
-            >
-              <span className="add-package-icon">+</span>
-              <span>{t('addExercise')}</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div
-        className="profile-summary clickable-summary"
-        onClick={() => toggleSection('notes')}
-      >
-        <h4>{t('notes')}</h4>
-
-        <p>{program.notes || '-'}</p>
-
-        {activeSection === 'notes' && (
-          <div
-            className="section-content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="client-form">
-              <div className="exercise-input-group">
-                <label>{t('programNotes')}</label>
-
-                <input
-                  name="notes"
-                  value={program.notes}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+          <textarea
+            name="notes"
+            className="program-notes-textarea"
+            value={program.notes}
+            onChange={handleChange}
+            rows="4"
+          />
+        </div>
+      </section>
 
       <div className="form-actions">
         <button type="submit">
