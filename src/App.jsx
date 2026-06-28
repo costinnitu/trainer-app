@@ -8,19 +8,21 @@ import {
 import '@aws-amplify/ui-react/styles.css'
 
 import DashboardPage from './pages/DashboardPage'
-import ContactsPage from './pages/ContactsPage'
 import ClientsPage from './pages/ClientsPage'
 import WeeklySchedulePage from './pages/WeeklySchedulePage'
 import ProgramsPage from './pages/ProgramsPage'
 import ExerciseLibraryPage from './pages/ExerciseLibraryPage'
 import SettingsPage from './pages/SettingsPage'
 import PaymentTrackingPage from './pages/PaymentTrackingPage'
+import PackagesPage from './pages/PackagesPage'
+
 import { getAppPreferences } from './services/settingsService'
 import useTranslations from './hooks/useTranslations'
-import PackagesPage from './pages/PackagesPage'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
+  const [isLibraryOpen, setIsLibraryOpen] = useState(false)
+
   const { t } = useTranslations()
 
   useEffect(() => {
@@ -53,6 +55,25 @@ function App() {
     }
   }
 
+  function handlePageChange(page) {
+    setCurrentPage(page)
+    setIsLibraryOpen(false)
+  }
+
+  function handleLibraryPageChange(page) {
+    setCurrentPage(page)
+    setIsLibraryOpen(false)
+  }
+
+  const libraryPages = [
+    'programs',
+    'exerciseLibrary',
+    'packages',
+    'paymentTracking',
+  ]
+
+  const isLibraryActive = libraryPages.includes(currentPage)
+
   return (
     <Authenticator>
       {({ signOut, user }) => (
@@ -65,41 +86,69 @@ function App() {
             </div>
 
             <div className="navbar-center">
-              <button onClick={() => setCurrentPage('dashboard')}>
+              <button onClick={() => handlePageChange('dashboard')}>
                 {t('dashboard')}
               </button>
 
-              <button onClick={() => setCurrentPage('contacts')}>
-                {t('contacts')}
-              </button>
-
-              <button onClick={() => setCurrentPage('clients')}>
+              <button onClick={() => handlePageChange('clients')}>
                 {t('clients')}
               </button>
 
-              <button onClick={() => setCurrentPage('weeklySchedule')}>
+              <button onClick={() => handlePageChange('weeklySchedule')}>
                 {t('weeklySchedule')}
               </button>
 
-              <button onClick={() => setCurrentPage('programs')}>
-                {t('programs')}
-              </button>
+              <div className="nav-group">
+                <button
+                  type="button"
+                  className={`nav-group-button ${
+                    isLibraryActive ? 'active' : ''
+                  }`}
+                  onClick={() => setIsLibraryOpen(!isLibraryOpen)}
+                >
+                  {t('library')} ▾
+                </button>
 
-              <button onClick={() => setCurrentPage('packages')}>
-                {t('packages')}
-              </button>
+                {isLibraryOpen && (
+                  <div className="nav-submenu">
+                    <button
+                      type="button"
+                      onClick={() => handleLibraryPageChange('programs')}
+                    >
+                      {t('programs')}
+                    </button>
 
-              <button onClick={() => setCurrentPage('paymentTracking')}>
-                {t('paymentTracking')}
-              </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleLibraryPageChange('exerciseLibrary')
+                      }
+                    >
+                      {t('exercises')}
+                    </button>
 
-              <button onClick={() => setCurrentPage('exerciseLibrary')}>
-                {t('exercises')}
-              </button>
+                    <button
+                      type="button"
+                      onClick={() => handleLibraryPageChange('packages')}
+                    >
+                      {t('packages')}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleLibraryPageChange('paymentTracking')
+                      }
+                    >
+                      {t('paymentTracking')}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="navbar-right">
-              <button onClick={() => setCurrentPage('settings')}>
+              <button onClick={() => handlePageChange('settings')}>
                 {t('settings')}
               </button>
 
@@ -110,10 +159,9 @@ function App() {
           </nav>
 
           {currentPage === 'dashboard' && (
-  <DashboardPage setCurrentPage={setCurrentPage} />
-  )}
+            <DashboardPage setCurrentPage={setCurrentPage} />
+          )}
 
-          {currentPage === 'contacts' && <ContactsPage />}
 
           {currentPage === 'clients' && <ClientsPage />}
 

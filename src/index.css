@@ -1658,3 +1658,189 @@ button:hover {
 
   color: inherit;
 }
+
+.nav-group {
+  position: relative;
+}
+
+.nav-group-button.active {
+  background: #35a94f;
+}
+
+.nav-submenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+
+  min-width: 190px;
+
+  display: grid;
+  gap: 6px;
+
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.nav-submenu button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #1f2937;
+  padding: 9px 10px;
+}
+
+.nav-submenu button:hover {
+  background: #f3f4f6;
+}
+
+.dark-mode .nav-submenu {
+  background: #1f2937;
+}
+
+.dark-mode .nav-submenu button {
+  color: #f9fafb;
+}
+
+.dark-mode .nav-submenu button:hover {
+  background: #111827;
+}
+
+.contacts-section {
+  margin-bottom: 24px;
+}
+
+.contacts-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 18px;
+
+  cursor: pointer;
+}
+
+.contacts-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.section-arrow {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.contacts-toggle-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  background: white;
+  border-radius: 10px;
+
+  padding: 10px 14px;
+  margin-bottom: 8px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  cursor: pointer;
+
+  font-weight: 600;
+  color: #2563eb;
+
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.contacts-toggle-row:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.dark-mode .contacts-toggle-row {
+  background: #1f2937;
+  color: #93c5fd;
+}
+
+.dark-mode .contacts-toggle-row:hover {
+  background: #111827;
+}
+
+.contacts-toggle-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 60px;
+
+  margin: 0 auto 16px;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+
+  cursor: pointer;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.contacts-toggle-row:hover {
+  transform: translateY(-1px);
+  background: var(--hover-background);
+}
+
+.contacts-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contacts-section .section-content {
+  width: 100%;
+}
+
+.add-row {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0 8px;
+}
+
+.add-row-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 60px;
+
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.add-row-button:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}

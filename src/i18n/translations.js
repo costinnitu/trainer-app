@@ -265,6 +265,18 @@ const translations = {
     exhausted: 'Exhausted',
     activePackage: 'Active Package',
 
+    library: 'Library',
+
+    leads: 'Leads',
+lead: 'Lead',
+addLead: 'Add Lead',
+searchLeads: 'Search Leads',
+confirmConvertLead: 'Convert this lead into a client?',
+couldNotLoadLeads: 'Could not load leads.',
+couldNotSaveLead: 'Could not save lead.',
+couldNotUpdateLead: 'Could not update lead.',
+couldNotDeleteLead: 'Could not delete lead.',
+
   },
 
   it: {
@@ -541,6 +553,19 @@ const translations = {
     no: 'No',
     editClientStatusPreferences: 'Modifica Preferenze Stato Clienti',
 
+
+    library: 'Libreria',
+
+
+    leads: 'Lead',
+lead: 'Lead',
+addLead: 'Aggiungi Lead',
+searchLeads: 'Cerca lead',
+confirmConvertLead: 'Convertire questo lead in cliente?',
+couldNotLoadLeads: 'Impossibile caricare i lead.',
+couldNotSaveLead: 'Impossibile salvare il lead.',
+couldNotUpdateLead: 'Impossibile aggiornare il lead.',
+couldNotDeleteLead: 'Impossibile eliminare il lead.',
   },
 }
 

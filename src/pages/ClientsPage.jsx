@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ClientCard from '../components/ClientCard'
 import ClientForm from '../components/ClientForm'
-
+import ContactsSection from '../components/ContactsSection'
 import {
   getClients,
   createClient,
@@ -458,7 +458,10 @@ function ClientsPage() {
         <h2>{t('clients')}</h2>
       </div>
 
-
+ <ContactsSection
+  clients={clients}
+  onClientsChanged={refreshClients}
+/>
 {!showForm && (
       <input
         className="search-input"
@@ -522,14 +525,19 @@ function ClientsPage() {
           />
         ))}
           {!showForm && (
-            <div
-              className="add-package-row"
-              onClick={() => setShowForm(true)}
-            >
-              <span className="add-package-icon">+</span>
-              <span>{t('addClient')}</span>
-            </div>
-          )}
+  <div className="add-row">
+    <button
+      type="button"
+      className="add-row-button"
+      onClick={() => {
+        setSelectedClient(null)
+        setShowForm(true)
+      }}
+    >
+      + {t('addClient')}
+    </button>
+  </div>
+)}
 
 
       </div>
