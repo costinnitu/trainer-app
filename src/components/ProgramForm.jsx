@@ -8,6 +8,7 @@ function ProgramForm({
   onAddProgram,
   onUpdateProgram,
   selectedProgram,
+  onCancel,
 }) {
   const { t } = useTranslations()
 
@@ -66,10 +67,7 @@ function ProgramForm({
 
     setProgram({
       ...program,
-      [name]:
-        name === 'durationWeeks'
-          ? Number(value)
-          : value,
+      [name]: name === 'durationWeeks' ? Number(value) : value,
     })
   }
 
@@ -191,124 +189,127 @@ function ProgramForm({
   return (
     <form className="program-editor" onSubmit={handleSubmit}>
       <section className="profile-summary">
- <h2 className="program-editor-title">
-  {program.programName || t('...')}
-</h2>
-  <div className="program-details-row program-details-header">
-    <strong>{t('programName')}</strong>
-    <strong>{t('goal')}</strong>
-    <strong>{t('weeks')}</strong>
-  </div>
+        <h2 className="program-editor-title">
+          {program.programName || '...'}
+        </h2>
 
-  <div className="program-details-row">
-    <input
-      name="programName"
-      value={program.programName}
-      onChange={handleChange}
-      required
-    />
+        <div className="program-details-row program-details-header">
+          <strong>{t('programName')}</strong>
+          <strong>{t('goal')}</strong>
+          <strong>{t('weeks')}</strong>
+        </div>
 
-    <input
-      name="goal"
-      value={program.goal}
-      onChange={handleChange}
-    />
+        <div className="program-details-row">
+          <input
+            name="programName"
+            value={program.programName}
+            onChange={handleChange}
+            required
+          />
 
-    <input
-      type="number"
-      name="durationWeeks"
-      value={program.durationWeeks}
-      onChange={handleChange}
-      min="1"
-    />
-  </div>
-</section>
+          <input
+            name="goal"
+            value={program.goal}
+            onChange={handleChange}
+          />
+
+          <input
+            type="number"
+            name="durationWeeks"
+            value={program.durationWeeks}
+            onChange={handleChange}
+            min="1"
+          />
+        </div>
+      </section>
 
       <section className="profile-summary">
         <h3>{t('exercises')}</h3>
 
         <div className="program-exercise-list">
           <div className="program-exercise-row program-exercise-row-header">
-  <strong>{t('exercise')}</strong>
-  <strong>{t('sets')}</strong>
-  <strong>{t('reps')}</strong>
-  <strong>{t('rest')}</strong>
-  <strong>{t('notes')}</strong>
-  <div></div>
-</div>
+            <strong>{t('exercise')}</strong>
+            <strong>{t('sets')}</strong>
+            <strong>{t('reps')}</strong>
+            <strong>{t('rest')}</strong>
+            <strong>{t('notes')}</strong>
+            <div></div>
+          </div>
+
           {program.exercises.map((exercise, index) => (
             <div className="program-exercise-row" key={index}>
-  <select
-    value={exercise.exerciseId}
-    onChange={(event) =>
-      handleExerciseSelect(index, event.target.value)
-    }
-    required
-  >
-    <option value="">{t('selectExercise')}</option>
+              <select
+                value={exercise.exerciseId}
+                onChange={(event) =>
+                  handleExerciseSelect(index, event.target.value)
+                }
+                required
+              >
+                <option value="">{t('selectExercise')}</option>
 
-    {getGroupedExerciseOptions().map((group) => (
-      <optgroup key={group.label} label={group.label}>
-        {group.exercises.map((libraryExercise) => (
-          <option
-            key={libraryExercise.exerciseId}
-            value={libraryExercise.exerciseId}
-          >
-            {libraryExercise.isFavorite ? '★ ' : ''}
-            {libraryExercise.exerciseName}
-          </option>
-        ))}
-      </optgroup>
-    ))}
-  </select>
+                {getGroupedExerciseOptions().map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.exercises.map((libraryExercise) => (
+                      <option
+                        key={libraryExercise.exerciseId}
+                        value={libraryExercise.exerciseId}
+                      >
+                        {libraryExercise.isFavorite ? '★ ' : ''}
+                        {libraryExercise.exerciseName}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
 
-  <input
-    
-    value={exercise.sets}
-    onChange={(event) =>
-      handleExerciseChange(index, 'sets', event.target.value)
-    }
-  />
+              <input
+                value={exercise.sets}
+                onChange={(event) =>
+                  handleExerciseChange(index, 'sets', event.target.value)
+                }
+              />
 
-  <input
-    
-    value={exercise.reps}
-    onChange={(event) =>
-      handleExerciseChange(index, 'reps', event.target.value)
-    }
-  />
+              <input
+                value={exercise.reps}
+                onChange={(event) =>
+                  handleExerciseChange(index, 'reps', event.target.value)
+                }
+              />
 
-  <input
-    
-    value={exercise.restSeconds}
-    onChange={(event) =>
-      handleExerciseChange(index, 'restSeconds', event.target.value)
-    }
-  />
+              <input
+                value={exercise.restSeconds}
+                onChange={(event) =>
+                  handleExerciseChange(index, 'restSeconds', event.target.value)
+                }
+              />
 
-  <input
-    
-    value={exercise.notes}
-    onChange={(event) =>
-      handleExerciseChange(index, 'notes', event.target.value)
-    }
-  />
+              <input
+                value={exercise.notes}
+                onChange={(event) =>
+                  handleExerciseChange(index, 'notes', event.target.value)
+                }
+              />
 
-  <button
-    type="button"
-    className="delete-icon-button"
-    onClick={() => removeExercise(index)}
-  >
-    ×
-  </button>
-</div>
+              <button
+                type="button"
+                className="delete-icon-button"
+                onClick={() => removeExercise(index)}
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
 
-        <div className="add-package-row" onClick={addExercise}>
-          <span className="add-package-icon">+</span>
-          <span>{t('addExercise')}</span>
-        </div>
+        <div className="add-row">
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={addExercise}
+  >
+    + {t('addExercise')}
+  </button>
+</div>
       </section>
 
       <section className="profile-summary">
@@ -327,11 +328,22 @@ function ProgramForm({
         </div>
       </section>
 
-      <div className="form-actions">
-        <button type="submit">
-          {selectedProgram ? t('updateProgram') : t('saveProgram')}
-        </button>
-      </div>
+      <div className="form-actions pill-actions">
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={onCancel}
+  >
+    {t('cancel')}
+  </button>
+
+  <button
+    type="submit"
+    className="add-row-button"
+  >
+    {selectedProgram ? t('update') : t('save')}
+  </button>
+</div>
     </form>
   )
 }

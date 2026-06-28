@@ -7,6 +7,7 @@ function ClientPackageForm({
   selectedPackage,
   onAddPackage,
   onUpdatePackage,
+  onCancel,
 }) {
   const { t } = useTranslations()
 
@@ -19,7 +20,7 @@ function ClientPackageForm({
     paymentStatus: 'paid',
     purchaseDate: new Date().toISOString().split('T')[0],
     notes: '',
-}
+  }
 
   const [formData, setFormData] = useState(emptyForm)
 
@@ -48,16 +49,14 @@ function ClientPackageForm({
     )
 
     const packageData = {
-  ...formData,
-  clientName: selectedClient
-    ? `${selectedClient.firstName} ${selectedClient.lastName}`
-    : '',
-  totalSessions: Number(formData.totalSessions),
-  remainingSessions: Number(
-    formData.remainingSessions
-  ),
-  amount: Number(formData.amount),
-}
+      ...formData,
+      clientName: selectedClient
+        ? `${selectedClient.firstName} ${selectedClient.lastName}`
+        : '',
+      totalSessions: Number(formData.totalSessions),
+      remainingSessions: Number(formData.remainingSessions),
+      amount: Number(formData.amount || 0),
+    }
 
     if (selectedPackage) {
       onUpdatePackage(packageData)
@@ -74,9 +73,7 @@ function ClientPackageForm({
         onChange={handleChange}
         required
       >
-        <option value="">
-          {t('selectClient')}
-        </option>
+        <option value="">{t('selectClient')}</option>
 
         {clients.map((client) => (
           <option
@@ -127,20 +124,26 @@ function ClientPackageForm({
         value={formData.paymentStatus}
         onChange={handleChange}
       >
-        <option value="paid">
-          {t('paid')}
-        </option>
-
-        <option value="unpaid">
-          {t('unpaid')}
-        </option>
+        <option value="paid">{t('paid')}</option>
+        <option value="unpaid">{t('unpaid')}</option>
       </select>
 
-      <button type="submit">
-        {selectedPackage
-          ? t('updatePackage')
-          : t('savePackage')}
-      </button>
+      <div className="form-actions pill-actions">
+        <button
+          type="button"
+          className="add-row-button"
+          onClick={onCancel}
+        >
+          {t('cancel')}
+        </button>
+
+        <button
+          type="submit"
+          className="add-row-button"
+        >
+          {selectedPackage ? t('update') : t('save')}
+        </button>
+      </div>
     </form>
   )
 }

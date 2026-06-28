@@ -491,6 +491,7 @@ function ClientsPage() {
           onUpdatePackage={handleUpdatePackage}
           onDeletePackage={handleDeletePackage}
           selectedClient={selectedClient}
+          onCancel={handleCancelForm}
         />
       )}
 

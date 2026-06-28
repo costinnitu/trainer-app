@@ -288,15 +288,14 @@ function SchedulePreferencesForm() {
             step="15"
           />
 
-          <button type="submit">
-            {savedPreferences
-              ? t(
-                  'updateSchedulePreferences'
-                )
-              : t(
-                  'saveSchedulePreferences'
-                )}
-          </button>
+          <div className="add-row">
+            <button
+              type="submit"
+              className="add-row-button"
+            >
+              {t('update')}
+            </button>
+          </div>
         </form>
       )}
 

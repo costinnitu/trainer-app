@@ -131,9 +131,14 @@ function ClientStatusPreferencesForm() {
         />
       </div>
 
-      <button type="submit" disabled={isLoading}>
-        {t('saveClientStatusPreferences')}
-      </button>
+      <div className="add-row">
+  <button
+    type="submit"
+    className="add-row-button"
+  >
+    {t('update')}
+  </button>
+</div>
     </form>
   )
 }

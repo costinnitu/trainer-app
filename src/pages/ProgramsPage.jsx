@@ -99,21 +99,16 @@ function ProgramsPage() {
     <div className="page">
       <div className="page-header">
         <h2>{t('trainingPrograms')}</h2>
-
-        {showForm && (
-          <button type="button" onClick={handleCancelForm}>
-            {t('cancel')}
-          </button>
-        )}
       </div>
 
       {error && <p className="error-message">{error}</p>}
 
       {showForm && (
         <ProgramForm
+          selectedProgram={selectedProgram}
           onAddProgram={handleAddProgram}
           onUpdateProgram={handleUpdateProgram}
-          selectedProgram={selectedProgram}
+          onCancel={handleCancelForm}
         />
       )}
 

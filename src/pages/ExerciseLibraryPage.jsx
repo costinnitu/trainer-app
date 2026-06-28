@@ -37,6 +37,21 @@ function ExerciseLibraryPage() {
     }
   }
 
+  function handleShowAddForm() {
+    setSelectedExercise(null)
+    setShowForm(true)
+  }
+
+  function handleEditExercise(exercise) {
+    setSelectedExercise(exercise)
+    setShowForm(true)
+  }
+
+  function handleCancelForm() {
+    setSelectedExercise(null)
+    setShowForm(false)
+  }
+
   async function handleAddExercise(newExercise) {
     try {
       setError('')
@@ -44,16 +59,11 @@ function ExerciseLibraryPage() {
       await createExercise(newExercise)
       await loadExercises()
 
-      setShowForm(false)
+      handleCancelForm()
     } catch (error) {
       console.error(error)
       setError(t('couldNotSaveExercise'))
     }
-  }
-
-  function handleEditExercise(exercise) {
-    setSelectedExercise(exercise)
-    setShowForm(true)
   }
 
   async function handleUpdateExercise(updatedExercise) {
@@ -63,8 +73,7 @@ function ExerciseLibraryPage() {
       await updateExercise(updatedExercise)
       await loadExercises()
 
-      setSelectedExercise(null)
-      setShowForm(false)
+      handleCancelForm()
     } catch (error) {
       console.error(error)
       setError(t('couldNotUpdateExercise'))
@@ -72,9 +81,7 @@ function ExerciseLibraryPage() {
   }
 
   async function handleDeleteExercise(exerciseId) {
-    const confirmed = window.confirm(
-      t('confirmDeleteExercise')
-    )
+    const confirmed = window.confirm(t('confirmDeleteExercise'))
 
     if (!confirmed) {
       return
@@ -112,26 +119,20 @@ function ExerciseLibraryPage() {
       console.error(error)
 
       setExercises(exercises)
-
       setError(t('couldNotUpdateFavorite'))
     }
   }
 
-  function handleCancelForm() {
-    setSelectedExercise(null)
-    setShowForm(false)
-  }
-
   function getExerciseGroups() {
-    const filteredExercises = exercises.filter((exercise) => {
-      const searchValue = searchTerm.toLowerCase()
+    const searchValue = searchTerm.toLowerCase()
 
+    const filteredExercises = exercises.filter((exercise) => {
       return (
         exercise.exerciseName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchValue) ||
         exercise.bodyPart
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchValue) ||
         exercise.equipment
           ?.toLowerCase()
@@ -145,13 +146,15 @@ function ExerciseLibraryPage() {
         a.exerciseName.localeCompare(b.exerciseName)
       )
 
-    const nonFavorites = filteredExercises
+    const nonFavorites = filteredExercises.filter(
+      (exercise) => !exercise.isFavorite
+    )
 
     const bodyParts = [
       ...new Set(
-        nonFavorites.map(
-          (exercise) => exercise.bodyPart
-        )
+        nonFavorites
+          .map((exercise) => exercise.bodyPart)
+          .filter(Boolean)
       ),
     ].sort()
 
@@ -166,14 +169,9 @@ function ExerciseLibraryPage() {
 
     bodyParts.forEach((bodyPart) => {
       const exercisesForBodyPart = nonFavorites
-        .filter(
-          (exercise) =>
-            exercise.bodyPart === bodyPart
-        )
+        .filter((exercise) => exercise.bodyPart === bodyPart)
         .sort((a, b) =>
-          a.exerciseName.localeCompare(
-            b.exerciseName
-          )
+          a.exerciseName.localeCompare(b.exerciseName)
         )
 
       groups.push({
@@ -191,20 +189,6 @@ function ExerciseLibraryPage() {
     <div className="page">
       <div className="page-header">
         <h2>{t('exerciseLibrary')}</h2>
-
-        <div className="card-actions">
-          <button
-            onClick={
-              showForm
-                ? handleCancelForm
-                : () => setShowForm(true)
-            }
-          >
-            {showForm
-              ? t('cancel')
-              : t('addExercise')}
-          </button>
-        </div>
       </div>
 
       <input
@@ -217,6 +201,18 @@ function ExerciseLibraryPage() {
         }
       />
 
+      {!showForm && (
+        <div className="add-row">
+          <button
+            type="button"
+            className="add-row-button"
+            onClick={handleShowAddForm}
+          >
+            + {t('addExercise')}
+          </button>
+        </div>
+      )}
+
       {error && (
         <p className="error-message">{error}</p>
       )}
@@ -226,6 +222,7 @@ function ExerciseLibraryPage() {
           onAddExercise={handleAddExercise}
           onUpdateExercise={handleUpdateExercise}
           selectedExercise={selectedExercise}
+          onCancel={handleCancelForm}
         />
       )}
 
@@ -260,10 +257,7 @@ function ExerciseLibraryPage() {
                           }`}
                           onClick={(event) => {
                             event.stopPropagation()
-
-                            handleToggleFavorite(
-                              exercise
-                            )
+                            handleToggleFavorite(exercise)
                           }}
                         >
                           ★
@@ -275,9 +269,7 @@ function ExerciseLibraryPage() {
                       </div>
 
                       {exercise.defaultNotes && (
-                        <p>
-                          {exercise.defaultNotes}
-                        </p>
+                        <p>{exercise.defaultNotes}</p>
                       )}
                     </div>
 
@@ -287,14 +279,13 @@ function ExerciseLibraryPage() {
                       {exercise.equipment || '-'}
                     </span>
 
-                    {group.label !==
-                    `★ ${t('favorites')}` ? (
+                    {group.label !== `★ ${t('favorites')}` ? (
                       <div className="exercise-row-actions">
                         <button
+                          type="button"
                           className="delete-icon-button"
                           onClick={(event) => {
                             event.stopPropagation()
-
                             handleDeleteExercise(
                               exercise.exerciseId
                             )

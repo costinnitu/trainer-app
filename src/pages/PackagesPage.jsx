@@ -220,6 +220,7 @@ function PackagesPage() {
           selectedPackage={selectedPackage}
           onAddPackage={handleAddPackage}
           onUpdatePackage={handleUpdatePackage}
+          onCancel={handleCancelForm}
         />
       )}
 
@@ -250,13 +251,18 @@ function PackagesPage() {
           ))
         )}
               {!showForm && (
-        <div
-          className="add-package-row"
-          onClick={() => setShowForm(true)}
-        >
-          <span className="add-package-icon">+</span>
-          <span>{t('addPackage')}</span>
-        </div>
+        <div className="add-row">
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={() => {
+      setSelectedPackage(null)
+      setShowForm(true)
+    }}
+  >
+    + {t('addPackage')}
+  </button>
+</div>
       )}
       </div>
     </div>

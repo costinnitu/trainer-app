@@ -13,6 +13,7 @@ function ClientForm({
   onUpdatePackage,
   onDeletePackage,
   selectedClient,
+  onCancel,
 }) {
   const { t } = useTranslations()
 
@@ -179,6 +180,7 @@ function ClientForm({
     setShowPackageForm(false)
   }
 
+
   function getSelectedProgramNames() {
     return programs
       .filter((program) =>
@@ -242,7 +244,22 @@ function ClientForm({
           <option value="inactive">{t('inactive')}</option>
         </select>
 
-        <button type="submit">{t('saveClient')}</button>
+        <div className="form-actions pill-actions">
+          <button
+            type="button"
+            className="add-row-button"
+            onClick={onCancel}
+          >
+            {t('cancel')}
+          </button>
+
+          <button
+            type="submit"
+            className="add-row-button"
+          >
+            {t('save')}
+          </button>
+        </div>
       </form>
     )
   }
@@ -250,13 +267,10 @@ function ClientForm({
   return (
     <div>
       <div
-  className="profile-summary clickable-summary"
-  onClick={() => toggleSection('details')}
->
-        <div
-          className="section-header clickable-section-header"
-          onClick={() => toggleSection('details')}
-        >
+        className="profile-summary clickable-summary"
+        onClick={() => toggleSection('details')}
+      >
+        <div className="section-header clickable-section-header">
           <h4>{t('client')}</h4>
         </div>
 
@@ -283,10 +297,10 @@ function ClientForm({
 
         {activeSection === 'details' && (
           <form
-  className="client-form section-content"
-  onSubmit={handleSubmit}
-  onClick={(event) => event.stopPropagation()}
->
+            className="client-form section-content"
+            onSubmit={handleSubmit}
+            onClick={(event) => event.stopPropagation()}
+          >
             <input
               name="firstName"
               placeholder={t('firstName')}
@@ -327,21 +341,31 @@ function ClientForm({
               <option value="inactive">{t('inactive')}</option>
             </select>
 
-            <div className="form-actions">
-              <button type="submit">{t('updateClient')}</button>
+            <div className="form-actions pill-actions">
+              <button
+                type="button"
+                className="add-row-button"
+                onClick={() => setActiveSection(null)}
+              >
+                {t('cancel')}
+              </button>
+
+              <button
+                type="submit"
+                className="add-row-button"
+              >
+                {t('update')}
+              </button>
             </div>
           </form>
         )}
       </div>
 
       <div
-  className="profile-summary clickable-summary"
-  onClick={() => toggleSection('programs')}
->
-        <div
-          className="section-header clickable-section-header"
-          onClick={() => toggleSection('programs')}
-        >
+        className="profile-summary clickable-summary"
+        onClick={() => toggleSection('programs')}
+      >
+        <div className="section-header clickable-section-header">
           <h4>{t('assignedPrograms')}</h4>
         </div>
 
@@ -349,9 +373,9 @@ function ClientForm({
 
         {activeSection === 'programs' && (
           <div
-  className="section-content"
-  onClick={(event) => event.stopPropagation()}
->
+            className="section-content"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="exercise-input-group">
               <label>{t('assignedPrograms')}</label>
 
@@ -380,25 +404,33 @@ function ClientForm({
               )}
             </div>
 
-            <div className="form-actions">
-              <button type="button" onClick={handleSavePrograms}>
-                {t('updateClient')}
+            <div className="form-actions pill-actions">
+              <button
+                type="button"
+                className="add-row-button"
+                onClick={() => setActiveSection(null)}
+              >
+                {t('cancel')}
+              </button>
+
+              <button
+                type="button"
+                className="add-row-button"
+                onClick={handleSavePrograms}
+              >
+                {t('update')}
               </button>
             </div>
           </div>
         )}
       </div>
 
-     <div
-  className="profile-summary clickable-summary"
-  onClick={() => toggleSection('packages')}
->
-        <div
-          className="section-header clickable-section-header"
-          onClick={() => toggleSection('packages')}
-        >
+      <div
+        className="profile-summary clickable-summary"
+        onClick={() => toggleSection('packages')}
+      >
+        <div className="section-header clickable-section-header">
           <h4>{t('packages')}</h4>
-
         </div>
 
         <p>
@@ -409,9 +441,9 @@ function ClientForm({
 
         {activeSection === 'packages' && (
           <div
-  className="section-content"
-  onClick={(event) => event.stopPropagation()}
->
+            className="section-content"
+            onClick={(event) => event.stopPropagation()}
+          >
             {clientPackages.length === 0 ? (
               <p>{t('noPackagesYet')}</p>
             ) : (
@@ -465,12 +497,27 @@ function ClientForm({
             )}
 
             {!showPackageForm && (
-              <div
-                className="add-package-row"
-                onClick={handleAddPackageClick}
-              >
-                <span className="add-package-icon">+</span>
-                <span>{t('addPackage')}</span>
+              <div className="form-actions pill-actions">
+                <button
+                  type="button"
+                  className="add-row-button"
+                  onClick={() => {
+                    setShowPackageForm(false)
+                    setSelectedPackage(null)
+                    setPackageForm(emptyPackageForm)
+                    setActiveSection(null)
+                  }}
+                >
+                  {t('cancel')}
+                </button>
+
+                <button
+                  type="button"
+                  className="add-row-button"
+                  onClick={handleAddPackageClick}
+                >
+                  + {t('addPackage')}
+                </button>
               </div>
             )}
 
@@ -519,17 +566,20 @@ function ClientForm({
                   <option value="unpaid">{t('unpaid')}</option>
                 </select>
 
-                <div className="form-actions">
+                <div className="form-actions pill-actions">
                   <button
                     type="button"
-                    className="secondary-button"
+                    className="add-row-button"
                     onClick={handleCancelPackageEdit}
                   >
                     {t('cancel')}
                   </button>
 
-                  <button type="submit">
-                    {selectedPackage ? t('updatePackage') : t('savePackage')}
+                  <button
+                    type="submit"
+                    className="add-row-button"
+                  >
+                    {selectedPackage ? t('update') : t('save')}
                   </button>
                 </div>
               </form>
@@ -537,6 +587,28 @@ function ClientForm({
           </div>
         )}
       </div>
+
+      <div className="form-actions pill-actions">
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={onCancel}
+  >
+    {t('cancel')}
+  </button>
+
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={() => {
+      onUpdateClient(formData)
+      onCancel()
+    }}
+  >
+    {t('update')}
+  </button>
+</div>
+
     </div>
   )
 }

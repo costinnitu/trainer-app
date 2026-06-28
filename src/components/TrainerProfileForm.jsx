@@ -127,11 +127,14 @@ function TrainerProfileForm() {
             onChange={handleChange}
           />
 
-          <button type="submit">
-            {savedProfile
-              ? t('updateProfile')
-              : t('saveProfile')}
-          </button>
+          <div className="add-row">
+            <button
+              type="submit"
+              className="add-row-button"
+            >
+              {t('update')}
+            </button>
+          </div>
         </form>
       )}
 

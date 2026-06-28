@@ -6,6 +6,7 @@ function ContactForm({
   onAddContact,
   onUpdateContact,
   selectedContact,
+  onCancel,
 }) {
   const { t } = useTranslations()
 
@@ -51,7 +52,11 @@ function ContactForm({
   }
 
   return (
-    <form className="client-form" onSubmit={handleSubmit}>
+    <form
+  className="client-form"
+  onSubmit={handleSubmit}
+  onClick={(event) => event.stopPropagation()}
+>
       <input
         name="firstName"
         placeholder={t('firstName')}
@@ -107,11 +112,25 @@ function ContactForm({
         onChange={handleChange}
       />
 
-      <button type="submit">
-        {selectedContact
-          ? t('updateContact')
-          : t('saveContact')}
-      </button>
+      <div className="form-actions pill-actions">
+        <button
+          type="button"
+          className="add-row-button"
+          onClick={(event) => {
+            event.stopPropagation()
+            onCancel()
+          }}
+        >
+          {t('cancel')}
+        </button>
+
+        <button
+          type="submit"
+          className="add-row-button"
+        >
+          {selectedContact ? t('update') : t('save')}
+        </button>
+      </div>
     </form>
   )
 }

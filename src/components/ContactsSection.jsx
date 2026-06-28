@@ -184,6 +184,7 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
             onAddContact={handleAddContact}
             onUpdateContact={handleUpdateContact}
             selectedContact={selectedContact}
+            onCancel={handleCancelForm}
           />
         )}
 
@@ -210,14 +211,31 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
           ))}
 
           {!showForm && (
-            <div
-              className="add-package-row"
-              onClick={() => setShowForm(true)}
-            >
-              <span className="add-package-icon">+</span>
-              <span>{t('addContact')}</span>
-            </div>
-          )}
+  <div className="form-actions pill-actions">
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={() => {
+      setIsExpanded(false)
+      setShowForm(false)
+      setSelectedContact(null)
+    }}
+  >
+    {t('cancel')}
+  </button>
+
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={() => {
+      setSelectedContact(null)
+      setShowForm(true)
+    }}
+  >
+    + {t('addContact')}
+  </button>
+</div>
+)}
         </div>
       </div>
     )}
