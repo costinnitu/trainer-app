@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import ClientCard from '../components/ClientCard'
 import ClientForm from '../components/ClientForm'
+import { getPackages } from '../services/packageService'
 import ContactsSection from '../components/ContactsSection'
 import {
   getClients,
@@ -9,7 +10,10 @@ import {
   updateClient,
 } from '../services/clientService'
 
-import { getPrograms } from '../services/programService'
+import {
+  getPrograms,
+  createProgram,
+} from '../services/programService'
 
 import {
   getClientPrograms,
@@ -53,7 +57,7 @@ function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-
+  const [packageLibrary, setPackageLibrary] = useState([])  
   const [clientStatusPreferences, setClientStatusPreferences] = useState({
     enableAutoStatus: true,
     autoPauseAfterDays: 30,
@@ -69,16 +73,18 @@ function ClientsPage() {
       setError('')
 
       const [
-        clientsData,
-        programsData,
-        assignmentsData,
-        appointmentsData,
-        preferencesData,
-        paymentsData,
-        packagesData,
-      ] = await Promise.all([
+  clientsData,
+  programsData,
+  packageLibraryData,
+  assignmentsData,
+  appointmentsData,
+  preferencesData,
+  paymentsData,
+  packagesData,
+] = await Promise.all([
         getClients(),
         getPrograms(),
+        getPackages(),
         getClientPrograms(),
         getAppointments(),
         getClientStatusPreferences(),
@@ -92,6 +98,11 @@ function ClientsPage() {
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
       setPayments(Array.isArray(paymentsData) ? paymentsData : [])
       setClientPackages(Array.isArray(packagesData) ? packagesData : [])
+      setPackageLibrary(
+  Array.isArray(packageLibraryData)
+    ? packageLibraryData
+    : []
+)
 
       if (preferencesData) {
         setClientStatusPreferences({
@@ -273,24 +284,32 @@ function ClientsPage() {
 }
 
   async function handleAddPackage(newPackage) {
-    try {
-      setError('')
+  try {
+    setError('')
 
-      const savedPackage = await createClientPackage(newPackage)
+    const savedPackage = await createClientPackage(newPackage)
 
-      const paymentStatus =
-        newPackage.paymentStatus ||
-        savedPackage.paymentStatus ||
-        'unpaid'
+    const paymentStatus =
+      newPackage.paymentStatus ||
+      savedPackage.paymentStatus ||
+      'unpaid'
 
-      await upsertPackagePayment(savedPackage, paymentStatus)
+    await upsertPackagePayment(savedPackage, paymentStatus)
 
-      await refreshClients()
-    } catch (error) {
-      console.error(error)
-      setError(t('couldNotSavePackage'))
-    }
+    const [paymentsData, packagesData] = await Promise.all([
+      getPayments(),
+      getClientPackages(),
+    ])
+
+    setPayments(Array.isArray(paymentsData) ? paymentsData : [])
+    setClientPackages(Array.isArray(packagesData) ? packagesData : [])
+
+    setShowForm(true)
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotSavePackage'))
   }
+}
 
   async function handleUpdatePackage(updatedPackage) {
     try {
@@ -436,6 +455,22 @@ function ClientsPage() {
     }
   }
 
+  async function handleCreateProgramFromClient(newProgram) {
+  try {
+    setError('')
+
+    const savedProgram = await createProgram(newProgram)
+
+    await refreshClients()
+
+    return savedProgram
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotSaveProgram'))
+    return null
+  }
+}
+
   function handleEditClient(client) {
     setSelectedClient(client)
     setShowForm(true)
@@ -472,27 +507,29 @@ function ClientsPage() {
       />
 )}
       {showForm && (
-        <ClientForm
+       <ClientForm
   programs={programs}
   payments={payments}
+  packageLibrary={packageLibrary}
   clientPackages={
     selectedClient
       ? getPackagesForClient(selectedClient.clientId)
       : []
   }
-          selectedProgramIds={
-            selectedClient
-              ? getAssignedProgramIds(selectedClient.clientId)
-              : []
-          }
-          onAddClient={handleAddClient}
-          onUpdateClient={handleUpdateClient}
-          onAddPackage={handleAddPackage}
-          onUpdatePackage={handleUpdatePackage}
-          onDeletePackage={handleDeletePackage}
-          selectedClient={selectedClient}
-          onCancel={handleCancelForm}
-        />
+  selectedProgramIds={
+    selectedClient
+      ? getAssignedProgramIds(selectedClient.clientId)
+      : []
+  }
+  onAddClient={handleAddClient}
+  onUpdateClient={handleUpdateClient}
+  onAddPackage={handleAddPackage}
+  onUpdatePackage={handleUpdatePackage}
+  onDeletePackage={handleDeletePackage}
+  onCreateProgram={handleCreateProgramFromClient}
+  selectedClient={selectedClient}
+  onCancel={handleCancelForm}
+/>
       )}
 
       {isLoading && <p>{t('loadingClients')}</p>}

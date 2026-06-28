@@ -4,6 +4,7 @@ import useTranslations from '../hooks/useTranslations'
 
 function ClientForm({
   programs,
+  packageLibrary,
   payments,
   clientPackages,
   selectedProgramIds,
@@ -26,41 +27,35 @@ function ClientForm({
     assignedProgramIds: [],
   }
 
-  const emptyPackageForm = {
-    packageName: '',
-    totalSessions: 10,
-    remainingSessions: 10,
-    amount: '',
-    paymentStatus: 'paid',
-    purchaseDate: new Date().toISOString().split('T')[0],
-    notes: '',
-  }
-
   const [formData, setFormData] = useState(emptyForm)
-  const [packageForm, setPackageForm] = useState(emptyPackageForm)
-  const [selectedPackage, setSelectedPackage] = useState(null)
   const [activeSection, setActiveSection] = useState(
     selectedClient ? null : 'details'
   )
-  const [showPackageForm, setShowPackageForm] = useState(false)
+
+  const [showProgramSelector, setShowProgramSelector] = useState(false)
+  const [programSearchTerm, setProgramSearchTerm] = useState('')
+
+  const [showPackageSelector, setShowPackageSelector] = useState(false)
+  const [packageSearchTerm, setPackageSearchTerm] = useState('')
 
   useEffect(() => {
-    if (selectedClient) {
-      setFormData({
-        ...selectedClient,
-        assignedProgramIds: selectedProgramIds || [],
-      })
+  if (selectedClient) {
+    setFormData({
+      ...selectedClient,
+      assignedProgramIds: selectedProgramIds || [],
+    })
 
-      setActiveSection(null)
-    } else {
-      setFormData(emptyForm)
-      setActiveSection('details')
-    }
+    setActiveSection(null)
+  } else {
+    setFormData(emptyForm)
+    setActiveSection('details')
+  }
 
-    setPackageForm(emptyPackageForm)
-    setSelectedPackage(null)
-    setShowPackageForm(false)
-  }, [selectedClient, selectedProgramIds])
+  setShowProgramSelector(false)
+  setProgramSearchTerm('')
+  setShowPackageSelector(false)
+  setPackageSearchTerm('')
+}, [selectedClient?.clientId])
 
   function getPackagePaymentStatus(packageId) {
     const payment = payments?.find(
@@ -81,27 +76,36 @@ function ClientForm({
     })
   }
 
-  function handlePackageChange(event) {
-    const { name, value } = event.target
-
-    setPackageForm({
-      ...packageForm,
-      [name]: value,
-    })
-  }
-
   function handleProgramToggle(programId) {
     const isSelected = formData.assignedProgramIds.includes(programId)
 
-    const updatedProgramIds = isSelected
-      ? formData.assignedProgramIds.filter((id) => id !== programId)
-      : [...formData.assignedProgramIds, programId]
-
     setFormData({
       ...formData,
-      assignedProgramIds: updatedProgramIds,
+      assignedProgramIds: isSelected
+        ? formData.assignedProgramIds.filter((id) => id !== programId)
+        : [...formData.assignedProgramIds, programId],
     })
   }
+
+  async function handleAssignPackage(packageTemplate) {
+  const clientPackage = {
+    clientId: selectedClient.clientId,
+    clientName: `${selectedClient.firstName} ${selectedClient.lastName}`,
+    packageName: packageTemplate.packageName,
+    totalSessions: Number(packageTemplate.totalSessions || 0),
+    remainingSessions: Number(packageTemplate.totalSessions || 0),
+    amount: Number(packageTemplate.amount || 0),
+    paymentStatus: 'unpaid',
+    purchaseDate: new Date().toISOString().split('T')[0],
+    notes: packageTemplate.notes || '',
+  }
+
+  await onAddPackage(clientPackage)
+
+  setShowPackageSelector(false)
+  setPackageSearchTerm('')
+  setActiveSection('packages')
+}
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -110,76 +114,14 @@ function ClientForm({
       onUpdateClient(formData)
       setActiveSection(null)
     } else {
-      const newClient = {
+      onAddClient({
         clientId: crypto.randomUUID(),
         ...formData,
-      }
+      })
 
-      onAddClient(newClient)
       setFormData(emptyForm)
     }
   }
-
-  function handleSavePrograms() {
-    onUpdateClient(formData)
-    setActiveSection(null)
-  }
-
-  function handlePackageSubmit(event) {
-    event.preventDefault()
-
-    const packageData = {
-      ...packageForm,
-      clientId: selectedClient.clientId,
-      clientName: `${selectedClient.firstName} ${selectedClient.lastName}`,
-      totalSessions: Number(packageForm.totalSessions),
-      remainingSessions: Number(packageForm.remainingSessions),
-      amount: Number(packageForm.amount || 0),
-    }
-
-    if (selectedPackage) {
-      onUpdatePackage({
-        ...selectedPackage,
-        ...packageData,
-      })
-    } else {
-      onAddPackage(packageData)
-    }
-
-    setPackageForm(emptyPackageForm)
-    setSelectedPackage(null)
-    setShowPackageForm(false)
-  }
-
-  function handleEditPackage(clientPackage) {
-    setSelectedPackage(clientPackage)
-    setShowPackageForm(true)
-
-    setPackageForm({
-      packageName: clientPackage.packageName || '',
-      totalSessions: clientPackage.totalSessions || 10,
-      remainingSessions: clientPackage.remainingSessions || 0,
-      amount: clientPackage.amount || '',
-      paymentStatus: getPackagePaymentStatus(clientPackage.packageId),
-      purchaseDate:
-        clientPackage.purchaseDate ||
-        new Date().toISOString().split('T')[0],
-      notes: clientPackage.notes || '',
-    })
-  }
-
-  function handleAddPackageClick() {
-    setSelectedPackage(null)
-    setPackageForm(emptyPackageForm)
-    setShowPackageForm(true)
-  }
-
-  function handleCancelPackageEdit() {
-    setSelectedPackage(null)
-    setPackageForm(emptyPackageForm)
-    setShowPackageForm(false)
-  }
-
 
   function getSelectedProgramNames() {
     return programs
@@ -193,13 +135,22 @@ function ClientForm({
   function toggleSection(sectionName) {
     if (activeSection === sectionName) {
       setActiveSection(null)
-      setShowPackageForm(false)
-      setSelectedPackage(null)
-      setPackageForm(emptyPackageForm)
     } else {
       setActiveSection(sectionName)
     }
   }
+
+  const filteredPrograms = programs.filter((program) =>
+    program.programName
+      ?.toLowerCase()
+      .includes(programSearchTerm.toLowerCase())
+  )
+
+  const filteredPackages = (packageLibrary || []).filter((packageTemplate) =>
+    packageTemplate.packageName
+      ?.toLowerCase()
+      .includes(packageSearchTerm.toLowerCase())
+  )
 
   if (!selectedClient) {
     return (
@@ -376,34 +327,6 @@ function ClientForm({
             className="section-content"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="exercise-input-group">
-              <label>{t('assignedPrograms')}</label>
-
-              {programs.length === 0 ? (
-                <p>{t('noProgramsYet')}</p>
-              ) : (
-                <div className="program-chip-selector">
-                  {programs.map((program) => {
-                    const isSelected =
-                      formData.assignedProgramIds.includes(program.programId)
-
-                    return (
-                      <button
-                        type="button"
-                        key={program.programId}
-                        className={`program-chip ${
-                          isSelected ? 'active' : ''
-                        }`}
-                        onClick={() => handleProgramToggle(program.programId)}
-                      >
-                        {program.programName}
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
             <div className="form-actions pill-actions">
               <button
                 type="button"
@@ -416,9 +339,9 @@ function ClientForm({
               <button
                 type="button"
                 className="add-row-button"
-                onClick={handleSavePrograms}
+                onClick={() => setShowProgramSelector(true)}
               >
-                {t('update')}
+                + {t('addProgram')}
               </button>
             </div>
           </div>
@@ -427,19 +350,12 @@ function ClientForm({
 
       <div
         className="profile-summary clickable-summary"
-        onClick={() => toggleSection('packages')}
       >
         <div className="section-header clickable-section-header">
           <h4>{t('packages')}</h4>
         </div>
 
-        <p>
-          {clientPackages.length > 0
-            ? `${clientPackages.length} ${t('packages')}`
-            : t('noPackagesYet')}
-        </p>
-
-        {activeSection === 'packages' && (
+      
           <div
             className="section-content"
             onClick={(event) => event.stopPropagation()}
@@ -463,9 +379,8 @@ function ClientForm({
 
                   return (
                     <div
-                      className="client-package-row clickable"
+                      className="client-package-row"
                       key={clientPackage.packageId}
-                      onClick={() => handleEditPackage(clientPackage)}
                     >
                       <strong>{clientPackage.packageName}</strong>
 
@@ -476,9 +391,25 @@ function ClientForm({
 
                       <span>€{clientPackage.amount || 0}</span>
 
-                      <span className={`status-badge ${paymentStatus}`}>
-                        {paymentStatus === 'paid' ? t('paid') : t('unpaid')}
-                      </span>
+                      <button
+  type="button"
+  className={`payment-status-toggle ${paymentStatus}`}
+  onClick={(event) => {
+    event.stopPropagation()
+
+    onUpdatePackage({
+      ...clientPackage,
+      paymentStatus:
+        paymentStatus === 'paid' ? 'unpaid' : 'paid',
+    })
+  }}
+>
+  <span>
+    {paymentStatus === 'paid'
+      ? t('paid')
+      : t('unpaid')}
+  </span>
+</button>
 
                       <button
                         type="button"
@@ -496,119 +427,164 @@ function ClientForm({
               </div>
             )}
 
-            {!showPackageForm && (
-              <div className="form-actions pill-actions">
-                <button
-                  type="button"
-                  className="add-row-button"
-                  onClick={() => {
-                    setShowPackageForm(false)
-                    setSelectedPackage(null)
-                    setPackageForm(emptyPackageForm)
-                    setActiveSection(null)
-                  }}
-                >
-                  {t('cancel')}
-                </button>
-
-                <button
-                  type="button"
-                  className="add-row-button"
-                  onClick={handleAddPackageClick}
-                >
-                  + {t('addPackage')}
-                </button>
-              </div>
-            )}
-
-            {showPackageForm && (
-              <form className="client-form" onSubmit={handlePackageSubmit}>
-                <input
-                  name="packageName"
-                  placeholder={t('packageName')}
-                  value={packageForm.packageName}
-                  onChange={handlePackageChange}
-                  required
-                />
-
-                <input
-                  type="number"
-                  name="totalSessions"
-                  placeholder={t('sessions')}
-                  value={packageForm.totalSessions}
-                  onChange={handlePackageChange}
-                  required
-                />
-
-                <input
-                  type="number"
-                  name="remainingSessions"
-                  placeholder={t('remainingSessions')}
-                  value={packageForm.remainingSessions}
-                  onChange={handlePackageChange}
-                  required
-                />
-
-                <input
-                  type="number"
-                  name="amount"
-                  placeholder={t('amount')}
-                  value={packageForm.amount}
-                  onChange={handlePackageChange}
-                />
-
-                <select
-                  name="paymentStatus"
-                  value={packageForm.paymentStatus}
-                  onChange={handlePackageChange}
-                >
-                  <option value="paid">{t('paid')}</option>
-                  <option value="unpaid">{t('unpaid')}</option>
-                </select>
-
-                <div className="form-actions pill-actions">
-                  <button
-                    type="button"
-                    className="add-row-button"
-                    onClick={handleCancelPackageEdit}
-                  >
-                    {t('cancel')}
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="add-row-button"
-                  >
-                    {selectedPackage ? t('update') : t('save')}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="form-actions pill-actions">
+            <div className="add-row">
   <button
     type="button"
     className="add-row-button"
-    onClick={onCancel}
+    onClick={() => setShowPackageSelector(true)}
   >
-    {t('cancel')}
-  </button>
-
-  <button
-    type="button"
-    className="add-row-button"
-    onClick={() => {
-      onUpdateClient(formData)
-      onCancel()
-    }}
-  >
-    {t('update')}
+    + {t('addPackage')}
   </button>
 </div>
+          </div>
+      </div>
 
+      {showProgramSelector && (
+        <div
+          className="modal-backdrop"
+          onClick={() => setShowProgramSelector(false)}
+        >
+          <div
+            className="modal-content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3>{t('assignedPrograms')}</h3>
+
+            <input
+              className="search-input"
+              type="text"
+              placeholder={t('searchPrograms')}
+              value={programSearchTerm}
+              onChange={(event) =>
+                setProgramSearchTerm(event.target.value)
+              }
+            />
+
+            <div className="client-list">
+              {filteredPrograms.map((program) => {
+                const isSelected =
+                  formData.assignedProgramIds.includes(program.programId)
+
+                return (
+                  <div
+                    key={program.programId}
+                    className="client-row clickable"
+                    onClick={() => handleProgramToggle(program.programId)}
+                  >
+                    <strong>{program.programName}</strong>
+                    <span>{program.goal || '-'}</span>
+                    <span>
+                      {program.durationWeeks
+                        ? `${program.durationWeeks} ${t('weeks')}`
+                        : '-'}
+                    </span>
+                    <span
+                      className={`status-badge ${
+                        isSelected ? 'paid' : 'inactive'
+                      }`}
+                    >
+                      {isSelected ? t('active') : t('inactive')}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="form-actions pill-actions">
+              <button
+                type="button"
+                className="add-row-button"
+                onClick={() => setShowProgramSelector(false)}
+              >
+                {t('cancel')}
+              </button>
+
+              <button
+                type="button"
+                className="add-row-button"
+                onClick={() => setShowProgramSelector(false)}
+              >
+                {t('update')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPackageSelector && (
+        <div
+          className="modal-backdrop"
+          onClick={() => setShowPackageSelector(false)}
+        >
+          <div
+            className="modal-content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3>{t('packages')}</h3>
+
+            <input
+              className="search-input"
+              type="text"
+              placeholder={t('searchPackages')}
+              value={packageSearchTerm}
+              onChange={(event) =>
+                setPackageSearchTerm(event.target.value)
+              }
+            />
+
+            <div className="client-list">
+              {filteredPackages.map((packageTemplate) => (
+                <div
+                  key={packageTemplate.packageId}
+                  className="client-row clickable"
+                  onClick={() => handleAssignPackage(packageTemplate)}
+                >
+                  <strong>{packageTemplate.packageName}</strong>
+
+                  <span>
+                    {packageTemplate.totalSessions} {t('sessions')}
+                  </span>
+
+                  <span>€{packageTemplate.amount || 0}</span>
+
+                  <span>{packageTemplate.notes || '-'}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="form-actions pill-actions">
+              <button
+                type="button"
+                className="add-row-button"
+                onClick={() => setShowPackageSelector(false)}
+              >
+                {t('cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="form-actions pill-actions">
+        <button
+          type="button"
+          className="add-row-button"
+          onClick={onCancel}
+        >
+          {t('cancel')}
+        </button>
+
+        <button
+          type="button"
+          className="add-row-button"
+          onClick={() => {
+            onUpdateClient(formData)
+            onCancel()
+          }}
+        >
+          {t('update')}
+        </button>
+      </div>
     </div>
   )
 }

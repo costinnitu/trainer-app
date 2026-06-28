@@ -1,32 +1,21 @@
 import { useEffect, useState } from 'react'
 
-import { getClients } from '../services/clientService'
-
 import {
-  getClientPackages,
-  createClientPackage,
-  updateClientPackage,
-  deleteClientPackage,
-} from '../services/clientPackageService'
+  getPackages,
+  createPackage,
+  updatePackage,
+  deletePackage,
+} from '../services/packageService'
 
-import {
-  getPayments,
-  createPayment,
-  updatePayment,
-  deletePayment,
-} from '../services/paymentService'
-
-import ClientPackageForm from '../components/ClientPackageForm'
-import ClientPackageCard from '../components/ClientPackageCard'
+import PackageForm from '../components/PackageForm'
+import PackageCard from '../components/PackageCard'
 
 import useTranslations from '../hooks/useTranslations'
 
 function PackagesPage() {
   const { t } = useTranslations()
 
-  const [clients, setClients] = useState([])
-  const [clientPackages, setClientPackages] = useState([])
-  const [payments, setPayments] = useState([])
+  const [packages, setPackages] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState(null)
   const [error, setError] = useState('')
@@ -39,63 +28,12 @@ function PackagesPage() {
     try {
       setError('')
 
-      const [clientsData, packagesData, paymentsData] = await Promise.all([
-        getClients(),
-        getClientPackages(),
-        getPayments(),
-      ])
+      const data = await getPackages()
 
-      setClients(Array.isArray(clientsData) ? clientsData : [])
-      setClientPackages(Array.isArray(packagesData) ? packagesData : [])
-      setPayments(Array.isArray(paymentsData) ? paymentsData : [])
+      setPackages(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadPackages'))
-    }
-  }
-
-  function getPaymentForPackage(packageId) {
-    return payments.find(
-      (payment) =>
-        payment.itemType === 'package' &&
-        payment.itemId === packageId
-    )
-  }
-
-  async function upsertPackagePayment(clientPackage) {
-    const freshPayments = await getPayments()
-
-    const existingPayment = freshPayments.find(
-      (payment) =>
-        payment.itemType === 'package' &&
-        payment.itemId === clientPackage.packageId
-    )
-
-    const paymentStatus = clientPackage.paymentStatus || 'unpaid'
-
-    const payload = {
-      clientId: clientPackage.clientId,
-      clientName: clientPackage.clientName,
-      itemType: 'package',
-      itemId: clientPackage.packageId,
-      description: clientPackage.packageName,
-      amount: Number(clientPackage.amount || 0),
-      status: paymentStatus,
-      paidAt:
-        paymentStatus === 'paid'
-          ? existingPayment?.paidAt || new Date().toISOString()
-          : null,
-      method: existingPayment?.method || 'other',
-      notes: clientPackage.notes || '',
-    }
-
-    if (existingPayment) {
-      await updatePayment({
-        ...existingPayment,
-        ...payload,
-      })
-    } else {
-      await createPayment(payload)
     }
   }
 
@@ -103,18 +41,9 @@ function PackagesPage() {
     try {
       setError('')
 
-      const savedPackage = await createClientPackage(newPackage)
-
-      await upsertPackagePayment({
-        ...newPackage,
-        ...savedPackage,
-        paymentStatus:
-          newPackage.paymentStatus ||
-          savedPackage.paymentStatus ||
-          'unpaid',
-      })
-
+      await createPackage(newPackage)
       await loadPackages()
+
       setShowForm(false)
     } catch (error) {
       console.error(error)
@@ -122,35 +51,8 @@ function PackagesPage() {
     }
   }
 
-  async function handleTogglePackagePaymentStatus(clientPackage) {
-  try {
-    setError('')
-
-    const nextStatus =
-      clientPackage.paymentStatus === 'paid' ? 'unpaid' : 'paid'
-
-    const updatedPackage = {
-      ...clientPackage,
-      paymentStatus: nextStatus,
-    }
-
-    const savedPackage = await updateClientPackage(updatedPackage)
-
-    await upsertPackagePayment({
-      ...updatedPackage,
-      ...savedPackage,
-      paymentStatus: nextStatus,
-    })
-
-    await loadPackages()
-  } catch (error) {
-    console.error(error)
-    setError(t('couldNotUpdatePackage'))
-  }
-}
-
-  function handleEditPackage(clientPackage) {
-    setSelectedPackage(clientPackage)
+  function handleEditPackage(packageTemplate) {
+    setSelectedPackage(packageTemplate)
     setShowForm(true)
   }
 
@@ -158,18 +60,9 @@ function PackagesPage() {
     try {
       setError('')
 
-      const savedPackage = await updateClientPackage(updatedPackage)
-
-      await upsertPackagePayment({
-        ...updatedPackage,
-        ...savedPackage,
-        paymentStatus:
-          updatedPackage.paymentStatus ||
-          savedPackage.paymentStatus ||
-          'unpaid',
-      })
-
+      await updatePackage(updatedPackage)
       await loadPackages()
+
       setSelectedPackage(null)
       setShowForm(false)
     } catch (error) {
@@ -188,13 +81,7 @@ function PackagesPage() {
     try {
       setError('')
 
-      const existingPayment = getPaymentForPackage(packageId)
-
-      if (existingPayment) {
-        await deletePayment(existingPayment.paymentId)
-      }
-
-      await deleteClientPackage(packageId)
+      await deletePackage(packageId)
       await loadPackages()
     } catch (error) {
       console.error(error)
@@ -210,13 +97,11 @@ function PackagesPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>{t('packages')}</h2>
-
+        <h2>{t('packageLibrary')}</h2>
       </div>
 
       {showForm && (
-        <ClientPackageForm
-          clients={clients}
+        <PackageForm
           selectedPackage={selectedPackage}
           onAddPackage={handleAddPackage}
           onUpdatePackage={handleUpdatePackage}
@@ -226,45 +111,60 @@ function PackagesPage() {
 
       {error && <p className="error-message">{error}</p>}
 
-      <div className="client-list">
-        <div className="client-row client-row-header">
-          <strong>{t('client')}</strong>
-          <strong>{t('package')}</strong>
-          <strong>{t('sessions')}</strong>
-          <strong>{t('sessionStatus')}</strong>
-          <strong>{t('amount')}</strong>
-          <strong>{t('status')}</strong>
-          <div></div>
-        </div>
+      {!showForm && (
+        <>
+          {packages.length === 0 ? (
+            <p>{t('noPackagesYet')}</p>
+          ) : (
+            <div className="client-list">
+  <div className="package-library-row package-library-row-header">
+  <strong>{t('package')}</strong>
+  <strong>{t('sessions')}</strong>
+  <strong>{t('amount')}</strong>
+  <strong>{t('notes')}</strong>
+  <div></div>
+</div>
 
-        {clientPackages.length === 0 ? (
-          <p>{t('noPackagesYet')}</p>
-        ) : (
-          clientPackages.map((clientPackage) => (
-            <ClientPackageCard
-              key={clientPackage.packageId}
-              clientPackage={clientPackage}
-              onEditPackage={handleEditPackage}
-              onDeletePackage={handleDeletePackage}
-              onTogglePaymentStatus={handleTogglePackagePaymentStatus}
-            />
-          ))
-        )}
-              {!showForm && (
-        <div className="add-row">
+  {packages.map((packageTemplate) => (
+   <div
+  key={packageTemplate.packageId}
+  className="package-library-row clickable"
+  onClick={() => handleEditPackage(packageTemplate)}
+>
+  <strong>{packageTemplate.packageName}</strong>
+  <span>{packageTemplate.totalSessions}</span>
+  <span>€{packageTemplate.amount || 0}</span>
+  <span>{packageTemplate.notes || '-'}</span>
+
   <button
     type="button"
-    className="add-row-button"
-    onClick={() => {
-      setSelectedPackage(null)
-      setShowForm(true)
+    className="delete-icon-button"
+    onClick={(event) => {
+      event.stopPropagation()
+      handleDeletePackage(packageTemplate.packageId)
     }}
   >
-    + {t('addPackage')}
+    ×
   </button>
 </div>
+  ))}
+</div>
+          )}
+
+          <div className="add-row">
+            <button
+              type="button"
+              className="add-row-button"
+              onClick={() => {
+                setSelectedPackage(null)
+                setShowForm(true)
+              }}
+            >
+              + {t('addPackage')}
+            </button>
+          </div>
+        </>
       )}
-      </div>
     </div>
   )
 }

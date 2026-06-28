@@ -11,6 +11,7 @@ function AppointmentForm({
   onUpdateAppointment,
   selectedAppointment,
   initialAppointment,
+  onCancel,
 }) {
   const { t } = useTranslations()
 
@@ -249,11 +250,22 @@ function AppointmentForm({
         onChange={handleChange}
       />
 
-      <button type="submit">
-        {selectedAppointment
-          ? t('updateAppointment')
-          : t('saveAppointment')}
-      </button>
+      <div className="form-actions pill-actions">
+  <button
+    type="button"
+    className="add-row-button"
+    onClick={onCancel}
+  >
+    {t('cancel')}
+  </button>
+
+  <button
+    type="submit"
+    className="add-row-button"
+  >
+    {selectedAppointment ? t('update') : t('save')}
+  </button>
+</div>
     </form>
   )
 }

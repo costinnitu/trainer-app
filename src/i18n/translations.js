@@ -188,8 +188,8 @@ const translations = {
     allPaid: 'All Paid',
     missingPayments: 'Missing Payments',
     noPayments: 'No Payments',
-    partialPayments: 'Partial Payments',
-    noPaymentsMade: 'No Payments Made',
+    partialPayments: 'Partially Paid',
+    noPaymentsMade: 'Unpaid',
     noBillableItems: 'No billable items yet.',
     couldNotLoadPayments: 'Could not load payments',
     couldNotUpdatePayment: 'Could not update payment',
@@ -248,8 +248,22 @@ const translations = {
     loadingClientStatusPreferences: 'Loading client status preferences...',
     couldNotLoadClientStatusPreferences: 'Could not load client status preferences',
     couldNotSaveClientStatusPreferences: 'Could not save client status preferences',
+
+    clickToView: 'Click to view →',
+
+    searchPrograms: 'Search programs...',
+
+    packageLibrary: 'Package Library',
   },
 
+
+
+
+
+
+
+
+  
   it: {
     /* ---------- Navigazione ---------- */
 
@@ -499,6 +513,12 @@ const translations = {
     loadingClientStatusPreferences: 'Caricamento preferenze stato clienti...',
     couldNotLoadClientStatusPreferences: 'Impossibile caricare le preferenze stato clienti',
     couldNotSaveClientStatusPreferences: 'Impossibile salvare le preferenze stato clienti',
+
+    clickToView: 'Clicca per visualizzare →',
+
+    searchPrograms: 'Cerca programmi...',
+
+    packageLibrary: 'Libreria pacchetti',
   },
 }
 

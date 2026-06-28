@@ -437,9 +437,7 @@ function WeeklySchedulePage() {
       {(selectedAppointment || initialAppointment) && (
         <div>
           <div className="edit-actions">
-            <button className="danger-button" onClick={handleCancelEdit}>
-              {t('cancelEdit')}
-            </button>
+           
 
             {selectedAppointment && (
               <button
@@ -456,8 +454,9 @@ function WeeklySchedulePage() {
             clientPackages={clientPackages}
             selectedAppointment={selectedAppointment}
             initialAppointment={initialAppointment}
-            onUpdateAppointment={handleUpdateAppointment}
             onAddAppointment={handleAddAppointment}
+            onUpdateAppointment={handleUpdateAppointment}
+            onCancel={handleCancelEdit}
           />
         </div>
       )}
