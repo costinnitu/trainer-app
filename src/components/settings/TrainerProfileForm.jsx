@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import {
-  getTrainerProfile,
-  saveTrainerProfile,
-} from '../services/settingsService'
-
-import useTranslations from '../hooks/useTranslations'
+import { getTrainerProfile, saveTrainerProfile } from "../../services/settingsService"
+import useTranslations from "../../hooks/useTranslations"
 
 function TrainerProfileForm() {
   const { t } = useTranslations()

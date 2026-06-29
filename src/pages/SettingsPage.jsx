@@ -1,7 +1,7 @@
-import TrainerProfileForm from '../components/TrainerProfileForm'
-import SchedulePreferencesForm from '../components/SchedulePreferencesForm'
-import AppPreferencesForm from '../components/AppPreferencesForm'
-import ClientStatusPreferencesForm from '../components/ClientStatusPreferencesForm'
+import TrainerProfileForm from "../components/settings/TrainerProfileForm";
+import SchedulePreferencesForm from "../components/settings/SchedulePreferencesForm";
+import AppPreferencesForm from "../components/settings/AppPreferencesForm";
+import ClientStatusPreferencesForm from "../components/settings/ClientStatusPreferencesForm";
 import useTranslations from '../hooks/useTranslations'
 
 function SettingsPage() {

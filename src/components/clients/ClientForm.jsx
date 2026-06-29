@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import ClientPackagesSection from './clients/ClientPackagesSection'
-import useTranslations from '../hooks/useTranslations'
-import ActionPills from './common/ActionPills'
-import ClientDetailsSection from './clients/ClientDetailsSection'
-import ClientProgramsSection from './clients/ClientProgramsSection'
-import ProgramSelectorModal from './clients/ProgramSelectorModal'
-import PackageSelectorModal from './clients/PackageSelectorModal'
+import ClientPackagesSection from './ClientPackagesSection'
+import useTranslations from '../../hooks/useTranslations'
+import ActionPills from '../common/ActionPills'
+import ClientDetailsSection from './ClientDetailsSection'
+import ClientProgramsSection from './ClientProgramsSection'
+import ProgramSelectorModal from './ProgramSelectorModal'
+import PackageSelectorModal from './PackageSelectorModal'
 
 function ClientForm({
   programs,

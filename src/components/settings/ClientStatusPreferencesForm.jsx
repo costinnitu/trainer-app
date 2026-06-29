@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import {
   getClientStatusPreferences,
   saveClientStatusPreferences,
-} from '../services/settingsService'
+} from '../../services/settingsService'
 
-import useTranslations from '../hooks/useTranslations'
+import useTranslations from '../../hooks/useTranslations'
 
 function ClientStatusPreferencesForm() {
   const { t } = useTranslations()

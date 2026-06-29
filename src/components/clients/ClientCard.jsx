@@ -1,4 +1,4 @@
-import useTranslations from '../hooks/useTranslations'
+import useTranslations from '../../hooks/useTranslations'
 
 function ClientCard({
   client,

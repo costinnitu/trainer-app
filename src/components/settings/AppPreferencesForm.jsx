@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import {
-  getAppPreferences,
-  saveAppPreferences,
-} from '../services/settingsService'
-
-import useTranslations from '../hooks/useTranslations'
+import { getAppPreferences, saveAppPreferences } from "../../services/settingsService"
+import useTranslations from "../../hooks/useTranslations"
 
 function AppPreferencesForm() {
   const { t } = useTranslations()

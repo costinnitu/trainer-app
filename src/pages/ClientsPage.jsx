@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import ClientCard from '../components/ClientCard'
-import ClientForm from '../components/ClientForm'
+import ClientForm from '../components/clients/ClientForm'
 import { getPackages } from '../services/packageService'
 import ContactsSection from '../components/ContactsSection'
+import ClientsListSection from '../components/clients/ClientsListSection'
 import {
   getClients,
   createClient,
@@ -537,49 +537,20 @@ function ClientsPage() {
       {error && <p className="error-message">{error}</p>}
 
 {!showForm && (
-      <div className="client-list">
-        <div className="client-row client-row-header">
-          <strong>{t('client')}</strong>
-          <strong>{t('status')}</strong>
-          <strong>WhatsApp</strong>
-          <strong>{t('activePackage')}</strong>
-          <strong>{t('assignedPrograms')}</strong>
-          <strong>{t('payments')}</strong>
-          <div></div>
-        </div>
-
-        {filteredClients.map((client) => (
-          <ClientCard
-            key={client.clientId}
-            client={{
-              ...client,
-              status: getComputedClientStatus(client),
-            }}
-            paymentHealth={getClientPaymentHealth(client.clientId)}
-            activePackage={getActivePackage(client.clientId)}
-            assignedPrograms={getAssignedPrograms(client.clientId)}
-            onDeleteClient={handleDeleteClient}
-            onEditClient={handleEditClient}
-          />
-        ))}
-          {!showForm && (
-  <div className="add-row">
-    <button
-      type="button"
-      className="add-row-button"
-      onClick={() => {
-        setSelectedClient(null)
-        setShowForm(true)
-      }}
-    >
-      + {t('addClient')}
-    </button>
-  </div>
+  <ClientsListSection
+    clients={filteredClients}
+    getComputedClientStatus={getComputedClientStatus}
+    getClientPaymentHealth={getClientPaymentHealth}
+    getActivePackage={getActivePackage}
+    getAssignedPrograms={getAssignedPrograms}
+    onDeleteClient={handleDeleteClient}
+    onEditClient={handleEditClient}
+    onAddClient={() => {
+      setSelectedClient(null)
+      setShowForm(true)
+    }}
+  />
 )}
-
-
-      </div>
-      )}
     </div>
   )
 }

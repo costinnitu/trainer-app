@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import {
   getSchedulePreferences,
   saveSchedulePreferences,
-} from '../services/settingsService'
+} from '../../services/settingsService'
 
-import useTranslations from '../hooks/useTranslations'
+import useTranslations from '../../hooks/useTranslations'
 
 function SchedulePreferencesForm() {
   const { t } = useTranslations()
