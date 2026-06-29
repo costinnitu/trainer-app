@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { getSchedulePreferences } from '../services/settingsService'
-import ActionPills from './common/ActionPills'
-import useTranslations from '../hooks/useTranslations'
+import { getSchedulePreferences } from '../../services/settingsService'
+import ActionPills from '../common/ActionPills'
+import useTranslations from '../../hooks/useTranslations'
 
 function AppointmentForm({
   clients,

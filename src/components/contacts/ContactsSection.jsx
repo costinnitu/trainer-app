@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
-import AddRow from './common/AddRow'
+import AddRow from '../common/AddRow'
 import {
   createClient,
-} from '../services/clientService'
+} from '../../services/clientService'
 
 import {
   getContacts,
   createContact,
   updateContact,
   deleteContact,
-} from '../services/contactService'
+} from '../../services/contactService'
 
 import ContactForm from './ContactForm'
 import ContactCard from './ContactCard'
 
-import useTranslations from '../hooks/useTranslations'
+import useTranslations from '../../hooks/useTranslations'
 
 function ContactsSection({ clients = [], onClientsChanged }) {
   const { t } = useTranslations()

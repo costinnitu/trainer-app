@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ClientForm from '../components/clients/ClientForm'
 import { getPackages } from '../services/packageService'
-import ContactsSection from '../components/ContactsSection'
+import ContactsSection from '../components/contacts/ContactsSection'
 import ClientsListSection from '../components/clients/ClientsListSection'
 import {
   getClients,

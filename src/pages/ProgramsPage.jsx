@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import ProgramCard from '../components/ProgramCard'
-import ProgramForm from '../components/ProgramForm'
+import ProgramCard from '../components/programs/ProgramCard'
+import ProgramForm from '../components/programs/ProgramForm'
 import AddRow from '../components/common/AddRow'
 import {
   getPrograms,

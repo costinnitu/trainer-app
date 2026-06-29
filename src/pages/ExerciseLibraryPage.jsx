@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import AddRow from '../components/common/AddRow'
-import ExerciseForm from '../components/ExerciseForm'
+import ExerciseForm from '../components/exercises/ExerciseForm'
 
 import {
   getExercises,

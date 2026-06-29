@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import ActionPills from './common/ActionPills'
-import { getExercises } from '../services/exerciseService'
+import ActionPills from '../common/ActionPills'
+import { getExercises } from '../../services/exerciseService'
 
-import useTranslations from '../hooks/useTranslations'
+import useTranslations from '../../hooks/useTranslations'
 
 function ProgramForm({
   onAddProgram,

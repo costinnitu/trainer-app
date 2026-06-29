@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import AppointmentForm from '../components/AppointmentForm'
+import AppointmentForm from '../components/appointments/AppointmentForm'
 
 import { getClients } from '../services/clientService'
 import { getSchedulePreferences } from '../services/settingsService'

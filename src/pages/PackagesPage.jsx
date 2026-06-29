@@ -7,8 +7,8 @@ import {
   deletePackage,
 } from '../services/packageService'
 
-import PackageForm from '../components/PackageForm'
-import PackageCard from '../components/PackageCard'
+import PackageForm from '../components/packages/PackageForm'
+import PackageCard from '../components/packages/PackageCard'
 
 import useTranslations from '../hooks/useTranslations'
 

@@ -1,5 +1,5 @@
-import useTranslations from '../hooks/useTranslations'
-import { generateProgramPdf } from '../utils/programPdf'
+import useTranslations from '../../hooks/useTranslations'
+import { generateProgramPdf } from '../../utils/programPdf'
 
 function ProgramCard({
   program,

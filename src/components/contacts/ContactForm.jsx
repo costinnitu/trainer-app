@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import ActionPills from './common/ActionPills'
-import useTranslations from '../hooks/useTranslations'
+import ActionPills from '../common/ActionPills'
+import useTranslations from '../../hooks/useTranslations'
 
 function ContactForm({
   onAddContact,
