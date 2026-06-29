@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import ActionPills from './common/ActionPills'
 import { getExercises } from '../services/exerciseService'
 
 import useTranslations from '../hooks/useTranslations'
@@ -328,22 +328,11 @@ function ProgramForm({
         </div>
       </section>
 
-      <div className="form-actions pill-actions">
-  <button
-    type="button"
-    className="add-row-button"
-    onClick={onCancel}
-  >
-    {t('cancel')}
-  </button>
-
-  <button
-    type="submit"
-    className="add-row-button"
-  >
-    {selectedProgram ? t('update') : t('save')}
-  </button>
-</div>
+      <ActionPills
+  onCancel={onCancel}
+  cancelLabel={t('cancel')}
+  saveLabel={selectedProgram ? t('update') : t('save')}
+/>
     </form>
   )
 }

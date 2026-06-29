@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { getSchedulePreferences } from '../services/settingsService'
-
+import ActionPills from './common/ActionPills'
 import useTranslations from '../hooks/useTranslations'
 
 function AppointmentForm({
@@ -250,22 +250,14 @@ function AppointmentForm({
         onChange={handleChange}
       />
 
-      <div className="form-actions pill-actions">
-  <button
-    type="button"
-    className="add-row-button"
-    onClick={onCancel}
-  >
-    {t('cancel')}
-  </button>
-
-  <button
-    type="submit"
-    className="add-row-button"
-  >
-    {selectedAppointment ? t('update') : t('save')}
-  </button>
-</div>
+      <ActionPills
+  onCancel={(event) => {
+    event?.stopPropagation()
+    onCancel()
+  }}
+  cancelLabel={t('cancel')}
+   saveLabel={selectedAppointment ? t('update') : t('save')}
+/>
     </form>
   )
 }

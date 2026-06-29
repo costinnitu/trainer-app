@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import useTranslations from '../hooks/useTranslations'
+import ActionPills from './common/ActionPills'
 
 function ClientForm({
   programs,
@@ -565,26 +566,15 @@ function ClientForm({
         </div>
       )}
 
-      <div className="form-actions pill-actions">
-        <button
-          type="button"
-          className="add-row-button"
-          onClick={onCancel}
-        >
-          {t('cancel')}
-        </button>
-
-        <button
-          type="button"
-          className="add-row-button"
-          onClick={() => {
-            onUpdateClient(formData)
-            onCancel()
-          }}
-        >
-          {t('update')}
-        </button>
-      </div>
+      <ActionPills
+  onCancel={onCancel}
+  onSave={() => {
+    onUpdateClient(formData)
+    onCancel()
+  }}
+  cancelLabel={t('cancel')}
+  saveLabel={t('update')}
+/>
     </div>
   )
 }

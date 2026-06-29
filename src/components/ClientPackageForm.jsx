@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import ActionPills from './common/ActionPills'
 import useTranslations from '../hooks/useTranslations'
 
 function ClientPackageForm({
@@ -128,22 +128,11 @@ function ClientPackageForm({
         <option value="unpaid">{t('unpaid')}</option>
       </select>
 
-      <div className="form-actions pill-actions">
-        <button
-          type="button"
-          className="add-row-button"
-          onClick={onCancel}
-        >
-          {t('cancel')}
-        </button>
-
-        <button
-          type="submit"
-          className="add-row-button"
-        >
-          {selectedPackage ? t('update') : t('save')}
-        </button>
-      </div>
+      <ActionPills
+  onCancel={onCancel}
+  cancelLabel={t('cancel')}
+  saveLabel={selectedPackage ? t('update') : t('save')}
+/>
     </form>
   )
 }

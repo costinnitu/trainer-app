@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import ActionPills from './common/ActionPills'
 import useTranslations from '../hooks/useTranslations'
 
 function ContactForm({
@@ -112,25 +112,14 @@ function ContactForm({
         onChange={handleChange}
       />
 
-      <div className="form-actions pill-actions">
-        <button
-          type="button"
-          className="add-row-button"
-          onClick={(event) => {
-            event.stopPropagation()
-            onCancel()
-          }}
-        >
-          {t('cancel')}
-        </button>
-
-        <button
-          type="submit"
-          className="add-row-button"
-        >
-          {selectedContact ? t('update') : t('save')}
-        </button>
-      </div>
+      <ActionPills
+  onCancel={(event) => {
+    event.stopPropagation()
+    onCancel()
+  }}
+  cancelLabel={t('cancel')}
+  saveLabel={selectedContact ? t('update') : t('save')}
+/>
     </form>
   )
 }
