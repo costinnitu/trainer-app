@@ -1,4 +1,4 @@
-import ActionPills from '../common/ActionPills'
+import SelectionModal from '../common/SelectionModal'
 import useTranslations from '../../hooks/useTranslations'
 
 function ProgramSelectorModal({
@@ -12,61 +12,41 @@ function ProgramSelectorModal({
   const { t } = useTranslations()
 
   return (
-    <div
-      className="modal-backdrop"
-      onClick={onClose}
-    >
-      <div
-        className="modal-content"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <h3>{t('assignedPrograms')}</h3>
+    <SelectionModal
+      title={t('assignedPrograms')}
+      searchPlaceholder={t('searchPrograms')}
+      searchTerm={programSearchTerm}
+      onSearchChange={onSearchChange}
+      items={filteredPrograms}
+      onClose={onClose}
+      saveLabel={t('update')}
+      renderItem={(program) => {
+        const isSelected = assignedProgramIds.includes(program.programId)
 
-        <input
-          className="search-input"
-          type="text"
-          placeholder={t('searchPrograms')}
-          value={programSearchTerm}
-          onChange={(event) => onSearchChange(event.target.value)}
-        />
-
-        <div className="client-list">
-          {filteredPrograms.map((program) => {
-            const isSelected = assignedProgramIds.includes(program.programId)
-
-            return (
-              <div
-                key={program.programId}
-                className="client-row clickable"
-                onClick={() => onToggleProgram(program.programId)}
-              >
-                <strong>{program.programName}</strong>
-                <span>{program.goal || '-'}</span>
-                <span>
-                  {program.durationWeeks
-                    ? `${program.durationWeeks} ${t('weeks')}`
-                    : '-'}
-                </span>
-                <span
-                  className={`status-badge ${
-                    isSelected ? 'paid' : 'inactive'
-                  }`}
-                >
-                  {isSelected ? t('active') : t('inactive')}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-
-        <ActionPills
-          onCancel={onClose}
-          onSave={onClose}
-          cancelLabel={t('cancel')}
-          saveLabel={t('update')}
-        />
-      </div>
-    </div>
+        return (
+          <div
+            key={program.programId}
+            className="client-row clickable"
+            onClick={() => onToggleProgram(program.programId)}
+          >
+            <strong>{program.programName}</strong>
+            <span>{program.goal || '-'}</span>
+            <span>
+              {program.durationWeeks
+                ? `${program.durationWeeks} ${t('weeks')}`
+                : '-'}
+            </span>
+            <span
+              className={`status-badge ${
+                isSelected ? 'paid' : 'inactive'
+              }`}
+            >
+              {isSelected ? t('active') : t('inactive')}
+            </span>
+          </div>
+        )
+      }}
+    />
   )
 }
 
