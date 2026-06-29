@@ -8,6 +8,7 @@ function ClientDetailsSection({
   onChange,
   onSubmit,
   onCancelEdit,
+  saveLabel,
 }) {
   const { t } = useTranslations()
 
@@ -90,7 +91,7 @@ function ClientDetailsSection({
           <ActionPills
             onCancel={onCancelEdit}
             cancelLabel={t('cancel')}
-            saveLabel={t('update')}
+            saveLabel={saveLabel || t('update')}
           />
         </form>
       )}

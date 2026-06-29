@@ -4,6 +4,8 @@ import useTranslations from '../hooks/useTranslations'
 import ActionPills from './common/ActionPills'
 import ClientDetailsSection from './clients/ClientDetailsSection'
 import ClientProgramsSection from './clients/ClientProgramsSection'
+import ProgramSelectorModal from './clients/ProgramSelectorModal'
+import PackageSelectorModal from './clients/PackageSelectorModal'
 
 function ClientForm({
   programs,
@@ -155,68 +157,19 @@ function ClientForm({
       .includes(packageSearchTerm.toLowerCase())
   )
 
-  if (!selectedClient) {
-    return (
-      <form className="client-form" onSubmit={handleSubmit}>
-        <input
-          name="firstName"
-          placeholder={t('firstName')}
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="lastName"
-          placeholder={t('lastName')}
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="phone"
-          placeholder={t('phone')}
-          value={formData.phone}
-          onChange={handleChange}
-        />
-
-        <input
-          name="goal"
-          placeholder={t('goal')}
-          value={formData.goal}
-          onChange={handleChange}
-        />
-
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-        >
-          <option value="active">{t('active')}</option>
-          <option value="paused">{t('paused')}</option>
-          <option value="inactive">{t('inactive')}</option>
-        </select>
-
-        <div className="form-actions pill-actions">
-          <button
-            type="button"
-            className="add-row-button"
-            onClick={onCancel}
-          >
-            {t('cancel')}
-          </button>
-
-          <button
-            type="submit"
-            className="add-row-button"
-          >
-            {t('save')}
-          </button>
-        </div>
-      </form>
-    )
-  }
+ if (!selectedClient) {
+  return (
+    <ClientDetailsSection
+      formData={formData}
+      activeSection="details"
+      onToggleSection={() => {}}
+      onChange={handleChange}
+      onSubmit={handleSubmit}
+      onCancelEdit={onCancel}
+      saveLabel={t('save')}
+    />
+  )
+}
 
   return (
     <div>
@@ -246,130 +199,25 @@ function ClientForm({
 />
 
       {showProgramSelector && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setShowProgramSelector(false)}
-        >
-          <div
-            className="modal-content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <h3>{t('assignedPrograms')}</h3>
-
-            <input
-              className="search-input"
-              type="text"
-              placeholder={t('searchPrograms')}
-              value={programSearchTerm}
-              onChange={(event) =>
-                setProgramSearchTerm(event.target.value)
-              }
-            />
-
-            <div className="client-list">
-              {filteredPrograms.map((program) => {
-                const isSelected =
-                  formData.assignedProgramIds.includes(program.programId)
-
-                return (
-                  <div
-                    key={program.programId}
-                    className="client-row clickable"
-                    onClick={() => handleProgramToggle(program.programId)}
-                  >
-                    <strong>{program.programName}</strong>
-                    <span>{program.goal || '-'}</span>
-                    <span>
-                      {program.durationWeeks
-                        ? `${program.durationWeeks} ${t('weeks')}`
-                        : '-'}
-                    </span>
-                    <span
-                      className={`status-badge ${
-                        isSelected ? 'paid' : 'inactive'
-                      }`}
-                    >
-                      {isSelected ? t('active') : t('inactive')}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="form-actions pill-actions">
-              <button
-                type="button"
-                className="add-row-button"
-                onClick={() => setShowProgramSelector(false)}
-              >
-                {t('cancel')}
-              </button>
-
-              <button
-                type="button"
-                className="add-row-button"
-                onClick={() => setShowProgramSelector(false)}
-              >
-                {t('update')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <ProgramSelectorModal
+    programSearchTerm={programSearchTerm}
+    onSearchChange={setProgramSearchTerm}
+    filteredPrograms={filteredPrograms}
+    assignedProgramIds={formData.assignedProgramIds}
+    onToggleProgram={handleProgramToggle}
+    onClose={() => setShowProgramSelector(false)}
+  />
+)}
 
       {showPackageSelector && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setShowPackageSelector(false)}
-        >
-          <div
-            className="modal-content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <h3>{t('packages')}</h3>
-
-            <input
-              className="search-input"
-              type="text"
-              placeholder={t('searchPackages')}
-              value={packageSearchTerm}
-              onChange={(event) =>
-                setPackageSearchTerm(event.target.value)
-              }
-            />
-
-            <div className="client-list">
-              {filteredPackages.map((packageTemplate) => (
-                <div
-                  key={packageTemplate.packageId}
-                  className="client-row clickable"
-                  onClick={() => handleAssignPackage(packageTemplate)}
-                >
-                  <strong>{packageTemplate.packageName}</strong>
-
-                  <span>
-                    {packageTemplate.totalSessions} {t('sessions')}
-                  </span>
-
-                  <span>€{packageTemplate.amount || 0}</span>
-
-                  <span>{packageTemplate.notes || '-'}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="form-actions pill-actions">
-              <button
-                type="button"
-                className="add-row-button"
-                onClick={() => setShowPackageSelector(false)}
-              >
-                {t('cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <PackageSelectorModal
+    packageSearchTerm={packageSearchTerm}
+    onSearchChange={setPackageSearchTerm}
+    filteredPackages={filteredPackages}
+    onAssignPackage={handleAssignPackage}
+    onClose={() => setShowPackageSelector(false)}
+  />
+)}
 
       <ActionPills
   onCancel={onCancel}
