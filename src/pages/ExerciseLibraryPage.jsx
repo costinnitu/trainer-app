@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import AddRow from '../components/common/AddRow'
 import ExerciseForm from '../components/ExerciseForm'
 
 import {
@@ -202,15 +202,13 @@ function ExerciseLibraryPage() {
       />
 
       {!showForm && (
-        <div className="add-row">
-          <button
-            type="button"
-            className="add-row-button"
-            onClick={handleShowAddForm}
-          >
-            + {t('addExercise')}
-          </button>
-        </div>
+       <AddRow
+  label={t('addExercise')}
+  onClick={() => {
+    setSelectedExercise(null)
+    setShowForm(true)
+  }}
+/>
       )}
 
       {error && (

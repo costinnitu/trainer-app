@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import AddRow from './common/AddRow'
 import {
   createClient,
 } from '../services/clientService'
@@ -211,30 +211,13 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
           ))}
 
           {!showForm && (
-  <div className="form-actions pill-actions">
-  <button
-    type="button"
-    className="add-row-button"
-    onClick={() => {
-      setIsExpanded(false)
-      setShowForm(false)
-      setSelectedContact(null)
-    }}
-  >
-    {t('cancel')}
-  </button>
-
-  <button
-    type="button"
-    className="add-row-button"
-    onClick={() => {
-      setSelectedContact(null)
-      setShowForm(true)
-    }}
-  >
-    + {t('addContact')}
-  </button>
-</div>
+  <AddRow
+  label={t('addContact')}
+  onClick={() => {
+    setSelectedContact(null)
+    setShowForm(true)
+  }}
+/>
 )}
         </div>
       </div>

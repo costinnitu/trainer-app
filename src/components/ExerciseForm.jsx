@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-
+import ActionPills from './common/ActionPills'
 import useTranslations from '../hooks/useTranslations'
 
 function ExerciseForm({
   onAddExercise,
   onUpdateExercise,
   selectedExercise,
+  onCancel,
 }) {
   const { t } = useTranslations()
 
@@ -123,11 +124,11 @@ function ExerciseForm({
         {t('favoriteExercise')}
       </label>
 
-      <button type="submit">
-        {selectedExercise
-          ? t('updateExercise')
-          : t('saveExercise')}
-      </button>
+      <ActionPills
+  onCancel={onCancel}
+  cancelLabel={t('cancel')}
+  saveLabel={selectedExercise ? t('update') : t('save')}
+/>
     </form>
   )
 }

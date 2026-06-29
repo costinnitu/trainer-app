@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-
+import ClientPackagesSection from './clients/ClientPackagesSection'
 import useTranslations from '../hooks/useTranslations'
 import ActionPills from './common/ActionPills'
+import ClientDetailsSection from './clients/ClientDetailsSection'
+import ClientProgramsSection from './clients/ClientProgramsSection'
 
 function ClientForm({
   programs,
@@ -218,227 +220,30 @@ function ClientForm({
 
   return (
     <div>
-      <div
-        className="profile-summary clickable-summary"
-        onClick={() => toggleSection('details')}
-      >
-        <div className="section-header clickable-section-header">
-          <h4>{t('client')}</h4>
-        </div>
+      <ClientDetailsSection
+  formData={formData}
+  activeSection={activeSection}
+  onToggleSection={toggleSection}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+  onCancelEdit={() => setActiveSection(null)}
+/>
 
-        <p>
-          <strong>{t('client')}:</strong>{' '}
-          {formData.firstName} {formData.lastName}
-        </p>
+      <ClientProgramsSection
+  activeSection={activeSection}
+  toggleSection={toggleSection}
+  selectedProgramNames={getSelectedProgramNames()}
+  onCloseSection={() => setActiveSection(null)}
+  onOpenProgramSelector={() => setShowProgramSelector(true)}
+/>
 
-        {formData.phone && (
-          <p>
-            <strong>{t('phone')}:</strong> {formData.phone}
-          </p>
-        )}
-
-        {formData.goal && (
-          <p>
-            <strong>{t('goal')}:</strong> {formData.goal}
-          </p>
-        )}
-
-        <p>
-          <strong>{t('status')}:</strong> {t(formData.status)}
-        </p>
-
-        {activeSection === 'details' && (
-          <form
-            className="client-form section-content"
-            onSubmit={handleSubmit}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <input
-              name="firstName"
-              placeholder={t('firstName')}
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              name="lastName"
-              placeholder={t('lastName')}
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              name="phone"
-              placeholder={t('phone')}
-              value={formData.phone}
-              onChange={handleChange}
-            />
-
-            <input
-              name="goal"
-              placeholder={t('goal')}
-              value={formData.goal}
-              onChange={handleChange}
-            />
-
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
-              <option value="active">{t('active')}</option>
-              <option value="paused">{t('paused')}</option>
-              <option value="inactive">{t('inactive')}</option>
-            </select>
-
-            <div className="form-actions pill-actions">
-              <button
-                type="button"
-                className="add-row-button"
-                onClick={() => setActiveSection(null)}
-              >
-                {t('cancel')}
-              </button>
-
-              <button
-                type="submit"
-                className="add-row-button"
-              >
-                {t('update')}
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-
-      <div
-        className="profile-summary clickable-summary"
-        onClick={() => toggleSection('programs')}
-      >
-        <div className="section-header clickable-section-header">
-          <h4>{t('assignedPrograms')}</h4>
-        </div>
-
-        <p>{getSelectedProgramNames() || t('noProgramsYet')}</p>
-
-        {activeSection === 'programs' && (
-          <div
-            className="section-content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="form-actions pill-actions">
-              <button
-                type="button"
-                className="add-row-button"
-                onClick={() => setActiveSection(null)}
-              >
-                {t('cancel')}
-              </button>
-
-              <button
-                type="button"
-                className="add-row-button"
-                onClick={() => setShowProgramSelector(true)}
-              >
-                + {t('addProgram')}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div
-        className="profile-summary clickable-summary"
-      >
-        <div className="section-header clickable-section-header">
-          <h4>{t('packages')}</h4>
-        </div>
-
-      
-          <div
-            className="section-content"
-            onClick={(event) => event.stopPropagation()}
-          >
-            {clientPackages.length === 0 ? (
-              <p>{t('noPackagesYet')}</p>
-            ) : (
-              <div className="client-package-list">
-                <div className="client-package-row client-package-row-header">
-                  <strong>{t('package')}</strong>
-                  <strong>{t('sessions')}</strong>
-                  <strong>{t('amount')}</strong>
-                  <strong>{t('status')}</strong>
-                  <div></div>
-                </div>
-
-                {clientPackages.map((clientPackage) => {
-                  const paymentStatus = getPackagePaymentStatus(
-                    clientPackage.packageId
-                  )
-
-                  return (
-                    <div
-                      className="client-package-row"
-                      key={clientPackage.packageId}
-                    >
-                      <strong>{clientPackage.packageName}</strong>
-
-                      <span>
-                        {clientPackage.remainingSessions}/
-                        {clientPackage.totalSessions}
-                      </span>
-
-                      <span>€{clientPackage.amount || 0}</span>
-
-                      <button
-  type="button"
-  className={`payment-status-toggle ${paymentStatus}`}
-  onClick={(event) => {
-    event.stopPropagation()
-
-    onUpdatePackage({
-      ...clientPackage,
-      paymentStatus:
-        paymentStatus === 'paid' ? 'unpaid' : 'paid',
-    })
-  }}
->
-  <span>
-    {paymentStatus === 'paid'
-      ? t('paid')
-      : t('unpaid')}
-  </span>
-</button>
-
-                      <button
-                        type="button"
-                        className="delete-icon-button"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          onDeletePackage(clientPackage.packageId)
-                        }}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            <div className="add-row">
-  <button
-    type="button"
-    className="add-row-button"
-    onClick={() => setShowPackageSelector(true)}
-  >
-    + {t('addPackage')}
-  </button>
-</div>
-          </div>
-      </div>
+      <ClientPackagesSection
+  clientPackages={clientPackages}
+  getPackagePaymentStatus={getPackagePaymentStatus}
+  onUpdatePackage={onUpdatePackage}
+  onDeletePackage={onDeletePackage}
+  onOpenPackageSelector={() => setShowPackageSelector(true)}
+/>
 
       {showProgramSelector && (
         <div

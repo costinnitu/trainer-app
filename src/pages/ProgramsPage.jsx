@@ -2,7 +2,7 @@ import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import ProgramCard from '../components/ProgramCard'
 import ProgramForm from '../components/ProgramForm'
-
+import AddRow from '../components/common/AddRow'
 import {
   getPrograms,
   createProgram,
@@ -122,20 +122,13 @@ function ProgramsPage() {
             />
           ))}
 
-          <div
-            className="add-program-card"
-            onClick={() => setShowForm(true)}
-          >
-            <Plus
-              size={32}
-              strokeWidth={2}
-              className="add-program-icon"
-            />
-
-            <span className="label">
-              {t('addProgram')}
-            </span>
-          </div>
+          <AddRow
+  label={t('addProgram')}
+  onClick={() => {
+    setSelectedProgram(null)
+    setShowForm(true)
+  }}
+/>
         </div>
       )}
     </div>

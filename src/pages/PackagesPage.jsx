@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import AddRow from '../components/common/AddRow'
 import {
   getPackages,
   createPackage,
@@ -151,18 +151,13 @@ function PackagesPage() {
 </div>
           )}
 
-          <div className="add-row">
-            <button
-              type="button"
-              className="add-row-button"
-              onClick={() => {
-                setSelectedPackage(null)
-                setShowForm(true)
-              }}
-            >
-              + {t('addPackage')}
-            </button>
-          </div>
+          <AddRow
+  label={t('addPackage')}
+  onClick={() => {
+    setSelectedPackage(null)
+    setShowForm(true)
+  }}
+/>
         </>
       )}
     </div>
