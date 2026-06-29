@@ -27,23 +27,12 @@ function ClientProgramsSection({
           className="section-content"
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="form-actions pill-actions">
-            <button
-              type="button"
-              className="add-row-button"
-              onClick={onCloseSection}
-            >
-              {t('cancel')}
-            </button>
-
-            <button
-              type="button"
-              className="add-row-button"
-              onClick={onOpenProgramSelector}
-            >
-              + {t('addProgram')}
-            </button>
-          </div>
+          <ActionPills
+            onCancel={onCloseSection}
+            onSave={onOpenProgramSelector}
+            cancelLabel={t('cancel')}
+            saveLabel={t('addProgram')}
+          />
         </div>
       )}
     </div>

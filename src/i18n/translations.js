@@ -252,6 +252,7 @@ const translations = {
     clickToView: 'Click to view →',
 
     searchPrograms: 'Search programs...',
+    searchPackages: 'Search packages...',
 
     packageLibrary: 'Package Library',
   },
@@ -517,6 +518,7 @@ const translations = {
     clickToView: 'Clicca per visualizzare →',
 
     searchPrograms: 'Cerca programmi...',
+    searchPackages: 'Cerca pacchetti...',
 
     packageLibrary: 'Libreria pacchetti',
   },

@@ -1,4 +1,5 @@
 import ActionPills from './ActionPills'
+import SearchBar from './SearchBar'
 
 function SelectionModal({
   title,
@@ -22,12 +23,10 @@ function SelectionModal({
       >
         <h3>{title}</h3>
 
-        <input
-          className="search-input"
-          type="text"
-          placeholder={searchPlaceholder}
-          value={searchTerm}
-          onChange={(event) => onSearchChange(event.target.value)}
+        <SearchBar
+            placeholder={searchPlaceholder}
+            value={searchTerm}
+            onChange={onSearchChange}
         />
 
         <div className="client-list">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AddRow from '../common/AddRow'
+import SearchBar from '../common/SearchBar'
 import {
   createClient,
 } from '../../services/clientService'
@@ -171,12 +172,10 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
 
     {isExpanded && (
       <div className="section-content">
-        <input
-          className="search-input"
-          type="text"
+        <SearchBar
           placeholder={t('searchContacts')}
           value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
+          onChange={setSearchTerm}
         />
 
         {showForm && (

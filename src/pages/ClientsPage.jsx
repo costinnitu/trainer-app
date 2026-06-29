@@ -3,6 +3,7 @@ import ClientForm from '../components/clients/ClientForm'
 import { getPackages } from '../services/packageService'
 import ContactsSection from '../components/contacts/ContactsSection'
 import ClientsListSection from '../components/clients/ClientsListSection'
+import SearchBar from '../components/common/SearchBar'
 import {
   getClients,
   createClient,
@@ -498,12 +499,10 @@ function ClientsPage() {
   onClientsChanged={refreshClients}
 />
 {!showForm && (
-      <input
-        className="search-input"
-        type="text"
+      <SearchBar
         placeholder={t('searchClients')}
         value={searchTerm}
-        onChange={(event) => setSearchTerm(event.target.value)}
+        onChange={setSearchTerm}
       />
 )}
       {showForm && (
