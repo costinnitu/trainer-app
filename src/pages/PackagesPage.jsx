@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
+
 import AddRow from '../components/common/AddRow'
+import PackageForm from '../components/packages/PackageForm'
+
 import {
   getPackages,
   createPackage,
   updatePackage,
   deletePackage,
 } from '../services/packageService'
-
-import PackageForm from '../components/packages/PackageForm'
-import PackageCard from '../components/packages/PackageCard'
 
 import useTranslations from '../hooks/useTranslations'
 
@@ -117,47 +117,47 @@ function PackagesPage() {
             <p>{t('noPackagesYet')}</p>
           ) : (
             <div className="client-list">
-  <div className="package-library-row package-library-row-header">
-  <strong>{t('package')}</strong>
-  <strong>{t('sessions')}</strong>
-  <strong>{t('amount')}</strong>
-  <strong>{t('notes')}</strong>
-  <div></div>
-</div>
+              <div className="package-library-row package-library-row-header">
+                <strong>{t('package')}</strong>
+                <strong>{t('sessions')}</strong>
+                <strong>{t('amount')}</strong>
+                <strong>{t('notes')}</strong>
+                <div></div>
+              </div>
 
-  {packages.map((packageTemplate) => (
-   <div
-  key={packageTemplate.packageId}
-  className="package-library-row clickable"
-  onClick={() => handleEditPackage(packageTemplate)}
->
-  <strong>{packageTemplate.packageName}</strong>
-  <span>{packageTemplate.totalSessions}</span>
-  <span>€{packageTemplate.amount || 0}</span>
-  <span>{packageTemplate.notes || '-'}</span>
+              {packages.map((packageTemplate) => (
+                <div
+                  key={packageTemplate.packageId}
+                  className="package-library-row clickable"
+                  onClick={() => handleEditPackage(packageTemplate)}
+                >
+                  <strong>{packageTemplate.packageName}</strong>
+                  <span>{packageTemplate.totalSessions}</span>
+                  <span>€{packageTemplate.amount || 0}</span>
+                  <span>{packageTemplate.notes || '-'}</span>
 
-  <button
-    type="button"
-    className="delete-icon-button"
-    onClick={(event) => {
-      event.stopPropagation()
-      handleDeletePackage(packageTemplate.packageId)
-    }}
-  >
-    ×
-  </button>
-</div>
-  ))}
-</div>
+                  <button
+                    type="button"
+                    className="delete-icon-button"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      handleDeletePackage(packageTemplate.packageId)
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
 
           <AddRow
-  label={t('addPackage')}
-  onClick={() => {
-    setSelectedPackage(null)
-    setShowForm(true)
-  }}
-/>
+            label={t('addPackage')}
+            onClick={() => {
+              setSelectedPackage(null)
+              setShowForm(true)
+            }}
+          />
         </>
       )}
     </div>

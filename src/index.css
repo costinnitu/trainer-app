@@ -2418,7 +2418,7 @@ textarea {
   margin-bottom: 450px;
 }
 
-
+}
 
 
 
@@ -2429,7 +2429,7 @@ textarea {
     grid-template-columns: 1fr auto;
     align-items: center;
 
-    min-height: 10;
+    min-height: 0;
     padding: 4px 10px;
     gap: 10px;
 
@@ -2466,4 +2466,73 @@ textarea {
     line-height: 1.1;
   }
 }
+
+.client-view-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+
+  margin: 0 0 20px;
+  padding: 0 0 4px;
+
+  border-bottom: 1px solid var(--border);
 }
+
+.client-view-tabs button {
+  position: relative;
+
+  padding: 10px 0 12px;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  color: var(--text-muted);
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: color var(--transition-fast);
+}
+
+.client-view-tabs button:hover {
+  background: transparent;
+  color: var(--primary);
+}
+
+.client-view-tabs button.active {
+  color: var(--text);
+}
+
+.client-view-tabs button.active::after {
+  content: '';
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+
+  height: 4px;
+
+  background: var(--primary);
+  border-radius: var(--radius-pill);
+
+  transform: rotate(-1.5deg);
+}
+
+@media (max-width: 768px) {
+  .client-view-tabs {
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 14px;
+  }
+
+  .client-view-tabs button {
+    font-size: 14px;
+  }
+}
+
+

@@ -24,7 +24,6 @@ function ContactsSection({ clients = [], onClientsChanged }) {
   const [showForm, setShowForm] = useState(false)
   const [selectedContact, setSelectedContact] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [isExpanded, setIsExpanded] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -153,74 +152,53 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
 
   return (
   <div className="contacts-section">
-    <div
-      className="contacts-toggle-row"
-      onClick={() => {
-          setIsExpanded(!isExpanded)
-          setShowForm(false)
-          setSelectedContact(null)
-        }}
-    >
-      <span className="section-arrow">
-        {isExpanded ? '▼' : '▶'}
-      </span>
+    <SearchBar
+      placeholder={t('searchContacts')}
+      value={searchTerm}
+      onChange={setSearchTerm}
+    />
 
-      <span>
-        {t('contacts')} ({contacts.length})
-      </span>
-    </div>
-
-    {isExpanded && (
-      <div className="section-content">
-        <SearchBar
-          placeholder={t('searchContacts')}
-          value={searchTerm}
-          onChange={setSearchTerm}
-        />
-
-        {showForm && (
-          <ContactForm
-            onAddContact={handleAddContact}
-            onUpdateContact={handleUpdateContact}
-            selectedContact={selectedContact}
-            onCancel={handleCancelForm}
-          />
-        )}
-
-        {error && <p className="error-message">{error}</p>}
-
-        <div className="client-list">
-          <div className="client-row client-row-header">
-            <strong>{t('contact')}</strong>
-            <strong>{t('status')}</strong>
-            <strong>{t('phone')}</strong>
-            <strong>Instagram</strong>
-            <div></div>
-          </div>
-
-          {filteredContacts.map((contact) => (
-            <ContactCard
-              key={contact.contactId}
-              contact={contact}
-              isConverted={hasValidConvertedClient(contact)}
-              onEditContact={handleEditContact}
-              onDeleteContact={handleDeleteContact}
-              onConvertContact={handleConvertContact}
-            />
-          ))}
-
-          {!showForm && (
-  <AddRow
-  label={t('addContact')}
-  onClick={() => {
-    setSelectedContact(null)
-    setShowForm(true)
-  }}
-/>
-)}
-        </div>
-      </div>
+    {showForm && (
+      <ContactForm
+        onAddContact={handleAddContact}
+        onUpdateContact={handleUpdateContact}
+        selectedContact={selectedContact}
+        onCancel={handleCancelForm}
+      />
     )}
+
+    {error && <p className="error-message">{error}</p>}
+
+    <div className="client-list">
+      <div className="client-row client-row-header">
+        <strong>{t('contact')}</strong>
+        <strong>{t('status')}</strong>
+        <strong>{t('phone')}</strong>
+        <strong>Instagram</strong>
+        <div></div>
+      </div>
+
+      {filteredContacts.map((contact) => (
+        <ContactCard
+          key={contact.contactId}
+          contact={contact}
+          isConverted={hasValidConvertedClient(contact)}
+          onEditContact={handleEditContact}
+          onDeleteContact={handleDeleteContact}
+          onConvertContact={handleConvertContact}
+        />
+      ))}
+
+      {!showForm && (
+        <AddRow
+          label={t('addContact')}
+          onClick={() => {
+            setSelectedContact(null)
+            setShowForm(true)
+          }}
+        />
+      )}
+    </div>
   </div>
 )
 }

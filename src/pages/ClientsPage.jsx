@@ -59,6 +59,7 @@ function ClientsPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [packageLibrary, setPackageLibrary] = useState([])  
+  const [mobileView, setMobileView] = useState('clients')
   const [clientStatusPreferences, setClientStatusPreferences] = useState({
     enableAutoStatus: true,
     autoPauseAfterDays: 30,
@@ -494,60 +495,84 @@ function ClientsPage() {
         <h2>{t('clients')}</h2>
       </div>
 
- <ContactsSection
-  clients={clients}
-  onClientsChanged={refreshClients}
-/>
-{!showForm && (
-      <SearchBar
-        placeholder={t('searchClients')}
-        value={searchTerm}
-        onChange={setSearchTerm}
-      />
+ {!showForm && (
+  <div className="client-view-tabs">
+    <button
+      type="button"
+      className={mobileView === 'clients' ? 'active' : ''}
+      onClick={() => setMobileView('clients')}
+    >
+      {t('clients')}
+    </button>
+
+    <button
+      type="button"
+      className={mobileView === 'contacts' ? 'active' : ''}
+      onClick={() => setMobileView('contacts')}
+    >
+      {t('contacts')}
+    </button>
+  </div>
 )}
-      {showForm && (
-       <ClientForm
-  programs={programs}
-  payments={payments}
-  packageLibrary={packageLibrary}
-  clientPackages={
-    selectedClient
-      ? getPackagesForClient(selectedClient.clientId)
-      : []
-  }
-  selectedProgramIds={
-    selectedClient
-      ? getAssignedProgramIds(selectedClient.clientId)
-      : []
-  }
-  onAddClient={handleAddClient}
-  onUpdateClient={handleUpdateClient}
-  onAddPackage={handleAddPackage}
-  onUpdatePackage={handleUpdatePackage}
-  onDeletePackage={handleDeletePackage}
-  onCreateProgram={handleCreateProgramFromClient}
-  selectedClient={selectedClient}
-  onCancel={handleCancelForm}
-/>
-      )}
 
-      {isLoading && <p>{t('loadingClients')}</p>}
+{showForm && (
+  <ClientForm
+    programs={programs}
+    payments={payments}
+    packageLibrary={packageLibrary}
+    clientPackages={
+      selectedClient
+        ? getPackagesForClient(selectedClient.clientId)
+        : []
+    }
+    selectedProgramIds={
+      selectedClient
+        ? getAssignedProgramIds(selectedClient.clientId)
+        : []
+    }
+    onAddClient={handleAddClient}
+    onUpdateClient={handleUpdateClient}
+    onAddPackage={handleAddPackage}
+    onUpdatePackage={handleUpdatePackage}
+    onDeletePackage={handleDeletePackage}
+    onCreateProgram={handleCreateProgramFromClient}
+    selectedClient={selectedClient}
+    onCancel={handleCancelForm}
+  />
+)}
 
-      {error && <p className="error-message">{error}</p>}
+{isLoading && <p>{t('loadingClients')}</p>}
 
-{!showForm && (
-  <ClientsListSection
-    clients={filteredClients}
-    getComputedClientStatus={getComputedClientStatus}
-    getClientPaymentHealth={getClientPaymentHealth}
-    getActivePackage={getActivePackage}
-    getAssignedPrograms={getAssignedPrograms}
-    onDeleteClient={handleDeleteClient}
-    onEditClient={handleEditClient}
-    onAddClient={() => {
-      setSelectedClient(null)
-      setShowForm(true)
-    }}
+{error && <p className="error-message">{error}</p>}
+
+{!showForm && mobileView === 'clients' && (
+  <>
+    <SearchBar
+      placeholder={t('searchClients')}
+      value={searchTerm}
+      onChange={setSearchTerm}
+    />
+
+    <ClientsListSection
+      clients={filteredClients}
+      getComputedClientStatus={getComputedClientStatus}
+      getClientPaymentHealth={getClientPaymentHealth}
+      getActivePackage={getActivePackage}
+      getAssignedPrograms={getAssignedPrograms}
+      onDeleteClient={handleDeleteClient}
+      onEditClient={handleEditClient}
+      onAddClient={() => {
+        setSelectedClient(null)
+        setShowForm(true)
+      }}
+    />
+  </>
+)}
+
+{!showForm && mobileView === 'contacts' && (
+  <ContactsSection
+    clients={clients}
+    onClientsChanged={refreshClients}
   />
 )}
     </div>
