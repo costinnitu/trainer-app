@@ -1328,8 +1328,7 @@ textarea {
 .client-row {
   display: grid;
   grid-template-columns:
-    1.5fr
-    0.9fr
+    1.7fr
     1fr
     1.4fr
     1.5fr
@@ -1389,6 +1388,44 @@ textarea {
   font-size: 12px;
   font-weight: 600;
 }
+
+.client-name-highlight {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  z-index: 1;
+}
+
+.client-name-highlight::before {
+  content: '';
+
+  position: absolute;
+  left: -16px;
+  top: 50%;
+
+  width: 4em;
+  height: 1.5em;
+
+  transform: translateY(-50%) rotate(-8deg);
+
+  border-radius: 3px 14px 5px 12px;
+
+  opacity: 0.25;
+  z-index: -1;
+}
+
+.client-name-highlight-active::before {
+  background: #40c45d;
+}
+
+.client-name-highlight-paused::before {
+  background: #f5c542;
+}
+
+.client-name-highlight-inactive::before {
+  background: #ef5350;
+}
+
 
 .dark-mode .assigned-program-badge {
   background: var(--chip-dark-bg);
@@ -2382,4 +2419,51 @@ textarea {
 }
 
 
+
+
+
+
+
+@media (max-width: 768px) {
+  .client-row {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+
+    min-height: 10;
+    padding: 4px 10px;
+    gap: 10px;
+
+    cursor: pointer;
+
+    transition:
+      background var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .client-row:active {
+    transform: scale(0.985);
+  }
+
+  .client-row-header {
+    display: none;
+  }
+
+  .client-row > :nth-child(2),
+  .client-row > :nth-child(4),
+  .client-row > :nth-child(5),
+  .client-row > :nth-child(6),
+  .client-row > :nth-child(7) {
+    display: none;
+  }
+
+  .client-row strong {
+    font-size: 15px;
+    line-height: 1.1;
+  }
+
+  .client-row span {
+    font-size: 13px;
+    line-height: 1.1;
+  }
+}
 }

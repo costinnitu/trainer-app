@@ -67,14 +67,12 @@ function ClientCard({
       onClick={() => onEditClient(client)}
     >
       <div>
-        <strong>
-          {client.firstName} {client.lastName}
-        </strong>
+        <strong
+  className={`client-name-highlight client-name-highlight-${client.status}`}
+>
+  {client.firstName} {client.lastName}
+</strong>
       </div>
-
-      <span className={`status-badge ${client.status}`}>
-        {getTranslatedStatus(client.status)}
-      </span>
 
       <div>
         {client.phone ? (

@@ -18,7 +18,6 @@ function ClientsListSection({
     <div className="client-list">
       <div className="client-row client-row-header">
         <strong>{t('client')}</strong>
-        <strong>{t('status')}</strong>
         <strong>WhatsApp</strong>
         <strong>{t('activePackage')}</strong>
         <strong>{t('assignedPrograms')}</strong>
