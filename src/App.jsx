@@ -22,6 +22,7 @@ import useTranslations from './hooks/useTranslations'
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [isLibraryOpen, setIsLibraryOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const { t } = useTranslations()
 
@@ -56,9 +57,10 @@ function App() {
   }
 
   function handlePageChange(page) {
-    setCurrentPage(page)
-    setIsLibraryOpen(false)
-  }
+  setCurrentPage(page)
+  setIsLibraryOpen(false)
+  setIsMobileMenuOpen(false)
+}
 
   function handleLibraryPageChange(page) {
     setCurrentPage(page)
@@ -157,6 +159,86 @@ function App() {
               </Button>
             </div>
           </nav>
+
+          <div className="mobile-bottom-nav">
+  
+
+  <button type="button" onClick={() => handlePageChange('dashboard')}>
+    <span>🏠</span>
+    <small>{t('dashboard')}</small>
+  </button>
+
+  <button type="button" onClick={() => handlePageChange('clients')}>
+    <span>👥</span>
+    <small>{t('clients')}</small>
+  </button>
+
+  <button type="button" onClick={() => handlePageChange('weeklySchedule')}>
+    <span>📅</span>
+    <small>{t('weeklySchedule')}</small>
+  </button>
+
+<button type="button" onClick={() => setIsMobileMenuOpen(true)}>
+    <span>☰</span>
+    <small>More</small>
+  </button>
+
+</div>
+
+{isMobileMenuOpen && (
+  <div
+    className="mobile-menu-backdrop"
+    onClick={() => setIsMobileMenuOpen(false)}
+  >
+    <div
+      className="mobile-menu-stack"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <button
+  type="button"
+  className="mobile-menu-danger"
+  onClick={signOut}
+>
+  🚪 {t('logout')}
+</button>
+
+<button
+  type="button"
+  onClick={() => handlePageChange('programs')}
+>
+  🏋 {t('programs')}
+</button>
+
+<button
+  type="button"
+  onClick={() => handlePageChange('exerciseLibrary')}
+>
+  💪 {t('exercises')}
+</button>
+
+<button
+  type="button"
+  onClick={() => handlePageChange('packages')}
+>
+  📦 {t('packages')}
+</button>
+
+<button
+  type="button"
+  onClick={() => handlePageChange('paymentTracking')}
+>
+  💳 {t('paymentTracking')}
+</button>
+
+<button
+  type="button"
+  onClick={() => handlePageChange('settings')}
+>
+  ⚙ {t('settings')}
+</button>
+    </div>
+  </div>
+)}
 
           {currentPage === 'dashboard' && (
             <DashboardPage setCurrentPage={setCurrentPage} />

@@ -4,7 +4,7 @@ const translations = {
 
     dashboard: 'Dashboard',
     clients: 'Clients',
-    weeklySchedule: 'Weekly Schedule',
+    weeklySchedule: 'Schedule',
     library: 'Library',
     programs: 'Programs',
     exercises: 'Exercises',
