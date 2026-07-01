@@ -22,11 +22,26 @@
 
 .exercise-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 40px;
+  grid-template-columns: 44px 2fr 1fr 1fr 40px;
   gap: 16px;
   align-items: center;
-  padding: 2px 4px 2px 30px;
+  padding: 8px 12px;
 }
+
+.exercise-row-header {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.exercise-row-header strong {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 
 .exercise-row.favorite-row {
   grid-template-columns: 2fr 1fr 1fr;

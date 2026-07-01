@@ -40,7 +40,7 @@ const HOUR_HEIGHT = 80
 
 function WeeklySchedulePage() {
   const { t, language } = useTranslations()
-
+  const [selectedSlot, setSelectedSlot] = useState(null)
   const [clients, setClients] = useState([])
   const [appointments, setAppointments] = useState([])
   const [clientPackages, setClientPackages] = useState([])
@@ -51,7 +51,7 @@ function WeeklySchedulePage() {
   const [selectedWeekDate, setSelectedWeekDate] = useState(new Date())
   const [hoverPreview, setHoverPreview] = useState(null)
   const [error, setError] = useState('')
-
+  const [lastTap, setLastTap] = useState(null)
   const locale = language === 'it' ? 'it-IT' : 'en-US'
 
   const calendarStartHour = Number(
@@ -395,6 +395,10 @@ function WeeklySchedulePage() {
     )
   }
 
+  function isMobileDevice() {
+  return window.matchMedia('(max-width: 768px)').matches
+}
+
   const startOfWeek = getStartOfWeek(selectedWeekDate)
 
   const endOfWeek = new Date(startOfWeek)
@@ -461,7 +465,10 @@ function WeeklySchedulePage() {
         </div>
       )}
 
-      <div className="calendar-grid">
+      <div
+  className="calendar-grid"
+  style={{ '--calendar-visible-days': weekDays.length }}
+>
         <div className="calendar-time-column">
           <div className="calendar-header-cell"></div>
 
@@ -499,7 +506,55 @@ function WeeklySchedulePage() {
 
               <div
                 className="calendar-day-body"
-                onClick={(event) => handleCalendarSlotClick(event, day)}
+               onClick={(event) => {
+  if (!isMobileDevice()) {
+    handleCalendarSlotClick(event, day)
+    return
+  }
+
+  if (event.target.closest('.calendar-appointment')) {
+    return
+  }
+
+  const startTime = getCenteredTimeFromClick(event)
+  const endTime = calculateEndTime(startTime)
+
+  const currentTap = {
+    date: day.dateValue,
+    startTime,
+    time: Date.now(),
+  }
+
+  const isDoubleTap =
+    lastTap &&
+    lastTap.date === currentTap.date &&
+    lastTap.startTime === currentTap.startTime &&
+    currentTap.time - lastTap.time < 450
+
+  if (isDoubleTap) {
+    handleCalendarSlotClick(event, day)
+    setLastTap(null)
+    return
+  }
+
+  setLastTap(currentTap)
+
+  setHoverPreview({
+    date: day.dateValue,
+    startTime,
+    endTime,
+  })
+}}
+onMouseMove={(event) => {
+  if (!isMobileDevice()) {
+    handleCalendarSlotHover(event, day)
+  }
+}}
+onMouseLeave={() => {
+  if (!isMobileDevice()) {
+    setHoverPreview(null)
+  }
+}}
                 onMouseMove={(event) => handleCalendarSlotHover(event, day)}
                 onMouseLeave={() => setHoverPreview(null)}
               >

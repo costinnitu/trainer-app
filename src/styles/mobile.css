@@ -410,7 +410,7 @@
   .calendar-grid {
     width: 100%;
     min-width: 0;
-    grid-template-columns: 52px repeat(7, 132px);
+    grid-template-columns: 52px repeat(var(--calendar-visible-days), 132px);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -445,8 +445,49 @@
   }
 }
 
-@media (max-width: 520px) {
-  .calendar-grid {
-    grid-template-columns: 48px repeat(7, 120px);
+@media (max-width: 768px) {
+  .calendar-day-body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .calendar-day-column,
+  .calendar-day-body {
+    user-select: none;
+    -webkit-user-select: none;
   }
 }
+
+
+@media (max-width: 768px) {
+  .exercise-row {
+    grid-template-columns: 36px 1fr auto;
+    padding: 6px 10px;
+    gap: 10px;
+  }
+
+  .exercise-row-header {
+    display: none;
+  }
+
+  .exercise-row > :nth-child(4),
+  .exercise-row > :nth-child(5) {
+    display: none;
+  }
+
+  .exercise-row strong {
+    font-size: 15px;
+    line-height: 1.1;
+  }
+
+  .exercise-row span {
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .favorite-button {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+}
+
