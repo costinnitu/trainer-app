@@ -1,0 +1,54 @@
+/* ---------- Generic add rows ---------- */
+
+.add-row {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0 8px;
+}
+
+.add-row-button,
+.contacts-toggle-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: var(--action-pill-width);
+  min-height: var(--action-pill-height);
+  padding: 0 20px;
+  box-sizing: border-box;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal),
+    transform var(--transition-fast),
+    box-shadow var(--transition-normal);
+}
+
+.add-row-button:hover,
+.contacts-toggle-row:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary-border);
+  transform: translateY(-1px);
+}
+
+.dark-mode .add-row-button,
+.dark-mode .contacts-toggle-row {
+  color: #93c5fd;
+}
+
+.dark-mode .add-row-button:hover,
+.dark-mode .contacts-toggle-row:hover {
+  background: var(--surface-hover);
+}

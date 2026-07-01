@@ -1,0 +1,56 @@
+/* ---------- Payment tracking ---------- */
+
+.payment-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 2.2fr 0.8fr 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 12px 8px 30px;
+}
+
+.payment-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.payment-status-toggle {
+  position: relative;
+  overflow: hidden;
+
+  border: none;
+  cursor: pointer;
+
+  background: var(--danger-bg);
+  color: var(--danger-text);
+
+  transition:
+    color 0.25s ease,
+    background 0.25s ease;
+}
+
+.payment-status-toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  background: var(--success-bg);
+
+  transform: scaleX(0);
+  transform-origin: left;
+
+  transition: transform var(--transition-status);
+  z-index: 0;
+}
+
+.payment-status-toggle.paid {
+  color: var(--success-text);
+}
+
+.payment-status-toggle.paid::before {
+  transform: scaleX(1);
+}
+
+.payment-status-toggle span {
+  position: relative;
+  z-index: 1;
+}

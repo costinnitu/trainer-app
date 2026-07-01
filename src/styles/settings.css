@@ -1,0 +1,125 @@
+/* ---------- Settings ---------- */
+
+.settings-card {
+  margin-top: 16px;
+}
+
+.profile-summary {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.profile-summary h4 {
+  margin-top: 0;
+}
+
+.settings-row {
+  display: grid;
+  grid-template-columns: 180px 260px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.settings-row span {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+
+.settings-control {
+  width: 260px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.toggle-switch {
+  width: 52px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  background: var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.toggle-switch.on {
+  background: var(--primary);
+  justify-content: flex-end;
+}
+
+.toggle-thumb {
+  width: 22px;
+  height: 22px;
+  background: var(--text-inverse);
+  border-radius: var(--radius-pill);
+}
+
+/* ---------- Language selector ---------- */
+
+.language-selector {
+  width: 260px;
+  display: flex;
+  gap: 10px;
+}
+
+.language-option,
+.program-chip {
+  background: var(--surface-muted);
+  color: #374151;
+  border: 1px solid var(--border-strong);
+  font-weight: 600;
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal),
+    transform var(--transition-fast);
+}
+
+.language-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+}
+
+.language-option:hover,
+.program-chip:hover {
+  background: var(--chip-bg);
+  border-color: var(--primary-border);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.language-option.active,
+.program-chip.active {
+  background: var(--primary);
+  color: var(--text-inverse);
+  border-color: var(--primary);
+}
+
+.language-flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.dark-mode .language-option,
+.dark-mode .program-chip {
+  background: var(--surface-muted);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dark-mode .language-option:hover,
+.dark-mode .program-chip:hover {
+  background: var(--surface);
+  border-color: #4b5563;
+}

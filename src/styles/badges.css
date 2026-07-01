@@ -1,0 +1,54 @@
+/* ---------- Status badges ---------- */
+
+.status-badge,
+.payment-status-toggle {
+  min-width: 110px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+.status-badge {
+  text-transform: capitalize;
+}
+
+.status-badge.active,
+.status-badge.completed,
+.status-badge.paid,
+.status-badge.package-session-healthy {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-badge.paused,
+.status-badge.package-session-low {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.status-badge.package-session-last {
+  background: var(--orange-bg);
+  color: var(--orange-text);
+}
+
+.status-badge.inactive,
+.status-badge.cancelled,
+.status-badge.unpaid,
+.status-badge.package-session-exhausted {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.status-badge.scheduled {
+  background: var(--primary-softer);
+  color: var(--primary-text);
+}

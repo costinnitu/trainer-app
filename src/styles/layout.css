@@ -1,0 +1,34 @@
+/* ---------- Layout ---------- */
+
+.page {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--page-padding);
+}
+
+.page-header,
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.section-header h4 {
+  margin-top: 0;
+}
+
+.section-arrow {
+  color: var(--text-muted);
+  font-size: 12px;
+  opacity: 0.6;
+  transition: transform var(--transition-fast);
+}
+
+.section-content {
+  margin-top: 16px;
+  cursor: default;
+}

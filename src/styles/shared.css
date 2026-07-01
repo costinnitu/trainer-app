@@ -1,0 +1,81 @@
+/* ---------- Shared cards, rows, and interactions ---------- */
+
+.client-card,
+.dashboard-card,
+.dashboard-section,
+.settings-card,
+.client-form,
+.profile-summary,
+.exercise-form-card,
+.exercise-row,
+.client-row,
+.payment-row,
+.client-package-row,
+.package-list-row,
+.program-exercise-row,
+.program-details-row:not(.program-details-header),
+.add-program-card {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.client-card,
+.dashboard-card,
+.dashboard-section,
+.settings-card,
+.client-form,
+.add-program-card {
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-md);
+}
+
+.exercise-row,
+.client-row,
+.payment-row,
+.client-package-row,
+.package-list-row,
+.program-exercise-row,
+.program-details-row:not(.program-details-header) {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.client-card h3,
+.dashboard-card h3,
+.dashboard-section h3,
+.settings-card h3 {
+  margin-top: 0;
+}
+
+.clickable-dashboard-card,
+.clickable-program-card,
+.exercise-row.clickable,
+.client-row.clickable,
+.package-list-row.clickable,
+.client-package-row.clickable,
+.clickable-summary {
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.clickable-dashboard-card:hover,
+.clickable-program-card:hover {
+  transform: translateY(-2px);
+}
+
+.exercise-row.clickable:hover,
+.client-row.clickable:hover,
+.package-list-row.clickable:hover,
+.client-package-row.clickable:hover,
+.clickable-summary:hover {
+  transform: translateY(-1px);
+}
+
+.clickable-summary:hover {
+  border-color: var(--primary-border);
+  box-shadow: var(--shadow-primary);
+}

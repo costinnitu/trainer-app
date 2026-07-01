@@ -1,0 +1,452 @@
+/* ==========================================================
+   Mobile styles
+   Keep all responsive overrides here.
+   ========================================================== */
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .program-details-grid,
+  .program-details-row,
+  .program-exercise-row,
+  .exercise-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise-form-notes {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --page-padding: 14px;
+    --action-pill-width: 100%;
+    --calendar-hour-height: 72px;
+    --calendar-body-height: 936px;
+  }
+
+  body {
+    overflow-x: hidden;
+    padding-bottom: 78px;
+  }
+
+  body::after {
+    content: '';
+
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 106px;
+
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+
+    z-index: 75;
+    pointer-events: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  button {
+    min-height: 42px;
+  }
+
+  .page {
+    width: 100%;
+    max-width: none;
+    padding: var(--page-padding);
+    padding-bottom: 130px;
+    box-sizing: border-box;
+  }
+
+  .page-header,
+  .section-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .page-header h1,
+  .page-header h2,
+  .page-header h3 {
+    margin-bottom: 0;
+  }
+
+  .client-form,
+  .settings-card,
+  .profile-summary,
+  .dashboard-card,
+  .dashboard-section,
+  .exercise-form-card,
+  .add-program-card {
+    padding: 12px;
+  }
+
+  .client-form input,
+  .client-form select,
+  .search-input,
+  .program-notes-textarea,
+  .program-exercise-row input,
+  .program-exercise-row select,
+  .program-details-row input {
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+
+  .search-input {
+    margin-bottom: 16px;
+  }
+
+  .card-actions,
+  .edit-actions,
+  .form-actions,
+  .pill-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .card-actions button,
+  .edit-actions button,
+  .form-actions button,
+  .pill-actions button,
+  .add-row-button,
+  .contacts-toggle-row {
+    width: 100%;
+  }
+
+  .add-row {
+    width: 100%;
+    margin: 16px 0 8px;
+  }
+
+  .delete-icon-button {
+    width: 36px;
+    height: 36px;
+    justify-self: end;
+  }
+
+  .favorite-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dashboard-grid,
+  .client-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dashboard-card p {
+    font-size: 28px;
+  }
+
+  .dashboard-list-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 12px 0;
+  }
+
+  .dashboard-list-item strong,
+  .dashboard-list-item span {
+    display: block;
+  }
+
+  .payment-row,
+  .package-list-row,
+  .package-library-row,
+  .client-package-row,
+  .exercise-row,
+  .program-exercise-row,
+  .program-details-row:not(.program-details-header) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+    border-radius: var(--radius-lg);
+  }
+
+  .payment-row-header,
+  .package-library-row-header,
+  .client-package-row-header,
+  .program-exercise-row-header,
+  .program-details-header {
+    display: none;
+  }
+
+  .payment-row > *,
+  .package-list-row > *,
+  .package-library-row > *,
+  .client-package-row > *,
+  .exercise-row > *,
+  .program-exercise-row > *,
+  .program-details-row > * {
+    min-width: 0;
+  }
+
+  .payment-row strong,
+  .package-list-row strong,
+  .package-library-row strong,
+  .client-package-row strong,
+  .exercise-row strong {
+    font-size: 16px;
+  }
+
+  .payment-row span,
+  .package-list-row span,
+  .package-library-row span,
+  .client-package-row span,
+  .exercise-row span,
+  .exercise-row p {
+    font-size: 14px;
+  }
+
+  .client-row {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+
+    min-height: 0;
+    padding: 6px 10px;
+    gap: 10px;
+
+    cursor: pointer;
+
+    transition:
+      background var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .client-row:active {
+    transform: scale(0.985);
+  }
+
+  .client-row-header {
+    display: none;
+  }
+
+  .client-row > :nth-child(2),
+  .client-row > :nth-child(4),
+  .client-row > :nth-child(5),
+  .client-row > :nth-child(6),
+  .client-row > :nth-child(7) {
+    display: none;
+  }
+
+  .client-row strong {
+    font-size: 15px;
+    line-height: 1.1;
+  }
+
+  .client-row span {
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .client-row-actions,
+  .payment-actions,
+  .exercise-row-actions,
+  .contact-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .contact-action-button {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+
+  .status-badge,
+  .payment-status-toggle {
+    width: fit-content;
+    min-width: 120px;
+    height: 32px;
+  }
+
+  .assigned-programs-cell {
+    margin-top: 2px;
+  }
+
+  .assigned-program-badge {
+    padding: 6px 10px;
+  }
+
+  .package-list-row > *,
+  .package-library-row > * {
+    min-height: 0;
+  }
+
+  .program-editor-title {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+
+  .program-details-grid,
+  .exercise-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise-form-notes,
+  .exercise-delete-cell {
+    grid-column: auto;
+  }
+
+  .exercise-delete-cell {
+    justify-content: flex-end;
+  }
+
+  .program-exercise-row input:nth-child(2),
+  .program-exercise-row input:nth-child(3),
+  .program-exercise-row input:nth-child(4) {
+    text-align: left;
+  }
+
+  .program-card {
+    min-height: 240px;
+  }
+
+  .program-card-actions {
+    padding-top: 12px;
+  }
+
+  .settings-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .settings-control,
+  .language-selector {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .language-selector {
+    flex-direction: column;
+  }
+
+  .language-option {
+    min-height: 44px;
+  }
+
+  .modal-backdrop {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 8px;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-height: calc(100vh - 16px);
+    padding: 14px;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+  }
+
+  .modal-content h3 {
+    margin-top: 0;
+  }
+
+  .modal-content .client-list {
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  .client-view-tabs {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 53px;
+
+    z-index: 82;
+
+    justify-content: center;
+    gap: 32px;
+
+    padding: 2px 16px calc(2px + env(safe-area-inset-bottom));
+
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+
+    box-shadow: none;
+  }
+
+  .client-view-tabs button {
+    font-size: 14px;
+  }
+
+  .mobile-bottom-spacer {
+    display: block;
+    height: 130px;
+  }
+}
+
+@media (max-width: 768px) {
+  .week-navigation {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .week-navigation button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .calendar-grid {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: 52px repeat(7, 132px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .calendar-header-cell,
+  .calendar-day-header {
+    height: 52px;
+    padding: 8px 6px;
+  }
+
+  .calendar-day-name {
+    font-size: 13px;
+  }
+
+  .calendar-day-date {
+    font-size: 12px;
+  }
+
+  .calendar-time-slot {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+
+  .calendar-appointment {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .calendar-appointment strong,
+  .calendar-appointment span {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 520px) {
+  .calendar-grid {
+    grid-template-columns: 48px repeat(7, 120px);
+  }
+}

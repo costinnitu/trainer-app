@@ -1,0 +1,287 @@
+/* ---------- Programs ---------- */
+
+.program-card {
+  position: relative;
+
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.program-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.program-summary {
+  margin: 6px 0 14px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.program-card-hint {
+  margin-top: auto;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.program-card-actions {
+  margin-top: auto;
+  padding-top: 16px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.program-delete-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.exercise-list {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+
+.exercise-list li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.program-editor {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.program-editor-title {
+  margin: 0 0 24px;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.program-details-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 0.8fr;
+  gap: 12px;
+}
+
+.program-exercise-list {
+  display: grid;
+  gap: 12px;
+}
+
+.exercise-form-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.exercise-form-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 0.9fr 0.9fr 0.9fr 40px;
+  gap: 12px;
+  align-items: end;
+}
+
+.exercise-form-notes {
+  grid-column: 1 / 5;
+}
+
+.exercise-delete-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2px;
+}
+
+.exercise-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exercise-input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.dark-mode .exercise-input-group label {
+  color: #d1d5db;
+}
+
+.exercise-form-grid input,
+.exercise-form-grid select {
+  height: 38px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.program-exercise-row {
+  display: grid;
+  grid-template-columns: 2.2fr 70px 70px 80px 2.3fr 40px;
+  gap: 18px;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.program-details-row {
+  display: grid;
+  grid-template-columns: 2.5fr 2fr 80px;
+  gap: 18px;
+  align-items: center;
+}
+
+.program-details-row:not(.program-details-header) {
+  padding: 8px 16px;
+}
+
+.program-exercise-row input,
+.program-exercise-row select,
+.program-details-row input {
+  width: 100%;
+  height: 34px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 6px 8px;
+  font-size: 13px;
+  box-sizing: border-box;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.program-exercise-row input:focus,
+.program-exercise-row select:focus,
+.program-details-row input:focus {
+  outline: none;
+  border-color: var(--primary-border);
+  background: var(--surface);
+}
+
+.dark-mode .program-exercise-row input,
+.dark-mode .program-exercise-row select,
+.dark-mode .program-details-row input {
+  background: var(--surface-muted);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dark-mode .program-exercise-row input:focus,
+.dark-mode .program-exercise-row select:focus,
+.dark-mode .program-details-row input:focus {
+  background: var(--surface);
+  border-color: var(--primary-border);
+}
+
+.program-exercise-row-header {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 0;
+  padding-bottom: 0;
+  text-align: center;
+}
+
+.program-details-header {
+  margin-bottom: 8px;
+}
+
+.program-details-header,
+.program-exercise-row-header {
+  align-items: end;
+}
+
+.program-details-header strong,
+.program-exercise-row-header strong {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.program-details-header strong:first-child,
+.program-exercise-row-header strong:first-child {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.program-details-header strong:last-child,
+.program-exercise-row-header strong:last-child {
+  justify-content: flex-start;
+}
+
+.program-exercise-row input:nth-child(2),
+.program-exercise-row input:nth-child(3),
+.program-exercise-row input:nth-child(4) {
+  text-align: center;
+}
+
+.add-program-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+
+  min-height: 120px;
+
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.add-program-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-border);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.12);
+}
+
+.add-program-icon,
+.add-program-card .label,
+.add-program-card .plus {
+  color: var(--primary);
+}
+
+.add-program-card .label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.dark-mode .add-program-icon,
+.dark-mode .add-program-card .plus,
+.dark-mode .add-program-card .label {
+  color: #93c5fd;
+}
+
+/* ---------- Program chips ---------- */
+
+.program-chip-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.program-chip {
+  border-radius: var(--radius-pill);
+  padding: 8px 12px;
+  font-size: 13px;
+}

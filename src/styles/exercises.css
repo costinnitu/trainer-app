@@ -1,0 +1,59 @@
+/* ---------- Exercise library ---------- */
+
+.exercise-library-list {
+  display: grid;
+  gap: 24px;
+}
+
+.exercise-group {
+  display: grid;
+  gap: 10px;
+}
+
+.exercise-group h3 {
+  margin: 0;
+  padding-left: 4px;
+}
+
+.exercise-table {
+  display: grid;
+  gap: 8px;
+}
+
+.exercise-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 40px;
+  gap: 16px;
+  align-items: center;
+  padding: 2px 4px 2px 30px;
+}
+
+.exercise-row.favorite-row {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.exercise-row div {
+  line-height: 1.2;
+}
+
+.exercise-row p {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.exercise-row strong {
+  font-size: 16px;
+}
+
+.exercise-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.exercise-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

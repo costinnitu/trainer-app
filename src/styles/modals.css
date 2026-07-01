@@ -1,0 +1,25 @@
+/* ---------- Modals ---------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+
+  background: rgba(17, 24, 39, 0.55);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+}
+
+.modal-content {
+  width: min(100%, 1000px);
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background: var(--app-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}

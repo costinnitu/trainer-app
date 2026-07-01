@@ -1,0 +1,46 @@
+/* ---------- Base ---------- */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--app-bg);
+  color: var(--text);
+}
+
+button {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border: none;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+input,
+select,
+textarea {
+  color: var(--text);
+}
+
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  background: var(--surface-muted);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.error-message {
+  color: var(--danger-hover);
+  font-weight: 600;
+}
+
+.success-message {
+  color: var(--success-text);
+  font-weight: 600;
+}

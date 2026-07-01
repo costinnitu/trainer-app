@@ -1,0 +1,46 @@
+/* ---------- Forms ---------- */
+
+.client-form {
+  margin-bottom: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.client-form input,
+.client-form select,
+.search-input,
+.program-notes-textarea {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+.client-form input,
+.client-form select {
+  padding: 10px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+.program-notes-textarea {
+  min-height: 96px;
+  resize: vertical;
+  padding: 10px;
+  font-family: inherit;
+}
+
+.checkbox-group {
+  display: grid;
+  gap: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

@@ -1,0 +1,119 @@
+/* ---------- Actions and buttons ---------- */
+
+.card-actions,
+.edit-actions,
+.form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.card-actions {
+  margin-top: 12px;
+}
+
+.edit-actions {
+  margin-bottom: 16px;
+}
+
+.form-actions {
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.pill-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.danger-button {
+  background: var(--danger);
+  margin-top: 12px;
+}
+
+.danger-button:hover {
+  background: var(--danger-hover);
+}
+
+.secondary-button {
+  background: var(--chip-bg);
+  color: var(--chip-text);
+}
+
+.secondary-button:hover {
+  background: var(--primary-softer);
+}
+
+.dark-mode .secondary-button {
+  background: var(--chip-dark-bg);
+  color: var(--chip-dark-text);
+}
+
+.dark-mode .secondary-button:hover {
+  background: #4338ca;
+}
+
+.delete-icon-button,
+.favorite-button {
+  background: transparent;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.delete-icon-button {
+  color: var(--text-soft);
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+}
+
+.delete-icon-button:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--danger);
+}
+
+.favorite-button {
+  color: var(--text-soft);
+  width: 34px;
+  height: 34px;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.favorite-button:hover {
+  background: var(--favorite-hover-bg);
+  color: var(--favorite);
+}
+
+.favorite-button.active {
+  color: var(--favorite);
+}
+
+.dark-mode .favorite-button:hover,
+.dark-mode .favorite-button.active {
+  color: #fbbf24;
+}
+
+.dark-mode .delete-icon-button:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.dark-mode button {
+  color: var(--text-inverse);
+}
+
+.dark-mode .amplify-button {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.dark-mode .amplify-button:hover {
+  background: var(--primary-hover);
+}

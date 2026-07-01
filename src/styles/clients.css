@@ -1,0 +1,236 @@
+/* ---------- Clients and contacts ---------- */
+
+.contacts-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.contacts-section .section-content {
+  width: 100%;
+}
+
+.contacts-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.contacts-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.client-list {
+  display: grid;
+  gap: 8px;
+}
+
+.client-row {
+  display: grid;
+  grid-template-columns:
+    1.7fr
+    1fr
+    1.4fr
+    1.5fr
+    1.2fr
+    40px;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 4px 8px 30px;
+}
+
+.client-row strong {
+  font-size: 16px;
+}
+
+.client-row span {
+  font-size: 14px;
+}
+
+.client-row-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.client-row-header,
+.payment-row-header,
+.program-exercise-row-header {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.client-row-header strong,
+.payment-row-header strong {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.assigned-programs-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.assigned-program-badge {
+  display: inline-flex;
+  align-items: center;
+
+  background: var(--chip-bg);
+  color: var(--chip-text);
+
+  border-radius: var(--radius-pill);
+  padding: 4px 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.client-name-highlight {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  z-index: 1;
+}
+
+.client-name-highlight::before {
+  content: '';
+
+  position: absolute;
+  left: -16px;
+  top: 50%;
+
+  width: 4em;
+  height: 1.5em;
+
+  transform: translateY(-50%) rotate(-8deg);
+
+  border-radius: 3px 14px 5px 12px;
+
+  opacity: 0.25;
+  z-index: -1;
+}
+
+.client-name-highlight-active::before {
+  background: #40c45d;
+}
+
+.client-name-highlight-paused::before {
+  background: #f5c542;
+}
+
+.client-name-highlight-inactive::before {
+  background: #ef5350;
+}
+
+
+.dark-mode .assigned-program-badge {
+  background: var(--chip-dark-bg);
+  color: var(--chip-dark-text);
+}
+
+/* ---------- Contact actions ---------- */
+
+.contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-action-button {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 6px 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  background: var(--chip-bg);
+  color: var(--chip-text);
+}
+
+.contact-action-button:hover {
+  background: var(--primary-softer);
+}
+
+.dark-mode .contact-action-button {
+  background: var(--chip-dark-bg);
+  color: var(--chip-dark-text);
+}
+
+.dark-mode .contact-action-button:hover {
+  background: #4338ca;
+}
+
+/* ---------- Client workspace tabs ---------- */
+
+.client-view-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+
+  margin: 0 0 20px;
+  padding: 0 0 4px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.client-view-tabs button {
+  position: relative;
+
+  padding: 10px 0 12px;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  color: var(--text-muted);
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: color var(--transition-fast);
+}
+
+.client-view-tabs button:hover {
+  background: transparent;
+  color: var(--primary);
+}
+
+.client-view-tabs button.active {
+  color: var(--text);
+}
+
+.client-view-tabs button.active::after {
+  content: '';
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+
+  height: 4px;
+
+  background: var(--primary);
+  border-radius: var(--radius-pill);
+
+  transform: rotate(-1.5deg);
+}
+
+.mobile-bottom-spacer {
+  display: none;
+}

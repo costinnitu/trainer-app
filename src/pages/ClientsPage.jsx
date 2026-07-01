@@ -575,6 +575,8 @@ function ClientsPage() {
     onClientsChanged={refreshClients}
   />
 )}
+
+{!showForm && <div className="mobile-bottom-spacer" />}
     </div>
   )
 }

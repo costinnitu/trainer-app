@@ -1,0 +1,110 @@
+/* ---------- Theme tokens ---------- */
+
+:root {
+  /* Brand */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-soft: #eff6ff;
+  --primary-softer: #dbeafe;
+  --primary-border: #93c5fd;
+  --primary-text: #1e40af;
+
+  /* Accent / legacy green buttons */
+  --accent: #40c45d;
+  --accent-hover: #35a94f;
+
+  /* Semantic */
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+
+  --warning-bg: #fef3c7;
+  --warning-text: #92400e;
+
+  --orange-bg: #ffedd5;
+  --orange-text: #9a3412;
+
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-bg: #fee2e2;
+  --danger-text: #991b1b;
+
+  --favorite: #f59e0b;
+  --favorite-hover-bg: rgba(245, 158, 11, 0.08);
+
+  /* Surfaces */
+  --app-bg: #f4f6f8;
+  --surface: #ffffff;
+  --surface-muted: #f9fafb;
+  --surface-hover: #f8fafc;
+
+  /* Text */
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-soft: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --border-dark: #374151;
+
+  /* Indigo chips */
+  --chip-bg: #eef2ff;
+  --chip-text: #3730a3;
+  --chip-dark-bg: #312e81;
+  --chip-dark-text: #c7d2fe;
+
+  /* Layout */
+  --page-max-width: 1100px;
+  --page-padding: 32px;
+
+  /* Action pills */
+  --action-pill-width: 200px;
+  --action-pill-height: 44px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-primary: 0 4px 12px rgba(37, 99, 235, 0.12);
+
+  /* Motion */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-status: 0.3s ease;
+
+  /* Calendar */
+  --calendar-hour-height: 80px;
+  --calendar-body-height: 1040px;
+  --calendar-hover-bg: rgba(37, 99, 235, 0.04);
+  --calendar-preview-bg: rgba(37, 99, 235, 0.08);
+  --calendar-preview-border: rgba(37, 99, 235, 0.35);
+}
+
+.dark-mode {
+  --app-bg: #111827;
+  --surface: #1f2937;
+  --surface-muted: #111827;
+  --surface-hover: #111827;
+
+  --text: #f9fafb;
+  --text-muted: #9ca3af;
+  --text-soft: #6b7280;
+
+  --border: #374151;
+  --border-strong: #374151;
+
+  --primary-soft: #1f2937;
+  --primary-border: #60a5fa;
+
+  --calendar-hover-bg: rgba(96, 165, 250, 0.08);
+  --calendar-preview-bg: rgba(96, 165, 250, 0.12);
+  --calendar-preview-border: rgba(96, 165, 250, 0.45);
+}
