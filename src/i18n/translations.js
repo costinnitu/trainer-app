@@ -112,6 +112,7 @@ const translations = {
     program: 'Program',
     trainingPrograms: 'Training Programs',
     addProgram: 'Add Program',
+    manage: 'Manage',
     noProgramsYet: 'No programs yet.',
     programName: 'Program Name',
     duration: 'Duration',
@@ -255,6 +256,7 @@ const translations = {
     searchPackages: 'Search packages...',
 
     packageLibrary: 'Package Library',
+
   },
 
 
@@ -378,6 +380,7 @@ const translations = {
     program: 'Programma',
     trainingPrograms: 'Programmi Allenamento',
     addProgram: 'Aggiungi Programma',
+    manage: 'Gestisci',
     noProgramsYet: 'Nessun programma presente.',
     programName: 'Nome Programma',
     duration: 'Durata',

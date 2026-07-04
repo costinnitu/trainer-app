@@ -31,7 +31,7 @@ function ClientProgramsSection({
             onCancel={onCloseSection}
             onSave={onOpenProgramSelector}
             cancelLabel={t('cancel')}
-            saveLabel={t('addProgram')}
+            saveLabel={t('manage')}
           />
         </div>
       )}

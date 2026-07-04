@@ -25,10 +25,11 @@ function ProgramSelectorModal({
 
         return (
           <div
-            key={program.programId}
-            className="client-row clickable"
-            onClick={() => onToggleProgram(program.programId)}
-          >
+  key={program.programId}
+  data-selected={isSelected ? 'true' : 'false'}
+  className="client-row clickable program-selector-row"
+  onClick={() => onToggleProgram(program.programId)}
+>
             <strong>{program.programName}</strong>
             <span>{program.goal || '-'}</span>
             <span>
