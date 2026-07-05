@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import AppointmentForm from '../components/appointments/AppointmentForm'
 
@@ -53,7 +53,7 @@ function WeeklySchedulePage() {
   const [error, setError] = useState('')
   const [lastTap, setLastTap] = useState(null)
   const locale = language === 'it' ? 'it-IT' : 'en-US'
-
+  const calendarScrollRef = useRef(null)
   const calendarStartHour = Number(
     schedulePreferences.workStartTime.split(':')[0]
   )
@@ -413,6 +413,23 @@ function WeeklySchedulePage() {
   const weekDays = getWeekDays()
   const timeSlotCount = calendarEndHour - calendarStartHour + 1
 
+
+  useEffect(() => {
+  const calendar = calendarScrollRef.current
+
+  if (!calendar || window.innerWidth > 768) return
+
+  const todayIndex = weekDays.findIndex((day) => day.dateValue === today)
+
+  if (todayIndex === -1) return
+
+  const dayColumnWidth = 132
+
+  requestAnimationFrame(() => {
+    calendar.scrollLeft = todayIndex * dayColumnWidth
+  })
+}, [weekDays, today])
+
   return (
     <div className="page">
       <div className="page-header">
@@ -422,18 +439,14 @@ function WeeklySchedulePage() {
         </div>
 
         <div className="week-navigation">
-          <button onClick={goToPreviousWeek}>
-            {t('previous')}
-          </button>
+          <button onClick={goToPreviousWeek}>←</button>
 
           <button onClick={goToCurrentWeek}>
-            {t('today')}
+            Today
           </button>
 
-          <button onClick={goToNextWeek}>
-            {t('next')}
-          </button>
-        </div>
+          <button onClick={goToNextWeek}>→</button>
+                  </div>
       </div>
 
       {error && <p className="error-message">{error}</p>}
@@ -465,25 +478,26 @@ function WeeklySchedulePage() {
         </div>
       )}
 
-      <div
-  className="calendar-grid"
-  style={{ '--calendar-visible-days': weekDays.length }}
->
-        <div className="calendar-time-column">
-          <div className="calendar-header-cell"></div>
+      <div className="calendar-scroll-wrapper" ref={calendarScrollRef}>
+  <div
+    className="calendar-grid"
+    style={{ '--calendar-visible-days': weekDays.length }}
+  >
+    <div className="calendar-time-column">
+      <div className="calendar-header-cell"></div>
 
-          {Array.from({ length: timeSlotCount }, (_, index) => {
-            const hour = index + calendarStartHour
+      {Array.from({ length: timeSlotCount }, (_, index) => {
+        const hour = index + calendarStartHour
 
-            return (
-              <div className="calendar-time-slot" key={hour}>
-                {String(hour).padStart(2, '0')}:00
-              </div>
-            )
-          })}
-        </div>
+        return (
+          <div className="calendar-time-slot" key={hour}>
+            {String(hour).padStart(2, '0')}:00
+          </div>
+        )
+      })}
+    </div>
 
-        {weekDays.map((day) => {
+    {weekDays.map((day) => {
           const dayAppointments = getAppointmentsForDay(day.dateValue)
           const isToday = day.dateValue === today
 
@@ -507,56 +521,54 @@ function WeeklySchedulePage() {
               <div
                 className="calendar-day-body"
                onClick={(event) => {
-  if (!isMobileDevice()) {
-    handleCalendarSlotClick(event, day)
-    return
-  }
+                  if (!isMobileDevice()) {
+                    handleCalendarSlotClick(event, day)
+                    return
+                  }
 
-  if (event.target.closest('.calendar-appointment')) {
-    return
-  }
+                  if (event.target.closest('.calendar-appointment')) {
+                    return
+                  }
 
-  const startTime = getCenteredTimeFromClick(event)
-  const endTime = calculateEndTime(startTime)
+                  const startTime = getCenteredTimeFromClick(event)
+                  const endTime = calculateEndTime(startTime)
 
-  const currentTap = {
-    date: day.dateValue,
-    startTime,
-    time: Date.now(),
-  }
+                  const currentTap = {
+                    date: day.dateValue,
+                    startTime,
+                    time: Date.now(),
+                  }
 
-  const isDoubleTap =
-    lastTap &&
-    lastTap.date === currentTap.date &&
-    lastTap.startTime === currentTap.startTime &&
-    currentTap.time - lastTap.time < 450
+                  const isDoubleTap =
+                    lastTap &&
+                    lastTap.date === currentTap.date &&
+                    lastTap.startTime === currentTap.startTime &&
+                    currentTap.time - lastTap.time < 450
 
-  if (isDoubleTap) {
-    handleCalendarSlotClick(event, day)
-    setLastTap(null)
-    return
-  }
+                  if (isDoubleTap) {
+                    handleCalendarSlotClick(event, day)
+                    setLastTap(null)
+                    return
+                  }
 
-  setLastTap(currentTap)
+                  setLastTap(currentTap)
 
-  setHoverPreview({
-    date: day.dateValue,
-    startTime,
-    endTime,
-  })
-}}
-onMouseMove={(event) => {
-  if (!isMobileDevice()) {
-    handleCalendarSlotHover(event, day)
-  }
-}}
-onMouseLeave={() => {
-  if (!isMobileDevice()) {
-    setHoverPreview(null)
-  }
-}}
-                onMouseMove={(event) => handleCalendarSlotHover(event, day)}
-                onMouseLeave={() => setHoverPreview(null)}
+                  setHoverPreview({
+                    date: day.dateValue,
+                    startTime,
+                    endTime,
+                  })
+                }}
+                onMouseMove={(event) => {
+                  if (!isMobileDevice()) {
+                    handleCalendarSlotHover(event, day)
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (!isMobileDevice()) {
+                    setHoverPreview(null)
+                  }
+                }}
               >
                 {isToday && currentTimePosition && (
                   <div
@@ -604,9 +616,12 @@ onMouseLeave={() => {
               </div>
             </div>
           )
+          
         })}
+        </div>
       </div>
     </div>
+      
   )
 }
 

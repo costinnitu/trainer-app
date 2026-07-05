@@ -690,3 +690,176 @@
     box-shadow: inset 0px 0 0 var(--primary), var(--shadow-sm);
   }
 }
+
+/* Client assigned packages - mobile */
+
+@media (max-width: 700px) {
+/* Client assigned packages - mobile */
+
+.client-package-row-header {
+  display: none;
+}
+
+.client-package-row:not(.client-package-row-header) {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas:
+    "name status status"
+    "sessions amount delete";
+
+  gap: 6px 12px;
+  align-items: center;
+
+  min-height: 56px;
+  padding: 10px 12px;
+}
+
+.client-package-row:not(.client-package-row-header) > * {
+  min-height: 0;
+}
+
+/* Row 1 */
+
+.client-package-row:not(.client-package-row-header) strong {
+  grid-area: name;
+
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.client-package-row:not(.client-package-row-header) .payment-status-toggle {
+  grid-area: status;
+  justify-self: end;
+}
+
+/* Row 2 */
+
+.client-package-row:not(.client-package-row-header) span {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.client-package-row:not(.client-package-row-header) > span:nth-of-type(1) {
+  grid-area: sessions;
+  justify-self: start;
+}
+
+.client-package-row:not(.client-package-row-header) > span:nth-of-type(2) {
+  grid-area: amount;
+  justify-self: center;
+  font-weight: 600;
+}
+
+.client-package-row:not(.client-package-row-header) .delete-icon-button {
+  grid-area: delete;
+  justify-self: end;
+}
+}
+
+@media (max-width: 700px) {
+  .week-navigation {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 72px;
+
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 10px 16px;
+    background: var(--background);
+    border-top: 1px solid var(--border-light);
+    z-index: 90;
+  }
+
+  @media (max-width: 700px) {
+
+  .week-navigation button {
+    flex: 1;
+    max-width: 100px;
+
+    padding: 10px 0;
+
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+
+    box-shadow: var(--shadow-sm);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s;
+  }
+
+  .week-navigation button:hover,
+  .week-navigation button:active {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+  }
+}
+
+  .schedule-page {
+    padding-bottom: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .calendar-grid {
+    width: max-content;
+    min-width: max-content;
+    grid-template-columns: 42px repeat(var(--calendar-visible-days), 120px);
+    overflow: visible;
+  }
+
+  .calendar-time-column {
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+
+    position: sticky;
+    left: 0;
+    z-index: 40;
+
+    background: var(--surface);
+  }
+
+  .calendar-header-cell,
+  .calendar-time-slot {
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+
+    padding: 4px 2px;
+    box-sizing: border-box;
+
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .calendar-day-column {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+
+  .calendar-day-header {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    box-sizing: border-box;
+  }
+}
