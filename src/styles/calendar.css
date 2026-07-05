@@ -189,3 +189,24 @@
 .current-time-line::after {
   right: -4px;
 }
+
+.week-navigation button {
+  min-height: 42px;
+  padding: 0 16px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+
+  box-shadow: var(--shadow-sm);
+
+  font-weight: 700;
+}
+
+.week-navigation button:hover {
+  background: var(--surface-muted);
+  border-color: var(--primary-border);
+  color: var(--primary);
+}

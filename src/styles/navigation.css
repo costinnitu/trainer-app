@@ -26,9 +26,6 @@
   position: relative;
 }
 
-.nav-group-button.active {
-  background: var(--accent-hover);
-}
 
 .nav-submenu {
   position: absolute;
@@ -51,6 +48,57 @@
   text-align: left;
   background: transparent;
   color: var(--text);
+  padding: 9px 10px;
+}
+
+.nav-submenu button:hover {
+  background: var(--surface-muted);
+}
+
+.nav-link,
+.nav-group-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: var(--radius-md);
+
+  background: transparent;
+  color: var(--text-primary);
+
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+
+  box-shadow: none;
+}
+
+.nav-link:hover,
+.nav-group-button:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.nav-link.active,
+.nav-group-button.active {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.nav-submenu button {
+  width: 100%;
+  min-height: 40px;
+
+  text-align: left;
+  background: transparent;
+  color: var(--text-primary);
+
+  border: none;
+  box-shadow: none;
   padding: 9px 10px;
 }
 

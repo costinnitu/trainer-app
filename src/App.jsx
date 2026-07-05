@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   NavLink,
   Navigate,
@@ -26,7 +26,7 @@ import PackagesPage from './pages/PackagesPage'
 
 import { getAppPreferences } from './services/settingsService'
 import useTranslations from './hooks/useTranslations'
-import { useEffect, useRef, useState } from 'react'
+
 
 function App() {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false)
@@ -122,17 +122,28 @@ function App() {
             </div>
 
             <div className="navbar-center">
-              <NavLink to="/">
-                {t('dashboard')}
-              </NavLink>
+             <NavLink
+                  to="/"
+                  end
+                  className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+                >
+                  {t('dashboard')}
+                </NavLink>
 
-              <NavLink to="/clients">
-                {t('clients')}
-              </NavLink>
+                <NavLink
+                  to="/clients"
+                  className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+                >
+                  {t('clients')}
+                </NavLink>
 
-              <NavLink to="/schedule">
-                {t('weeklySchedule')}
-              </NavLink>
+                <NavLink
+                  to="/schedule"
+                  className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+                >
+                  {t('weeklySchedule')}
+                </NavLink>
+
 
               <div className="nav-group">
                 <button
@@ -168,13 +179,18 @@ function App() {
             </div>
 
             <div className="navbar-right">
-              <NavLink to="/settings">
-                {t('settings')}
-              </NavLink>
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) =>
+                    isActive ? 'nav-link active' : 'nav-link'
+                  }
+                >
+                  {t('settings')}
+                </NavLink>
 
-              <Button onClick={signOut}>
-                {t('logout')}
-              </Button>
+                <Button onClick={signOut}>
+                  {t('logout')}
+                </Button>
             </div>
           </nav>
 
