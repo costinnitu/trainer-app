@@ -26,11 +26,12 @@ import PackagesPage from './pages/PackagesPage'
 
 import { getAppPreferences } from './services/settingsService'
 import useTranslations from './hooks/useTranslations'
+import { useEffect, useRef, useState } from 'react'
 
 function App() {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
+  const lastBackPressRef = useRef(0)
   const { t } = useTranslations()
   const navigate = useNavigate()
   const location = useLocation()
@@ -79,6 +80,35 @@ function App() {
   ]
 
   const isLibraryActive = libraryPaths.includes(location.pathname)
+
+  useEffect(() => {
+  function handleBackButton(event) {
+    const isOnHomePage = window.location.pathname === '/'
+
+    if (!isOnHomePage) {
+      return
+    }
+
+    const now = Date.now()
+
+    if (now - lastBackPressRef.current < 2000) {
+      return
+    }
+
+    event.preventDefault()
+    window.history.pushState(null, '', window.location.href)
+    lastBackPressRef.current = now
+
+    alert('Press back again to exit')
+  }
+
+  window.history.pushState(null, '', window.location.href)
+  window.addEventListener('popstate', handleBackButton)
+
+  return () => {
+    window.removeEventListener('popstate', handleBackButton)
+  }
+}, [])
 
   return (
     <Authenticator>
