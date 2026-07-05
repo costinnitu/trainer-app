@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react'
+import {
+  NavLink,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
 
 import {
   Authenticator,
@@ -20,11 +28,12 @@ import { getAppPreferences } from './services/settingsService'
 import useTranslations from './hooks/useTranslations'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard')
   const [isLibraryOpen, setIsLibraryOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const { t } = useTranslations()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('darkMode')
@@ -56,25 +65,20 @@ function App() {
     }
   }
 
-  function handlePageChange(page) {
-  setCurrentPage(page)
-  setIsLibraryOpen(false)
-  setIsMobileMenuOpen(false)
-}
-
-  function handleLibraryPageChange(page) {
-    setCurrentPage(page)
+  function goTo(path) {
+    navigate(path)
     setIsLibraryOpen(false)
+    setIsMobileMenuOpen(false)
   }
 
-  const libraryPages = [
-    'programs',
-    'exerciseLibrary',
-    'packages',
-    'paymentTracking',
+  const libraryPaths = [
+    '/programs',
+    '/exercises',
+    '/packages',
+    '/payments',
   ]
 
-  const isLibraryActive = libraryPages.includes(currentPage)
+  const isLibraryActive = libraryPaths.includes(location.pathname)
 
   return (
     <Authenticator>
@@ -88,17 +92,17 @@ function App() {
             </div>
 
             <div className="navbar-center">
-              <button onClick={() => handlePageChange('dashboard')}>
+              <NavLink to="/">
                 {t('dashboard')}
-              </button>
+              </NavLink>
 
-              <button onClick={() => handlePageChange('clients')}>
+              <NavLink to="/clients">
                 {t('clients')}
-              </button>
+              </NavLink>
 
-              <button onClick={() => handlePageChange('weeklySchedule')}>
+              <NavLink to="/schedule">
                 {t('weeklySchedule')}
-              </button>
+              </NavLink>
 
               <div className="nav-group">
                 <button
@@ -113,35 +117,19 @@ function App() {
 
                 {isLibraryOpen && (
                   <div className="nav-submenu">
-                    <button
-                      type="button"
-                      onClick={() => handleLibraryPageChange('programs')}
-                    >
+                    <button type="button" onClick={() => goTo('/programs')}>
                       {t('programs')}
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleLibraryPageChange('exerciseLibrary')
-                      }
-                    >
+                    <button type="button" onClick={() => goTo('/exercises')}>
                       {t('exercises')}
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() => handleLibraryPageChange('packages')}
-                    >
+                    <button type="button" onClick={() => goTo('/packages')}>
                       {t('packages')}
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleLibraryPageChange('paymentTracking')
-                      }
-                    >
+                    <button type="button" onClick={() => goTo('/payments')}>
                       {t('paymentTracking')}
                     </button>
                   </div>
@@ -150,9 +138,9 @@ function App() {
             </div>
 
             <div className="navbar-right">
-              <button onClick={() => handlePageChange('settings')}>
+              <NavLink to="/settings">
                 {t('settings')}
-              </button>
+              </NavLink>
 
               <Button onClick={signOut}>
                 {t('logout')}
@@ -161,103 +149,79 @@ function App() {
           </nav>
 
           <div className="mobile-bottom-nav">
-  
+            <button type="button" onClick={() => goTo('/')}>
+              <span>🏠</span>
+              <small>{t('dashboard')}</small>
+            </button>
 
-  <button type="button" onClick={() => handlePageChange('dashboard')}>
-    <span>🏠</span>
-    <small>{t('dashboard')}</small>
-  </button>
+            <button type="button" onClick={() => goTo('/clients')}>
+              <span>👥</span>
+              <small>{t('clients')}</small>
+            </button>
 
-  <button type="button" onClick={() => handlePageChange('clients')}>
-    <span>👥</span>
-    <small>{t('clients')}</small>
-  </button>
+            <button type="button" onClick={() => goTo('/schedule')}>
+              <span>📅</span>
+              <small>{t('weeklySchedule')}</small>
+            </button>
 
-  <button type="button" onClick={() => handlePageChange('weeklySchedule')}>
-    <span>📅</span>
-    <small>{t('weeklySchedule')}</small>
-  </button>
+            <button type="button" onClick={() => setIsMobileMenuOpen(true)}>
+              <span>☰</span>
+              <small>More</small>
+            </button>
+          </div>
 
-<button type="button" onClick={() => setIsMobileMenuOpen(true)}>
-    <span>☰</span>
-    <small>More</small>
-  </button>
+          {isMobileMenuOpen && (
+            <div
+              className="mobile-menu-backdrop"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div
+                className="mobile-menu-stack"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  className="mobile-menu-danger"
+                  onClick={signOut}
+                >
+                  🚪 {t('logout')}
+                </button>
 
-</div>
+                <button type="button" onClick={() => goTo('/programs')}>
+                  🏋 {t('programs')}
+                </button>
 
-{isMobileMenuOpen && (
-  <div
-    className="mobile-menu-backdrop"
-    onClick={() => setIsMobileMenuOpen(false)}
-  >
-    <div
-      className="mobile-menu-stack"
-      onClick={(event) => event.stopPropagation()}
-    >
-      <button
-  type="button"
-  className="mobile-menu-danger"
-  onClick={signOut}
->
-  🚪 {t('logout')}
-</button>
+                <button type="button" onClick={() => goTo('/exercises')}>
+                  💪 {t('exercises')}
+                </button>
 
-<button
-  type="button"
-  onClick={() => handlePageChange('programs')}
->
-  🏋 {t('programs')}
-</button>
+                <button type="button" onClick={() => goTo('/packages')}>
+                  📦 {t('packages')}
+                </button>
 
-<button
-  type="button"
-  onClick={() => handlePageChange('exerciseLibrary')}
->
-  💪 {t('exercises')}
-</button>
+                <button type="button" onClick={() => goTo('/payments')}>
+                  💳 {t('paymentTracking')}
+                </button>
 
-<button
-  type="button"
-  onClick={() => handlePageChange('packages')}
->
-  📦 {t('packages')}
-</button>
-
-<button
-  type="button"
-  onClick={() => handlePageChange('paymentTracking')}
->
-  💳 {t('paymentTracking')}
-</button>
-
-<button
-  type="button"
-  onClick={() => handlePageChange('settings')}
->
-  ⚙ {t('settings')}
-</button>
-    </div>
-  </div>
-)}
-
-          {currentPage === 'dashboard' && (
-            <DashboardPage setCurrentPage={setCurrentPage} />
+                <button type="button" onClick={() => goTo('/settings')}>
+                  ⚙ {t('settings')}
+                </button>
+              </div>
+            </div>
           )}
 
+          <Routes>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/clients" element={<ClientsPage />} />
+            <Route path="/schedule" element={<WeeklySchedulePage />} />
+            <Route path="/programs" element={<ProgramsPage />} />
+            <Route path="/exercises" element={<ExerciseLibraryPage />} />
+            <Route path="/packages" element={<PackagesPage />} />
+            <Route path="/payments" element={<PaymentTrackingPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
 
-          {currentPage === 'clients' && <ClientsPage />}
-
-          {currentPage === 'programs' && <ProgramsPage />}
-
-          {currentPage === 'paymentTracking' && <PaymentTrackingPage />}
-
-          {currentPage === 'weeklySchedule' && <WeeklySchedulePage />}
-
-          {currentPage === 'packages' && <PackagesPage />}
-
-          {currentPage === 'exerciseLibrary' && <ExerciseLibraryPage />}
-
-          {currentPage === 'settings' && <SettingsPage />}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </div>
       )}
     </Authenticator>

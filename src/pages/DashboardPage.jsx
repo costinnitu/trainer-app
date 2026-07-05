@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import { getClients } from '../services/clientService'
 import { getAppointments } from '../services/appointmentService'
 import { getClientStatusPreferences } from '../services/settingsService'
 import useTranslations from '../hooks/useTranslations'
 
-function DashboardPage({ setCurrentPage }) {
+function DashboardPage() {
+  const navigate = useNavigate()
   const { t, language } = useTranslations()
 
   const [clients, setClients] = useState([])
@@ -141,7 +142,7 @@ function DashboardPage({ setCurrentPage }) {
       <div className="dashboard-grid">
         <div
           className="dashboard-card clickable-dashboard-card"
-          onClick={() => setCurrentPage('clients')}
+          onClick={() => navigate('/clients')}
         >
           <h3>{t('totalClients')}</h3>
           <p>{clients.length}</p>
@@ -157,7 +158,7 @@ function DashboardPage({ setCurrentPage }) {
 
         <div
           className="dashboard-card clickable-dashboard-card"
-          onClick={() => setCurrentPage('weeklySchedule')}
+          onClick={() => navigate('/schedule')}
         >
           <h3>{t('todaysAppointments')}</h3>
           <p>{todayAppointments.length}</p>

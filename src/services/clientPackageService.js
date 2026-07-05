@@ -12,12 +12,20 @@ async function getAuthHeaders() {
   }
 }
 
+async function parseResponse(response, fallbackMessage) {
+  if (!response.ok) {
+    throw new Error(`${fallbackMessage}: ${response.status}`)
+  }
+
+  return response.json()
+}
+
 export async function getClientPackages() {
   const response = await fetch(`${API_URL}/client-packages`, {
     headers: await getAuthHeaders(),
   })
 
-  return response.json()
+  return parseResponse(response, 'Failed to load client packages')
 }
 
 export async function createClientPackage(clientPackage) {
@@ -27,7 +35,7 @@ export async function createClientPackage(clientPackage) {
     body: JSON.stringify(clientPackage),
   })
 
-  return response.json()
+  return parseResponse(response, 'Failed to create client package')
 }
 
 export async function updateClientPackage(clientPackage) {
@@ -40,7 +48,7 @@ export async function updateClientPackage(clientPackage) {
     }
   )
 
-  return response.json()
+  return parseResponse(response, 'Failed to update client package')
 }
 
 export async function deleteClientPackage(packageId) {
@@ -49,5 +57,5 @@ export async function deleteClientPackage(packageId) {
     headers: await getAuthHeaders(),
   })
 
-  return response.json()
+  return parseResponse(response, 'Failed to delete client package')
 }
