@@ -36,7 +36,13 @@ function ContactsSection({ clients = [], onClientsChanged }) {
 
       const contactsData = await getContacts()
 
-setContacts(Array.isArray(contactsData) ? contactsData : [])
+setContacts(
+  Array.isArray(contactsData)
+    ? contactsData.filter(
+        (contact) => contact.status !== 'converted'
+      )
+    : []
+)
     } catch (error) {
       console.error(error)
       setError(t('couldNotLoadContacts'))
@@ -104,6 +110,7 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
         firstName: contact.firstName,
         lastName: contact.lastName || '',
         phone: contact.phone || '',
+        instagram: contact.instagram || '',
         goal: '',
         status: 'active',
       })
@@ -135,7 +142,6 @@ setContacts(Array.isArray(contactsData) ? contactsData : [])
   function handleEditContact(contact) {
     setSelectedContact(contact)
     setShowForm(true)
-    setIsExpanded(true)
   }
 
   function handleCancelForm() {

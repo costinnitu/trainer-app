@@ -70,55 +70,90 @@ function ClientsPage() {
   }, [])
 
   async function refreshClients() {
-    try {
-      setIsLoading(true)
-      setError('')
+  try {
+    setIsLoading(true)
+    setError('')
 
-      const [
-  clientsData,
-  programsData,
-  packageLibraryData,
-  assignmentsData,
-  appointmentsData,
-  preferencesData,
-  paymentsData,
-  packagesData,
-] = await Promise.all([
-        getClients(),
-        getPrograms(),
-        getPackages(),
-        getClientPrograms(),
-        getAppointments(),
-        getClientStatusPreferences(),
-        getPayments(),
-        getClientPackages(),
-      ])
+    const clientsData = await getClients()
+    setClients(Array.isArray(clientsData) ? clientsData : [])
 
-      setClients(Array.isArray(clientsData) ? clientsData : [])
-      setPrograms(Array.isArray(programsData) ? programsData : [])
-      setClientPrograms(Array.isArray(assignmentsData) ? assignmentsData : [])
-      setAppointments(Array.isArray(appointmentsData) ? appointmentsData : [])
-      setPayments(Array.isArray(paymentsData) ? paymentsData : [])
-      setClientPackages(Array.isArray(packagesData) ? packagesData : [])
-      setPackageLibrary(
-  Array.isArray(packageLibraryData)
-    ? packageLibraryData
-    : []
-)
+    const results = await Promise.allSettled([
+      getPrograms(),
+      getPackages(),
+      getClientPrograms(),
+      getAppointments(),
+      getClientStatusPreferences(),
+      getPayments(),
+      getClientPackages(),
+    ])
 
-      if (preferencesData) {
-        setClientStatusPreferences({
-          enableAutoStatus: preferencesData.enableAutoStatus ?? true,
-          autoPauseAfterDays: preferencesData.autoPauseAfterDays || 30,
-        })
-      }
-    } catch (error) {
-      console.error(error)
-      setError(t('couldNotLoadClients'))
-    } finally {
-      setIsLoading(false)
+    const [
+      programsResult,
+      packageLibraryResult,
+      assignmentsResult,
+      appointmentsResult,
+      preferencesResult,
+      paymentsResult,
+      packagesResult,
+    ] = results
+
+    if (programsResult.status === 'fulfilled') {
+      setPrograms(
+        Array.isArray(programsResult.value) ? programsResult.value : []
+      )
     }
+
+    if (packageLibraryResult.status === 'fulfilled') {
+      setPackageLibrary(
+        Array.isArray(packageLibraryResult.value)
+          ? packageLibraryResult.value
+          : []
+      )
+    }
+
+    if (assignmentsResult.status === 'fulfilled') {
+      setClientPrograms(
+        Array.isArray(assignmentsResult.value)
+          ? assignmentsResult.value
+          : []
+      )
+    }
+
+    if (appointmentsResult.status === 'fulfilled') {
+      setAppointments(
+        Array.isArray(appointmentsResult.value)
+          ? appointmentsResult.value
+          : []
+      )
+    }
+
+    if (paymentsResult.status === 'fulfilled') {
+      setPayments(
+        Array.isArray(paymentsResult.value) ? paymentsResult.value : []
+      )
+    }
+
+    if (packagesResult.status === 'fulfilled') {
+      setClientPackages(
+        Array.isArray(packagesResult.value) ? packagesResult.value : []
+      )
+    }
+
+    if (preferencesResult.status === 'fulfilled' && preferencesResult.value) {
+      setClientStatusPreferences({
+        enableAutoStatus:
+          preferencesResult.value.enableAutoStatus ?? true,
+        autoPauseAfterDays:
+          preferencesResult.value.autoPauseAfterDays || 30,
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    setError(t('couldNotLoadClients'))
+  } finally {
+    setIsLoading(false)
   }
+}
 
   function getPackagesForClient(clientId) {
     return clientPackages.filter(

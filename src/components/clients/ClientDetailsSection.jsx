@@ -32,6 +32,12 @@ function ClientDetailsSection({
         </p>
       )}
 
+      {formData.instagram && (
+  <p>
+    <strong>Instagram:</strong> @{formData.instagram}
+  </p>
+)}
+
       {formData.goal && (
         <p>
           <strong>{t('goal')}:</strong> {formData.goal}
@@ -68,6 +74,13 @@ function ClientDetailsSection({
             name="phone"
             placeholder={t('phone')}
             value={formData.phone}
+            onChange={onChange}
+          />
+
+          <input
+            name="instagram"
+            placeholder="Instagram"
+            value={formData.instagram}
             onChange={onChange}
           />
 

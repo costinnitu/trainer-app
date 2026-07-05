@@ -35,6 +35,7 @@ function ClientCard({
     window.open(`https://wa.me/${cleanedPhone}`, '_blank')
   }
 
+
   function getPaymentHealthLabel() {
     switch (paymentHealth) {
       case 'paid':
