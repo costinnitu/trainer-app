@@ -110,6 +110,7 @@ setContacts(
         firstName: contact.firstName,
         lastName: contact.lastName || '',
         phone: contact.phone || '',
+        email: contact.email || '',
         instagram: contact.instagram || '',
         goal: '',
         status: 'active',

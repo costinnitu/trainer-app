@@ -14,6 +14,7 @@ function ContactForm({
     firstName: '',
     lastName: '',
     phone: '',
+    email: '',
     instagram: '',
     source: '',
     status: 'new',
@@ -76,6 +77,13 @@ function ContactForm({
         name="phone"
         placeholder={t('phone')}
         value={contact.phone}
+        onChange={handleChange}
+      />
+
+      <input
+        name="email"
+        placeholder={t('email')}
+        value={contact.email}
         onChange={handleChange}
       />
 

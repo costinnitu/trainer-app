@@ -254,7 +254,7 @@ const translations = {
 
     searchPrograms: 'Search programs...',
     searchPackages: 'Search packages...',
-
+    email: "Email",
     packageLibrary: 'Package Library',
 
   },
@@ -522,7 +522,7 @@ const translations = {
 
     searchPrograms: 'Cerca programmi...',
     searchPackages: 'Cerca pacchetti...',
-
+    email: "Email",
     packageLibrary: 'Libreria pacchetti',
   },
 }

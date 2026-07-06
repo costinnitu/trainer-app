@@ -32,6 +32,12 @@ function ClientDetailsSection({
         </p>
       )}
 
+      {formData.email && (
+  <p>
+    <strong>{t('email')}:</strong> {formData.email}
+  </p>
+)}
+
       {formData.instagram && (
   <p>
     <strong>Instagram:</strong> @{formData.instagram}
@@ -74,6 +80,14 @@ function ClientDetailsSection({
             name="phone"
             placeholder={t('phone')}
             value={formData.phone}
+            onChange={onChange}
+          />
+
+          <input
+            name="email"
+            type="email"
+            placeholder={t('email')}
+            value={formData.email}
             onChange={onChange}
           />
 

@@ -27,6 +27,7 @@ function ClientForm({
     firstName: '',
     lastName: '',
     phone: '',
+    email: '',
     goal: '',
     status: 'active',
     assignedProgramIds: [],

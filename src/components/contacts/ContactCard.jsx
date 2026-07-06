@@ -1,4 +1,5 @@
 import useTranslations from '../../hooks/useTranslations'
+import { FaWhatsapp } from 'react-icons/fa'
 
 function ContactCard({
   contact,
@@ -62,7 +63,7 @@ function ContactCard({
 
   return (
     <div
-      className="client-row clickable"
+      className="client-row contact-row clickable"
       onClick={() => onEditContact(contact)}
     >
       <div>
@@ -80,46 +81,56 @@ function ContactCard({
       <span>{contact.instagram || '-'}</span>
 
       <div className="contact-actions">
-        {contact.phone && (
-          <button
-            type="button"
-            className="contact-action-button"
-            onClick={openWhatsApp}
-          >
-            WhatsApp
-          </button>
-        )}
+  {contact.phone && (
+    <>
+      <button
+        type="button"
+        className="contact-action-button desktop-only"
+        onClick={openWhatsApp}
+      >
+        WhatsApp
+      </button>
 
-        {contact.instagram && (
-          <button
-            type="button"
-            className="contact-action-button"
-            onClick={openInstagram}
-          >
-            Instagram
-          </button>
-        )}
+      <button
+  type="button"
+  className="contact-action-button mobile-only"
+  onClick={openWhatsApp}
+>
+  <FaWhatsapp />
+</button>
+    </>
+  )}
 
-        {!isConverted && (
-          <button
-            type="button"
-            className="contact-action-button convert-button"
-            onClick={handleConvert}
-          >
-            {t('convert')}
-          </button>
-        )}
+  {contact.instagram && (
+    <button
+      type="button"
+      className="contact-action-button desktop-only"
+      onClick={openInstagram}
+    >
+      Instagram
+    </button>
+  )}
 
-        <button
-          className="delete-icon-button"
-          onClick={(event) => {
-            event.stopPropagation()
-            onDeleteContact(contact.contactId)
-          }}
-        >
-          ×
-        </button>
-      </div>
+  {!isConverted && (
+    <button
+      type="button"
+      className="contact-action-button convert-button"
+      onClick={handleConvert}
+    >
+      {t('convert')}
+    </button>
+  )}
+
+  <button
+    className="delete-icon-button desktop-only"
+    onClick={(event) => {
+      event.stopPropagation()
+      onDeleteContact(contact.contactId)
+    }}
+  >
+    ×
+  </button>
+</div>
     </div>
   )
 }
